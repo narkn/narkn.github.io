@@ -203,7 +203,7 @@
       z-index: 1000;
     }
     .notification.show { transform: translateX(0); }
-    /* أيقونة المستخدم ونماذج التسجيل/الدخول */
+    /* أيقونة المستخدم ونماذج التسجيل/الدخول/الحساب */
     #user-icon {
       position: fixed;
       top: 20px;
@@ -354,10 +354,11 @@
   
   <script>
     /******************** المتغيرات والبيانات ********************/
-    let currentUser = null; // سيتم حفظ بيانات المستخدم هنا عبر localStorage
-    let points = 0;
+    // استرجاع المستخدم الحالي إذا كان موجوداً في localStorage
+    let currentUser = localStorage.getItem("currentUser") ? JSON.parse(localStorage.getItem("currentUser")) : null;
+    let points = currentUser ? currentUser.points : 0;
     // المشتريات تُخزن لكل سلعة: السلعة 1 (عشوائية) والسلعة 2 (VIP)
-    let purchasedItems = { 1: [], 2: [] };
+    let purchasedItems = localStorage.getItem("purchasedItems") ? JSON.parse(localStorage.getItem("purchasedItems")) : { 1: [], 2: [] };
     const GIFT_COOLDOWN = 24 * 60 * 60 * 1000;
     let lastGiftCollected = parseInt(localStorage.getItem("lastGiftCollected") || "0", 10);
     
@@ -410,27 +411,18 @@
         notif.classList.remove("show");
       }, 3000);
     }
-    // حفظ بيانات التطبيق (بما في ذلك آخر وقت وهدايا والمشتريات)
+    // حفظ بيانات التطبيق (حفظ آخر هدية والمشتريات والمستخدم الحالي)
     function saveAppData() {
       localStorage.setItem("lastGiftCollected", lastGiftCollected);
       localStorage.setItem("purchasedItems", JSON.stringify(purchasedItems));
-      // حفظ بيانات المستخدم الحالي حتى لا يُفقد عند تحديث الصفحة
       if(currentUser) {
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
       }
     }
     
     /******************** عند تحميل الصفحة ********************/
-    // استرجاع بيانات المستخدم الحالي إن وُجد
-    if(localStorage.getItem("currentUser")) {
-      currentUser = JSON.parse(localStorage.getItem("currentUser"));
-      points = currentUser.points;
-    }
-    // كما يمكن استرجاع المشتريات إذا كانت محفوظة (اختياري)
-    if(localStorage.getItem("purchasedItems")) {
-      purchasedItems = JSON.parse(localStorage.getItem("purchasedItems"));
-    }
     updatePointsDisplay();
+    updatePurchasesList();
     
     /******************** تبديل المحتوى ********************/
     function switchContent(sectionId) {
@@ -601,7 +593,6 @@
         closeUserModal();
         updatePointsDisplay();
         updateUserIcon();
-        // حفظ المستخدم الحالي حتى لا يفقد عند تحديث الصفحة
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
       }
     });
@@ -661,51 +652,54 @@
         alert("بيانات المطور غير صحيحة!");
       }
     });
+    // الآن البحث في نظام المطور يتم باستخدام البريد الإلكتروني
     document.getElementById("add-points-btn").addEventListener("click", () => {
-      const targetName = prompt("أدخل اسم الشخص لإضافة النقاط له:");
+      const targetEmail = prompt("أدخل البريد الإلكتروني للشخص لإضافة النقاط له:");
       const amt = parseInt(prompt("أدخل عدد النقاط:"), 10);
       if(!isNaN(amt)) {
         let users = JSON.parse(localStorage.getItem("users") || "[]");
-        let user = users.find(u => u.name === targetName);
+        let user = users.find(u => u.email === targetEmail);
         if(user) {
           user.points += amt;
           if(currentUser && currentUser.email === user.email) {
             currentUser.points = user.points;
             points = user.points;
             updatePointsDisplay();
+            localStorage.setItem("currentUser", JSON.stringify(currentUser));
           }
           localStorage.setItem("users", JSON.stringify(users));
-          showNotification(`${amt} نقطة تمت إضافتها لـ ${targetName}`);
+          showNotification(`${amt} نقطة تمت إضافتها لـ ${targetEmail}`);
         } else {
           alert("لم يتم العثور على المستخدم");
         }
       }
     });
     document.getElementById("remove-points-btn").addEventListener("click", () => {
-      const targetName = prompt("أدخل اسم الشخص لمسح النقاط منه:");
+      const targetEmail = prompt("أدخل البريد الإلكتروني للشخص لمسح النقاط منه:");
       const amt = parseInt(prompt("أدخل عدد النقاط:"), 10);
       if(!isNaN(amt)) {
         let users = JSON.parse(localStorage.getItem("users") || "[]");
-        let user = users.find(u => u.name === targetName);
+        let user = users.find(u => u.email === targetEmail);
         if(user) {
           user.points = Math.max(0, user.points - amt);
           if(currentUser && currentUser.email === user.email) {
             currentUser.points = user.points;
             points = user.points;
             updatePointsDisplay();
+            localStorage.setItem("currentUser", JSON.stringify(currentUser));
           }
           localStorage.setItem("users", JSON.stringify(users));
-          showNotification(`${amt} نقطة تمت مسحها من ${targetName}`);
+          showNotification(`${amt} نقطة تمت مسحها من ${targetEmail}`);
         } else {
           alert("لم يتم العثور على المستخدم");
         }
       }
     });
     
-    /******************** تحديث بيانات عند تحميل الصفحة ********************/
+    /******************** تحديث عند تحميل الصفحة ********************/
     updatePointsDisplay();
     updatePurchasesList();
     updateUserIcon();
   </script>
 </body>
-        </html>
+  </html>
