@@ -1,10 +1,11 @@
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>متجر النقاط الفخم</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
+    /* الخطوط والتهيئة الأساسية */
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
     * {
       margin: 0;
@@ -13,62 +14,48 @@
       font-family: 'Tajawal', sans-serif;
     }
     body {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
       color: #fff;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 20px;
-      background-size: 400% 400%;
-      animation: gradient 15s ease infinite;
       position: relative;
       overflow-x: hidden;
-    }
-    body::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9h9-9v9zm10 0h9v-9h-9v9h9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9h9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9h9v9zm9-10v-9h-9v9h9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      z-index: -1;
     }
     @keyframes gradient {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9h9-9v9zm10 0h9v-9h-9v9h9v9zm9-10v-9h-9v9h9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      z-index: -1;
+    }
     .container {
       max-width: 800px;
       width: 100%;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.1);
       backdrop-filter: blur(10px);
       border-radius: 20px;
       padding: 30px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
       margin-top: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255,255,255,0.18);
       position: relative;
-      overflow: hidden;
-    }
-    .container::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
-      pointer-events: none;
     }
     h1 {
       text-align: center;
       margin-bottom: 30px;
       font-size: 2.5rem;
       color: #e94560;
-      text-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+      text-shadow: 0 0 10px rgba(233,69,96,0.5);
       position: relative;
     }
     h1::after {
@@ -82,49 +69,30 @@
       background: linear-gradient(90deg, transparent, #e94560, transparent);
     }
     .points-display {
-      background: rgba(233, 69, 96, 0.2);
+      background: rgba(233,69,96,0.2);
       padding: 15px;
       border-radius: 15px;
       margin-bottom: 30px;
       text-align: center;
-      border: 1px solid rgba(233, 69, 96, 0.5);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(233,69,96,0.5);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       position: relative;
       overflow: hidden;
     }
-    .points-display::before {
-      content: "";
-      position: absolute;
-      top: -10px;
-      left: -10px;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(233, 69, 96, 0.5);
-      filter: blur(15px);
-    }
+    .points-display::before,
     .points-display::after {
       content: "";
       position: absolute;
-      bottom: -10px;
-      right: -10px;
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: rgba(233, 69, 96, 0.5);
+      background: rgba(233,69,96,0.5);
       filter: blur(15px);
     }
-    .points-value {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #fff;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    }
-    .points-label {
-      font-size: 1.2rem;
-      color: #e94560;
-      margin-top: 5px;
-    }
+    .points-display::before { top: -10px; left: -10px; }
+    .points-display::after { bottom: -10px; right: -10px; }
+    .points-value { font-size: 2rem; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+    .points-label { font-size: 1.2rem; color: #e94560; margin-top: 5px; }
     .buttons {
       display: flex;
       justify-content: space-between;
@@ -138,146 +106,65 @@
       padding: 15px;
       border-radius: 15px;
       border: none;
-      background: linear-gradient(135deg, #0f3460 0%, #e94560 100%);
+      background: linear-gradient(135deg, #0f3460, #e94560);
       color: white;
       font-size: 1.1rem;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 10px;
     }
-    .btn:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-    }
-    .btn:active {
-      transform: translateY(0);
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    }
-    .gift-btn {
-      background: linear-gradient(135deg, #16213e 0%, #e94560 100%);
-    }
-    .shop-btn {
-      background: linear-gradient(135deg, #0f3460 0%, #533483 100%);
-    }
-    .purchases-btn {
-      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
-    }
-    .dev-btn {
-      background: linear-gradient(135deg, #0f3460 0%, #e94560 50%, #533483 100%);
-    }
-    .content-area {
-      background: rgba(15, 52, 96, 0.5);
-      backdrop-filter: blur(5px);
-      border-radius: 15px;
-      padding: 20px;
-      min-height: 300px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-    }
-    .content-title {
-      color: #e94560;
-      margin-bottom: 20px;
-      position: relative;
-      display: inline-block;
-    }
-    .content-title::after {
-      content: "";
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, #e94560, transparent);
-    }
-    /* إخفاء المحتويات */
-    .gift-content,
-    .shop-content,
-    .purchases-content,
-    .dev-content {
-      display: none;
-    }
-    /* عرض المحتوى النشط */
-    .active-content {
-      display: block;
-      animation: fadeIn 0.5s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .gift-timer {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 1.2rem;
-    }
-    .gift-btn-container {
-      text-align: center;
-    }
+    .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+    .active-content { display: block; animation: fadeIn 0.5s ease; }
+    .content-section { display: none; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .gift-timer { text-align: center; margin-bottom: 20px; font-size: 1.2rem; }
+    .gift-btn-container { text-align: center; }
     .collect-gift-btn {
       padding: 12px 25px;
       border-radius: 30px;
       border: none;
-      background: linear-gradient(135deg, #e94560 0%, #533483 100%);
+      background: linear-gradient(135deg, #e94560, #533483);
       color: white;
       font-size: 1.1rem;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
-    .collect-gift-btn:hover {
-      transform: scale(1.05);
-    }
-    .collect-gift-btn:active {
-      transform: scale(0.95);
-    }
+    .collect-gift-btn:hover { transform: scale(1.05); }
+    /* المتجر */
     .shop-items {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
       gap: 20px;
     }
     .shop-item {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.1);
       border-radius: 15px;
       padding: 15px;
       text-align: center;
       transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255,255,255,0.1);
     }
     .shop-item:hover {
       transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      background: rgba(255,255,255,0.15);
     }
-    .item-name {
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #fff;
-    }
-    .item-description {
-      font-size: 0.9rem;
-      margin-bottom: 15px;
-      color: rgba(255, 255, 255, 0.8);
-    }
-    .item-price {
-      font-weight: bold;
-      color: #e94560;
-      margin-bottom: 15px;
-    }
+    .item-name { font-weight: bold; margin-bottom: 10px; color: #fff; }
+    .item-description { font-size: 0.9rem; margin-bottom: 15px; color: rgba(255,255,255,0.8); }
+    .item-price { font-weight: bold; color: #e94560; margin-bottom: 15px; }
     .buy-btn {
       padding: 8px 15px;
       border-radius: 20px;
       border: none;
-      background: linear-gradient(135deg, #e94560 0%, #533483 100%);
+      background: linear-gradient(135deg, #e94560, #533483);
       color: white;
       font-size: 0.9rem;
       font-weight: bold;
@@ -285,385 +172,531 @@
       transition: all 0.3s ease;
       width: 100%;
     }
-    .buy-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-    .purchases-list {
-      list-style: none;
-    }
-    .purchase-item {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .purchase-content {
-      flex-grow: 1;
-    }
-    .purchase-name {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    .purchase-desc {
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.8);
-    }
-    .no-purchases {
-      text-align: center;
-      color: rgba(255, 255, 255, 0.7);
-      font-style: italic;
-      margin-top: 50px;
-    }
+    .buy-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    /* المشتريات */
+    .purchases-list { list-style: none; }
+    .purchase-section { margin-bottom: 20px; }
+    .purchase-section h3 { margin-bottom: 10px; color: #e94560; }
+    .purchase-item { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; margin-bottom: 5px; border: 1px solid rgba(255,255,255,0.1); }
+    .no-purchases { text-align: center; color: rgba(255,255,255,0.7); font-style: italic; margin-top: 50px; }
+    /* الإشعارات */
     .notification {
       position: fixed;
       top: 20px;
       right: 20px;
-      background: rgba(15, 52, 96, 0.9);
+      background: rgba(15,52,96,0.9);
       color: white;
       padding: 15px 20px;
       border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
       transform: translateX(150%);
       transition: transform 0.5s ease;
       z-index: 1000;
     }
-    .notification.show {
-      transform: translateX(0);
-    }
-    
-    /* أنماط صفحة المطور */
-    .dev-login {
-      width: 100%;
-      max-width: 400px;
-      margin: 0 auto;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    .form-label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-    .form-input {
-      width: 100%;
-      padding: 10px 15px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      font-size: 1rem;
-    }
-    .form-input:focus {
-      outline: none;
-      border-color: #e94560;
-      box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
-    }
-    .submit-btn {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      background: linear-gradient(135deg, #e94560 0%, #533483 100%);
-      color: white;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .submit-btn:hover {
-      transform: scale(1.02);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-    
-    /* أنماط واجهة المطور */
-    .dev-panel {
-      display: none;
-    }
-    .dev-buttons {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 30px;
-    }
-    .panel-btn {
-      flex: 1;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      background: linear-gradient(135deg, #0f3460 0%, #533483 100%);
-      color: white;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .panel-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-    
-    /* أنماط أيقونة تسجيل الدخول */
-    .user-icon {
+    .notification.show { transform: translateX(0); }
+    /* أيقونة المستخدم وتسجيل الدخول */
+    #user-icon {
       position: fixed;
       top: 20px;
       left: 20px;
-      width: 50px;
-      height: 50px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #e94560 0%, #533483 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 1.5rem;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M4 21v-2a4 4 0 0 1 3-3.87'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E") no-repeat center;
+      background-size: cover;
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-      z-index: 100;
+      transition: transform 0.3s ease;
+      z-index: 1100;
     }
-    .user-icon:hover {
-      transform: scale(1.1) rotate(5deg);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    }
-    .user-icon i {
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-    
-    /* أنماط مربع تسجيل الدخول */
-    .auth-modal {
+    #user-icon:hover { transform: scale(1.2); }
+    /* نموذج تسجيل الدخول/التسجيل */
+    #user-modal {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(5px);
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      z-index: 1200;
     }
-    .auth-modal.show {
-      display: flex;
-      opacity: 1;
-    }
-    .auth-container {
+    #user-modal .modal-content {
+      background: #fff;
+      color: #000;
+      padding: 20px;
+      border-radius: 10px;
       width: 90%;
       max-width: 400px;
-      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(233, 69, 96, 0.3);
-      position: relative;
-      overflow: hidden;
-    }
-    .auth-container::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(233, 69, 96, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
-      z-index: -1;
-    }
-    .auth-tabs {
-      display: flex;
-      margin-bottom: 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .auth-tab {
-      flex: 1;
-      padding: 10px;
       text-align: center;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s ease;
     }
-    .auth-tab.active {
-      color: #e94560;
-      border-bottom: 2px solid #e94560;
+    #user-modal input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
-    .auth-content .form-group:last-child {
-      margin-bottom: 0;
-    }
-    .register-form {
-      display: none;
-    }
-    .close-auth {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .close-auth:hover {
-      color: #e94560;
-      transform: rotate(90deg);
-    }
-    .user-info {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
-      color: white;
+    #user-modal .modal-btn {
       padding: 10px 20px;
-      border-radius: 30px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      border: none;
+      border-radius: 5px;
+      background: #e94560;
+      color: #fff;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    /* نموذج مطور */
+    #dev-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
       display: none;
       align-items: center;
-      gap: 10px;
-      z-index: 100;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      justify-content: center;
+      z-index: 1200;
     }
-    .user-info:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    }
-    .user-menu {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      width: 100%;
-      background: #16213e;
+    #dev-modal .modal-content {
+      background: #fff;
+      color: #000;
+      padding: 20px;
       border-radius: 10px;
-      padding: 10px;
-      margin-top: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      display: none;
-    }
-    .user-menu-item {
-      padding: 8px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .user-menu-item:hover {
-      background: #0f3460;
-    }
-    .random-item-preview {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
-      padding: 15px;
-      margin-top: 20px;
+      width: 90%;
+      max-width: 400px;
       text-align: center;
-      border: 1px solid rgba(233, 69, 96, 0.3);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      display: none;
     }
-    .random-item-name {
-      font-weight: bold;
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-      color: #e94560;
+    #dev-modal input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
-    .random-item-desc {
-      margin-bottom: 15px;
-      color: rgba(255, 255, 255, 0.9);
+    #dev-modal .modal-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background: #0f3460;
+      color: #fff;
+      cursor: pointer;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <!-- أيقونة المستخدم -->
-  <div class="user-icon" id="user-icon">
-    <i class="fas fa-user"></i>
-  </div>
+  <!-- أيقونة المستخدم للتسجيل/الدخول -->
+  <div id="user-icon"></div>
   
-  <!-- معلومات المستخدم (تظهر بعد تسجيل الدخول) -->
-  <div class="user-info" id="user-info">
-    <i class="fas fa-user-circle"></i>
-    <span id="username-display">المستخدم</span>
-    <div class="user-menu" id="user-menu">
-      <div class="user-menu-item" id="logout-btn">تسجيل الخروج</div>
+  <!-- نموذج المستخدم (تسجيل دخول وإنشاء حساب) -->
+  <div id="user-modal">
+    <div class="modal-content" id="user-modal-content">
+      <h2 id="user-modal-title">تسجيل الدخول</h2>
+      <input type="email" id="user-email" placeholder="البريد الإلكتروني">
+      <input type="password" id="user-password" placeholder="كلمة المرور">
+      <input type="text" id="user-name" placeholder="الاسم" style="display:none;">
+      <button class="modal-btn" id="user-submit-btn">دخول</button>
+      <p id="user-toggle-text" style="cursor:pointer; color:#e94560; margin-top:10px;">ليس لديك حساب؟ انشئ حساب</p>
     </div>
   </div>
   
-  <!-- مربع تسجيل الدخول -->
-  <div class="auth-modal" id="auth-modal">
-    <div class="auth-container">
-      <button class="close-auth" id="close-auth">×</button>
-      <div class="auth-tabs">
-        <div class="auth-tab active" id="login-tab">تسجيل الدخول</div>
-        <div class="auth-tab" id="register-tab">إنشاء حساب</div>
-      </div>
-      <div class="auth-content">
-        <form class="login-form" id="login-form">
-          <div class="form-group">
-            <label class="form-label">البريد الإلكتروني</label>
-            <input type="email" class="form-input" id="login-email" placeholder="أدخل بريدك الإلكتروني" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">كلمة المرور</label>
-            <input type="password" class="form-input" id="login-password" placeholder="أدخل كلمة المرور" required>
-          </div>
-          <button type="submit" class="submit-btn">تسجيل الدخول</button>
-        </form>
-        <form class="register-form" id="register-form">
-          <div class="form-group">
-            <label class="form-label">الاسم</label>
-            <input type="text" class="form-input" id="register-name" placeholder="أدخل اسمك" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">البريد الإلكتروني</label>
-            <input type="email" class="form-input" id="register-email" placeholder="أدخل بريدك الإلكتروني" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">كلمة المرور</label>
-            <input type="password" class="form-input" id="register-password" placeholder="أدخل كلمة المرور" required>
-          </div>
-          <button type="submit" class="submit-btn">إنشاء حساب</button>
-        </form>
-      </div>
+  <!-- نموذج المطور -->
+  <div id="dev-modal">
+    <div class="modal-content" id="dev-modal-content">
+      <h2>تسجيل المطور</h2>
+      <input type="email" id="dev-email" placeholder="البريد الإلكتروني للمطور">
+      <input type="password" id="dev-password" placeholder="رمز المطور">
+      <button class="modal-btn" id="dev-login-btn">دخول المطور</button>
     </div>
   </div>
   
   <div class="container">
     <h1>متجر النقاط الفخم</h1>
     <div class="points-display">
-      <div class="points-value">
-        <span id="points-counter">0</span>
-      </div>
+      <div class="points-value"><span id="points-counter">0</span></div>
       <div class="points-label">النقاط</div>
     </div>
     <div class="buttons">
       <button class="btn gift-btn" id="gift-btn">الهدية اليومية</button>
       <button class="btn shop-btn" id="shop-btn">المتجر</button>
       <button class="btn purchases-btn" id="purchases-btn">مشترياتي</button>
-      <button class="btn dev-btn" id="dev-btn">المطور</button>
+      <button class="btn" id="dev-btn">أكتب المطور</button>
     </div>
     <div class="content-area">
-      <!-- محتوى الهدية اليومية -->
-      <div class="gift-content active-content" id="gift-content">
+      <!-- قسم الهدية اليومية -->
+      <div class="gift-content content-section active-content" id="gift-content">
         <h2 class="content-title">الهدية اليومية</h2>
         <div class="gift-timer" id="gift-timer">احصل على هديتك اليومية!</div>
         <div class="gift-btn-container">
           <button class="collect-gift-btn" id="collect-gift-btn">احصل على 5 نقاط</button>
         </div>
       </div>
-      
-      <!-- محتوى المتجر -->
-      <div class="shop-content" id="shop-content">
+      <!-- قسم المتجر -->
+      <div class="shop-content content-section" id="shop-content">
         <h2 class="content-title">المتجر</h2>
-        <div class="shop
+        <div class="shop-items" id="shop-items">
+          <!-- سيتم إضافة السلعتين عبر JavaScript -->
+        </div>
+      </div>
+      <!-- قسم المشتريات -->
+      <div class="purchases-content content-section" id="purchases-content">
+        <h2 class="content-title">مشترياتي</h2>
+        <div id="purchases-list">
+          <p class="no-purchases" id="no-purchases">لا توجد مشتريات حتى الآن</p>
+        </div>
+      </div>
+      <!-- قسم خيارات المطور (ستظهر بعد تسجيل الدخول المطور) -->
+      <div class="dev-content content-section" id="dev-content">
+        <h2 class="content-title">خيارات المطور</h2>
+        <button class="btn" id="add-points-btn">أضف نقاط</button>
+        <button class="btn" id="remove-points-btn">امسح نقاط</button>
+      </div>
+    </div>
+  </div>
+  <div class="notification" id="notification"></div>
+  
+  <script>
+    /********************** بيانات المستخدم والمشتريات **********************/
+    let currentUser = null; // سيتم تخزين بيانات المستخدم المسجل/المسجل دخوله
+    // سنخزن نقاط المستخدم ضمن خاصية points في كائن المستخدم
+    // المشتريات سنخزنها كمجموعة حسب رقم السلعة
+    let purchasedItems = {
+      1: [], // مشتريات السلعة الأولى (عشوائية)
+      2: []  // مشتريات السلعة الثانية (VIP)
+    };
+    
+    /********************** بيانات المتجر **********************/
+    // نحتاج سلعتين فقط
+    const shopItems = [
+      { id: 1, name: 'سلعة عشوائية', description: 'اضغط لشراء عنصر عشوائي من 30 عنصر', price: 5, type: 'random' },
+      { id: 2, name: 'حزمة VIP', description: 'حزمة تمنحك مزايا حصرية', price: 50, type: 'fixed' }
+    ];
+    // إنشاء 30 عنصر عشوائي للسلعة الأولى
+    let randomItems = [];
+    for(let i = 1; i <= 30; i++){
+      randomItems.push(`عنصر ${i}`);
+    }
+    
+    /********************** وظائف التحديث والحفظ **********************/
+    function updatePointsDisplay() {
+      let pts = currentUser ? currentUser.points : 0;
+      document.getElementById("points-counter").innerText = pts;
+    }
+    // تحديث قائمة المشتريات بحيث تُعرض كل سلعة مع عناصرها
+    function updatePurchasesList() {
+      const container = document.getElementById("purchases-list");
+      container.innerHTML = "";
+      let hasPurchases = false;
+      for(let key in purchasedItems) {
+        if(purchasedItems[key].length > 0) {
+          hasPurchases = true;
+          const section = document.createElement("div");
+          section.className = "purchase-section";
+          // عنوان السلعة
+          const prod = shopItems.find(i => i.id == key);
+          const header = document.createElement("h3");
+          header.innerText = prod ? prod.name : "سلعة";
+          section.appendChild(header);
+          // قائمة العناصر
+          purchasedItems[key].forEach(item => {
+            const li = document.createElement("div");
+            li.className = "purchase-item";
+            li.innerText = item;
+            section.appendChild(li);
+          });
+          container.appendChild(section);
+        }
+      }
+      if(!hasPurchases) {
+        container.innerHTML = '<p class="no-purchases" id="no-purchases">لا توجد مشتريات حتى الآن</p>';
+      }
+    }
+    // حفظ بيانات المستخدم والمشتريات في localStorage (للمحاكاة)
+    function saveAppData() {
+      if(currentUser) {
+        // تحديث بيانات المستخدم في قائمة المستخدمين
+        let users = JSON.parse(localStorage.getItem("users") || "[]");
+        users = users.map(u => u.email === currentUser.email ? currentUser : u);
+        localStorage.setItem("users", JSON.stringify(users));
+      }
+      localStorage.setItem("purchasedItems", JSON.stringify(purchasedItems));
+    }
+    
+    /********************** وظائف تبديل المحتوى **********************/
+    function switchContent(contentId) {
+      const sections = document.querySelectorAll(".content-section");
+      sections.forEach(sec => sec.classList.remove("active-content"));
+      document.getElementById(contentId).classList.add("active-content");
+    }
+    
+    /********************** وظائف المتجر **********************/
+    function populateShopItems() {
+      const container = document.getElementById("shop-items");
+      container.innerHTML = "";
+      shopItems.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "shop-item";
+        div.innerHTML = `
+          <div class="item-name">${item.name}</div>
+          <div class="item-description">${item.description}</div>
+          <div class="item-price">السعر: ${item.price} نقاط</div>
+          <button class="buy-btn" data-id="${item.id}">شراء</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+    populateShopItems();
+    
+    // شراء السلعة
+    document.getElementById("shop-items").addEventListener("click", function(e){
+      if(e.target && e.target.classList.contains("buy-btn")){
+        const itemId = parseInt(e.target.getAttribute("data-id"), 10);
+        const item = shopItems.find(i => i.id === itemId);
+        if(item && currentUser) {
+          if(currentUser.points >= item.price) {
+            currentUser.points -= item.price;
+            // إذا كانت السلعة من النوع العشوائي
+            if(item.type === "random") {
+              if(randomItems.length > 0) {
+                const randIndex = Math.floor(Math.random() * randomItems.length);
+                const selected = randomItems[randIndex];
+                purchasedItems[item.id].push(selected);
+                // حذف العنصر الذي تم شراؤه من القائمة
+                randomItems.splice(randIndex, 1);
+                alert(`تم شراء: ${selected}`);
+              } else {
+                alert("لا توجد عناصر متبقية لهذه السلعة");
+                return;
+              }
+            } else {
+              // للسلعة الثابتة
+              purchasedItems[item.id].push(item.name);
+              alert(`تم شراء: ${item.name}`);
+            }
+            updatePointsDisplay();
+            updatePurchasesList();
+            saveAppData();
+          } else {
+            alert("ليس لديك نقاط كافية!");
+          }
+        } else {
+          alert("يجب تسجيل الدخول أولاً");
+          openUserModal();
+        }
+      }
+    });
+    
+    /********************** وظيفة الهدية اليومية **********************/
+    const GIFT_COOLDOWN = 24 * 60 * 60 * 1000;
+    let lastGiftCollected = parseInt(localStorage.getItem("lastGiftCollected") || "0", 10);
+    document.getElementById("collect-gift-btn").addEventListener("click", function(){
+      if(!currentUser) {
+        alert("يجب تسجيل الدخول أولاً");
+        openUserModal();
+        return;
+      }
+      const now = new Date().getTime();
+      if(now - lastGiftCollected >= GIFT_COOLDOWN) {
+        currentUser.points += 5;
+        lastGiftCollected = now;
+        updatePointsDisplay();
+        showNotification("تم إضافة 5 نقاط إلى حسابك");
+        saveAppData();
+      } else {
+        showNotification("انتظر حتى انتهاء المؤقت للحصول على الهدية");
+      }
+    });
+    function startGiftTimer() {
+      setInterval(() => {
+        const now = new Date().getTime();
+        const remaining = GIFT_COOLDOWN - (now - lastGiftCollected);
+        const timerEl = document.getElementById("gift-timer");
+        if(remaining > 0) {
+          const hours = Math.floor(remaining / (1000 * 60 * 60));
+          const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+          timerEl.innerText = `يمكنك الحصول على الهدية بعد: ${hours} ساعة ${minutes} دقيقة ${seconds} ثانية`;
+        } else {
+          timerEl.innerText = "احصل على هديتك اليومية!";
+        }
+      }, 1000);
+    }
+    startGiftTimer();
+    
+    /********************** زر تبديل المحتوى **********************/
+    document.getElementById("gift-btn").addEventListener("click", () => switchContent("gift-content"));
+    document.getElementById("shop-btn").addEventListener("click", () => switchContent("shop-content"));
+    document.getElementById("purchases-btn").addEventListener("click", () => {
+      updatePurchasesList();
+      switchContent("purchases-content");
+    });
+    document.getElementById("dev-btn").addEventListener("click", openDevModal);
+    
+    /********************** وظيفة الإشعارات **********************/
+    function showNotification(message) {
+      const notif = document.getElementById("notification");
+      notif.innerText = message;
+      notif.classList.add("show");
+      setTimeout(() => {
+        notif.classList.remove("show");
+      }, 3000);
+    }
+    
+    /********************** نظام المستخدم (التسجيل والدخول) **********************/
+    // فتح نموذج المستخدم
+    function openUserModal() {
+      document.getElementById("user-modal").style.display = "flex";
+    }
+    // إغلاق نموذج المستخدم
+    function closeUserModal() {
+      document.getElementById("user-modal").style.display = "none";
+    }
+    // تبديل بين تسجيل الدخول والتسجيل
+    let isLoginMode = true;
+    document.getElementById("user-toggle-text").addEventListener("click", () => {
+      isLoginMode = !isLoginMode;
+      if(isLoginMode){
+        document.getElementById("user-modal-title").innerText = "تسجيل الدخول";
+        document.getElementById("user-submit-btn").innerText = "دخول";
+        document.getElementById("user-name").style.display = "none";
+        document.getElementById("user-toggle-text").innerText = "ليس لديك حساب؟ انشئ حساب";
+      } else {
+        document.getElementById("user-modal-title").innerText = "إنشاء حساب";
+        document.getElementById("user-submit-btn").innerText = "إنشاء";
+        document.getElementById("user-name").style.display = "block";
+        document.getElementById("user-toggle-text").innerText = "لديك حساب؟ سجل الدخول";
+      }
+    });
+    // عند الضغط على زر المستخدم (دخول/إنشاء)
+    document.getElementById("user-submit-btn").addEventListener("click", () => {
+      const email = document.getElementById("user-email").value.trim();
+      const password = document.getElementById("user-password").value.trim();
+      const name = document.getElementById("user-name").value.trim();
+      if(isLoginMode){
+        // محاولة تسجيل الدخول
+        let users = JSON.parse(localStorage.getItem("users") || "[]");
+        const user = users.find(u => u.email === email && u.password === password);
+        if(user){
+          currentUser = user;
+          showNotification("تم تسجيل الدخول بنجاح");
+          closeUserModal();
+          updatePointsDisplay();
+          updateUserIcon();
+        } else {
+          alert("بيانات الدخول غير صحيحة");
+        }
+      } else {
+        // إنشاء حساب جديد
+        if(email === "" || password === "" || name === ""){
+          alert("يرجى ملء جميع الحقول");
+          return;
+        }
+        let users = JSON.parse(localStorage.getItem("users") || "[]");
+        if(users.find(u => u.email === email)){
+          alert("هذا البريد مستخدم بالفعل");
+          return;
+        }
+        const newUser = { email, password, name, points: 0 };
+        users.push(newUser);
+        localStorage.setItem("users", JSON.stringify(users));
+        currentUser = newUser;
+        showNotification("تم إنشاء الحساب وتسجيل الدخول");
+        closeUserModal();
+        updatePointsDisplay();
+        updateUserIcon();
+      }
+    });
+    // عند الضغط على أيقونة المستخدم: إذا لم يكن هناك مستخدم، فتح النموذج، وإذا كان موجوداً، عرض قائمة تسجيل الخروج
+    document.getElementById("user-icon").addEventListener("click", () => {
+      if(!currentUser) {
+        openUserModal();
+      } else {
+        if(confirm("هل تريد تسجيل الخروج؟")){
+          currentUser = null;
+          updateUserIcon();
+          updatePointsDisplay();
+        }
+      }
+    });
+    // تحديث عرض أيقونة المستخدم (عرض الاسم بدل الأيقونة)
+    function updateUserIcon() {
+      const icon = document.getElementById("user-icon");
+      if(currentUser){
+        icon.style.background = "none";
+        icon.innerText = currentUser.name;
+        icon.style.padding = "5px 10px";
+        icon.style.backgroundColor = "#e94560";
+        icon.style.borderRadius = "20px";
+      } else {
+        icon.innerText = "";
+        icon.style.background = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M4 21v-2a4 4 0 0 1 3-3.87'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E\") no-repeat center";
+        icon.style.backgroundSize = "cover";
+      }
+    }
+    
+    /********************** نظام المطور **********************/
+    // عند الضغط على زر "أكتب المطور" نفتح نموذج المطور
+    function openDevModal() {
+      document.getElementById("dev-modal").style.display = "flex";
+    }
+    function closeDevModal() {
+      document.getElementById("dev-modal").style.display = "none";
+    }
+    // عند ضغط زر تسجيل دخول المطور
+    document.getElementById("dev-login-btn").addEventListener("click", () => {
+      const email = document.getElementById("dev-email").value.trim();
+      const password = document.getElementById("dev-password").value.trim();
+      // نحدد بيانات المطور مسبقاً (مثلاً)
+      if(email === "developer@site.com" && password === "dev123"){
+        closeDevModal();
+        // عرض قسم المطور
+        switchContent("dev-content");
+      } else {
+        alert("بيانات المطور غير صحيحة!");
+      }
+    });
+    // وظيفة إضافة نقاط (المطور)
+    document.getElementById("add-points-btn").addEventListener("click", () => {
+      const targetName = prompt("أدخل اسم الشخص لإضافة النقاط له:");
+      const amt = parseInt(prompt("أدخل عدد النقاط:"),10);
+      if(!isNaN(amt)) {
+        let users = JSON.parse(localStorage.getItem("users") || "[]");
+        let user = users.find(u => u.name === targetName);
+        if(user) {
+          user.points += amt;
+          if(currentUser && currentUser.email === user.email) {
+            currentUser.points = user.points;
+            updatePointsDisplay();
+          }
+          localStorage.setItem("users", JSON.stringify(users));
+          showNotification(`${amt} نقطة تمت إضافتها لـ ${targetName}`);
+        } else {
+          alert("لم يتم العثور على المستخدم");
+        }
+      }
+    });
+    // وظيفة مسح نقاط (المطور)
+    document.getElementById("remove-points-btn").addEventListener("click", () => {
+      const targetName = prompt("أدخل اسم الشخص لمسح النقاط منه:");
+      const amt = parseInt(prompt("أدخل عدد النقاط:"),10);
+      if(!isNaN(amt)) {
+        let users = JSON.parse(localStorage.getItem("users") || "[]");
+        let user = users.find(u => u.name === targetName);
+        if(user) {
+          user.points = Math.max(0, user.points - amt);
+          if(currentUser && currentUser.email === user.email) {
+            currentUser.points = user.points;
+            updatePointsDisplay();
+          }
+          localStorage.setItem("users", JSON.stringify(users));
+          showNotification(`${amt} نقطة تمت مسحها من ${targetName}`);
+        } else {
+          alert("لم يتم العثور على المستخدم");
+        }
+      }
+    });
+    
+    /********************** تحديث البيانات عند تحميل الصفحة **********************/
+    updatePointsDisplay();
+    updatePurchasesList();
+    updateUserIcon();
+  </script>
+</body>
+  </html>
