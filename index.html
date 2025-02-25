@@ -17,12 +17,9 @@
       animation: gradient 15s ease infinite;
       color: #fff;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-      position: relative;
-      overflow-x: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; padding: 20px;
+      position: relative; overflow-x: hidden;
     }
     @keyframes gradient {
       0% { background-position: 0% 50%; }
@@ -40,8 +37,7 @@
       max-width: 800px; width: 100%;
       background: rgba(255,255,255,0.1);
       backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 30px;
+      border-radius: 20px; padding: 30px;
       margin-top: 20px;
       border: 1px solid rgba(255,255,255,0.18);
       position: relative;
@@ -77,7 +73,8 @@
     }
     .points-display::before { top: -10px; left: -10px; }
     .points-display::after { bottom: -10px; right: -10px; }
-    .points-value { font-size: 2rem; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+    .points-value { font-size: 2rem; font-weight: bold; color: #fff;
+      text-shadow: 0 0 10px rgba(255,255,255,0.5); }
     .points-label { font-size: 1.2rem; color: #e94560; margin-top: 5px; }
     .buttons {
       display: flex; justify-content: space-between;
@@ -105,7 +102,8 @@
     }
     .content-section { display: none; }
     .active-content { display: block; animation: fadeIn 0.5s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); } }
     .gift-timer { text-align: center; margin-bottom: 20px; font-size: 1.2rem; }
     .gift-btn-container { text-align: center; }
     .collect-gift-btn {
@@ -133,7 +131,8 @@
       background: rgba(255,255,255,0.15);
     }
     .item-name { font-weight: bold; margin-bottom: 10px; color: #fff; }
-    .item-description { font-size: 0.9rem; margin-bottom: 15px; color: rgba(255,255,255,0.8); }
+    .item-description { font-size: 0.9rem; margin-bottom: 15px;
+      color: rgba(255,255,255,0.8); }
     .item-price { font-weight: bold; color: #e94560; margin-bottom: 15px; }
     .buy-btn {
       padding: 8px 15px; border-radius: 20px; border: none;
@@ -179,7 +178,8 @@
     #account-modal .modal-content,
     #dev-modal .modal-content {
       background: #fff; color: #000; padding: 20px;
-      border-radius: 10px; width: 90%; max-width: 400px; text-align: center;
+      border-radius: 10px; width: 90%; max-width: 400px;
+      text-align: center;
     }
     #user-modal input, #dev-modal input {
       width: 100%; padding: 10px; margin: 10px 0;
@@ -276,6 +276,9 @@
         <h2 class="content-title">خيارات المطور</h2>
         <button class="btn" id="add-points-btn">أضف نقاط</button>
         <button class="btn" id="remove-points-btn">امسح نقاط</button>
+        <button class="btn" id="make-code-btn">صنع كود</button>
+        <button class="btn" id="add-product-btn">إضافة سلعة</button>
+        <button class="btn" id="import-code-btn">استيراد كود</button>
       </div>
     </div>
   </div>
@@ -286,12 +289,12 @@
     // استرجاع المستخدم الحالي من localStorage إن وجد
     let currentUser = localStorage.getItem("currentUser") ? JSON.parse(localStorage.getItem("currentUser")) : null;
     let points = currentUser ? currentUser.points : 0;
-    // لكل مستخدم نقوم بتخزين مشترياته داخل خاصية purchasedItems، إذا لم تكن موجودة نُهيئها
+    // تأكد من أن لكل مستخدم خاصية المشتريات؛ وإن لم تكن موجودة يتم تهيئتها
     if(currentUser && !currentUser.purchasedItems) {
       currentUser.purchasedItems = { 1: [], 2: [] };
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
     }
-    // استرجاع المشتريات العامة (إذا أردت أن تكون مشتركة بين المستخدمين – أو يمكنك تجاهلها)
+    // بالنسبة للمشتريات نستخدم خاصية المستخدم الحالية
     let purchasedItems = currentUser && currentUser.purchasedItems ? currentUser.purchasedItems : { 1: [], 2: [] };
     const GIFT_COOLDOWN = 24 * 60 * 60 * 1000;
     let lastGiftCollected = parseInt(localStorage.getItem("lastGiftCollected") || "0", 10);
@@ -301,11 +304,18 @@
       { id: 1, name: 'سلعة عشوائية', description: 'شراء عنصر عشوائي من 30 عنصر', price: 5, type: 'random' },
       { id: 2, name: 'حزمة VIP', description: 'حزمة تمنحك مزايا حصرية', price: 50, type: 'fixed' }
     ];
-    // إنشاء 30 عنصر عشوائي للسلعة الأولى
+    // تخزين قائمة randomItems في localStorage لمنع إعادة تعبئتها عند إعادة تحميل الصفحة
     let randomItems = [];
-    for(let i = 1; i <= 30; i++){
-      randomItems.push(`عنصر ${i}`);
+    if(localStorage.getItem("randomItems")) {
+      randomItems = JSON.parse(localStorage.getItem("randomItems"));
+    } else {
+      for(let i = 1; i <= 30; i++){
+        randomItems.push(`عنصر ${i}`);
+      }
+      localStorage.setItem("randomItems", JSON.stringify(randomItems));
     }
+    // قائمة الأكواد (Coupon Codes) التي ينشئها المطور
+    let couponCodes = localStorage.getItem("couponCodes") ? JSON.parse(localStorage.getItem("couponCodes")) : [];
     
     /******************** دوال التحديث والحفظ ********************/
     function updatePointsDisplay() {
@@ -347,16 +357,17 @@
       notif.classList.add("show");
       setTimeout(() => { notif.classList.remove("show"); }, 3000);
     }
-    // حفظ بيانات التطبيق (بما في ذلك المستخدم الحالي)
+    // حفظ بيانات التطبيق بما في ذلك المستخدم الحالي وقائمة randomItems والأكواد
     function saveAppData() {
       localStorage.setItem("lastGiftCollected", lastGiftCollected);
       if(currentUser) {
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
-        // تحديث المستخدم في قائمة المستخدمين
         let users = JSON.parse(localStorage.getItem("users") || "[]");
         users = users.map(u => u.email.toLowerCase() === currentUser.email.toLowerCase() ? currentUser : u);
         localStorage.setItem("users", JSON.stringify(users));
       }
+      localStorage.setItem("randomItems", JSON.stringify(randomItems));
+      localStorage.setItem("couponCodes", JSON.stringify(couponCodes));
     }
     
     /******************** عند تحميل الصفحة ********************/
@@ -390,7 +401,10 @@
     /******************** أزرار تبديل المحتوى ********************/
     document.getElementById("gift-btn").addEventListener("click", () => switchContent("gift-content"));
     document.getElementById("shop-btn").addEventListener("click", () => switchContent("shop-content"));
-    document.getElementById("purchases-btn").addEventListener("click", () => { updatePurchasesList(); switchContent("purchases-content"); });
+    document.getElementById("purchases-btn").addEventListener("click", () => {
+      updatePurchasesList();
+      switchContent("purchases-content");
+    });
     document.getElementById("dev-btn").addEventListener("click", openDevModal);
     
     /******************** الهدية اليومية ********************/
@@ -499,7 +513,6 @@
         if(user){
           currentUser = user;
           points = user.points;
-          // إذا لم يكن للمستخدم خاصية المشتريات، نهيئها
           if(!currentUser.purchasedItems) { currentUser.purchasedItems = { 1: [], 2: [] }; }
           showNotification("تم تسجيل الدخول بنجاح");
           closeUserModal();
@@ -509,7 +522,6 @@
           alert("بيانات الدخول غير صحيحة");
         }
       } else {
-        // عند إنشاء حساب يجب التحقق من أن البريد ينتهي بـ "@gmail.com"
         if(!email.endsWith("@gmail.com")){
           alert("يجب أن يكون البريد الإلكتروني من نوع @gmail.com");
           return;
@@ -534,7 +546,6 @@
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
       }
     });
-    // عند الضغط على أيقونة المستخدم: إذا لم يكن هناك مستخدم، فتح نموذج المستخدم؛ وإذا كان موجوداً، فتح نموذج حساب المستخدم
     document.getElementById("user-icon").addEventListener("click", () => {
       if(!currentUser) {
         openUserModal();
@@ -590,7 +601,7 @@
         alert("بيانات المطور غير صحيحة!");
       }
     });
-    // الآن البحث في نظام المطور باستخدام البريد الإلكتروني (بالمقارنة بغض النظر عن الحالة)
+    // زر "أضف نقاط" يبحث عن المستخدم باستخدام بريده الإلكتروني
     document.getElementById("add-points-btn").addEventListener("click", () => {
       const targetEmail = prompt("أدخل البريد الإلكتروني للشخص لإضافة النقاط له:").toLowerCase();
       const amt = parseInt(prompt("أدخل عدد النقاط:"), 10);
@@ -599,7 +610,6 @@
         let user = users.find(u => u.email.toLowerCase() === targetEmail);
         if(user) {
           user.points += amt;
-          // تحديث المستخدم الحالي إذا كان هو نفسه
           if(currentUser && currentUser.email.toLowerCase() === user.email.toLowerCase()) {
             currentUser.points = user.points;
             points = user.points;
@@ -613,6 +623,7 @@
         }
       }
     });
+    // زر "امسح نقاط" يبحث عن المستخدم باستخدام بريده الإلكتروني
     document.getElementById("remove-points-btn").addEventListener("click", () => {
       const targetEmail = prompt("أدخل البريد الإلكتروني للشخص لمسح النقاط منه:").toLowerCase();
       const amt = parseInt(prompt("أدخل عدد النقاط:"), 10);
@@ -621,7 +632,6 @@
         let user = users.find(u => u.email.toLowerCase() === targetEmail);
         if(user) {
           user.points = Math.max(0, user.points - amt);
-          // تحديث المستخدم الحالي إذا كان هو نفسه
           if(currentUser && currentUser.email.toLowerCase() === user.email.toLowerCase()) {
             currentUser.points = user.points;
             points = user.points;
@@ -635,6 +645,53 @@
         }
       }
     });
+    // زر "صنع كود": ينشئ كوبون نقاط
+    document.getElementById("make-code-btn").addEventListener("click", () => {
+      let code = prompt("أدخل الكود المطلوب:");
+      if(code) {
+        let pts = parseInt(prompt("أدخل عدد النقاط التي يحصل عليها المستخدم عند استخدام هذا الكود:"), 10);
+        if(!isNaN(pts) && pts > 0) {
+          couponCodes.push({ code: code, points: pts });
+          localStorage.setItem("couponCodes", JSON.stringify(couponCodes));
+          showNotification("تم إنشاء الكود بنجاح");
+        } else {
+          alert("يرجى إدخال عدد نقاط صحيح.");
+        }
+      }
+    });
+    // زر "إضافة سلعة": يضيف محتوى سلعة إلى قائمة randomItems
+    document.getElementById("add-product-btn").addEventListener("click", () => {
+      let content = prompt("أرسل لي محتوى السلعة:");
+      if(content) {
+        randomItems.push(content);
+        localStorage.setItem("randomItems", JSON.stringify(randomItems));
+        showNotification("تم إضافة السلعة إلى المتجر");
+      }
+    });
+    // زر "استيراد كود": يستخدم الكوبون لإضافة نقاط للمستخدم الحالي
+    document.getElementById("import-code-btn").addEventListener("click", () => {
+      let inputCode = prompt("أدخل الكود:");
+      if(inputCode) {
+        let index = couponCodes.findIndex(c => c.code === inputCode);
+        if(index !== -1) {
+          let coupon = couponCodes[index];
+          if(!currentUser) {
+            alert("يجب تسجيل الدخول لاستخدام الكود");
+            return;
+          }
+          currentUser.points += coupon.points;
+          points = currentUser.points;
+          // إزالة الكوبون بعد استخدامه
+          couponCodes.splice(index, 1);
+          localStorage.setItem("couponCodes", JSON.stringify(couponCodes));
+          updatePointsDisplay();
+          saveAppData();
+          showNotification(`تم استيراد الكود وإضافة ${coupon.points} نقطة`);
+        } else {
+          alert("الكود غير موجود أو تم استخدامه بالفعل");
+        }
+      }
+    });
     
     /******************** تحديث بيانات عند تحميل الصفحة ********************/
     updatePointsDisplay();
@@ -642,4 +699,4 @@
     updateUserIcon();
   </script>
 </body>
-  </html>
+</html>
