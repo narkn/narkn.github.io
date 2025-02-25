@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>متجر النقاط الفخم</title>
   <style>
-    /* الخطوط والتهيئة الأساسية */
+    /* التنسيقات الأساسية والخطوط */
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
     * {
       margin: 0;
@@ -120,8 +120,18 @@
       gap: 10px;
     }
     .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
-    .active-content { display: block; animation: fadeIn 0.5s ease; }
+    .content-area {
+      background: rgba(15,52,96,0.5);
+      backdrop-filter: blur(5px);
+      border-radius: 15px;
+      padding: 20px;
+      min-height: 300px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+    }
     .content-section { display: none; }
+    .active-content { display: block; animation: fadeIn 0.5s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     .gift-timer { text-align: center; margin-bottom: 20px; font-size: 1.2rem; }
     .gift-btn-container { text-align: center; }
@@ -194,7 +204,7 @@
       z-index: 1000;
     }
     .notification.show { transform: translateX(0); }
-    /* أيقونة المستخدم وتسجيل الدخول */
+    /* أيقونة المستخدم ونموذج التسجيل/الدخول */
     #user-icon {
       position: fixed;
       top: 20px;
@@ -209,8 +219,8 @@
       z-index: 1100;
     }
     #user-icon:hover { transform: scale(1.2); }
-    /* نموذج تسجيل الدخول/التسجيل */
-    #user-modal {
+    /* نموذج المستخدم */
+    #user-modal, #dev-modal {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.7);
@@ -219,41 +229,7 @@
       justify-content: center;
       z-index: 1200;
     }
-    #user-modal .modal-content {
-      background: #fff;
-      color: #000;
-      padding: 20px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-    }
-    #user-modal input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    #user-modal .modal-btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      background: #e94560;
-      color: #fff;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    /* نموذج مطور */
-    #dev-modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1200;
-    }
+    #user-modal .modal-content,
     #dev-modal .modal-content {
       background: #fff;
       color: #000;
@@ -263,6 +239,7 @@
       max-width: 400px;
       text-align: center;
     }
+    #user-modal input,
     #dev-modal input {
       width: 100%;
       padding: 10px;
@@ -270,11 +247,12 @@
       border: 1px solid #ccc;
       border-radius: 5px;
     }
+    #user-modal .modal-btn,
     #dev-modal .modal-btn {
       padding: 10px 20px;
       border: none;
       border-radius: 5px;
-      background: #0f3460;
+      background: #e94560;
       color: #fff;
       cursor: pointer;
       margin-top: 10px;
@@ -282,7 +260,7 @@
   </style>
 </head>
 <body>
-  <!-- أيقونة المستخدم للتسجيل/الدخول -->
+  <!-- أيقونة المستخدم -->
   <div id="user-icon"></div>
   
   <!-- نموذج المستخدم (تسجيل دخول وإنشاء حساب) -->
@@ -314,14 +292,14 @@
       <div class="points-label">النقاط</div>
     </div>
     <div class="buttons">
-      <button class="btn gift-btn" id="gift-btn">الهدية اليومية</button>
-      <button class="btn shop-btn" id="shop-btn">المتجر</button>
-      <button class="btn purchases-btn" id="purchases-btn">مشترياتي</button>
+      <button class="btn" id="gift-btn">الهدية اليومية</button>
+      <button class="btn" id="shop-btn">المتجر</button>
+      <button class="btn" id="purchases-btn">مشترياتي</button>
       <button class="btn" id="dev-btn">أكتب المطور</button>
     </div>
     <div class="content-area">
       <!-- قسم الهدية اليومية -->
-      <div class="gift-content content-section active-content" id="gift-content">
+      <div id="gift-content" class="content-section active-content">
         <h2 class="content-title">الهدية اليومية</h2>
         <div class="gift-timer" id="gift-timer">احصل على هديتك اليومية!</div>
         <div class="gift-btn-container">
@@ -329,21 +307,21 @@
         </div>
       </div>
       <!-- قسم المتجر -->
-      <div class="shop-content content-section" id="shop-content">
+      <div id="shop-content" class="content-section">
         <h2 class="content-title">المتجر</h2>
         <div class="shop-items" id="shop-items">
           <!-- سيتم إضافة السلعتين عبر JavaScript -->
         </div>
       </div>
       <!-- قسم المشتريات -->
-      <div class="purchases-content content-section" id="purchases-content">
+      <div id="purchases-content" class="content-section">
         <h2 class="content-title">مشترياتي</h2>
         <div id="purchases-list">
           <p class="no-purchases" id="no-purchases">لا توجد مشتريات حتى الآن</p>
         </div>
       </div>
-      <!-- قسم خيارات المطور (ستظهر بعد تسجيل الدخول المطور) -->
-      <div class="dev-content content-section" id="dev-content">
+      <!-- قسم خيارات المطور -->
+      <div id="dev-content" class="content-section">
         <h2 class="content-title">خيارات المطور</h2>
         <button class="btn" id="add-points-btn">أضف نقاط</button>
         <button class="btn" id="remove-points-btn">امسح نقاط</button>
@@ -353,19 +331,18 @@
   <div class="notification" id="notification"></div>
   
   <script>
-    /********************** بيانات المستخدم والمشتريات **********************/
-    let currentUser = null; // سيتم تخزين بيانات المستخدم المسجل/المسجل دخوله
-    // سنخزن نقاط المستخدم ضمن خاصية points في كائن المستخدم
-    // المشتريات سنخزنها كمجموعة حسب رقم السلعة
-    let purchasedItems = {
-      1: [], // مشتريات السلعة الأولى (عشوائية)
-      2: []  // مشتريات السلعة الثانية (VIP)
-    };
+    /******************** المتغيرات والبيانات ********************/
+    let currentUser = null; // بيانات المستخدم الحالي
+    let points = 0;
+    // المشتريات تُخزن لكل سلعة (سلعة 1: عناصر عشوائية، سلعة 2: ثابتة)
+    let purchasedItems = { 1: [], 2: [] };
+    // آخر وقت تم الحصول فيه على الهدية
+    const GIFT_COOLDOWN = 24 * 60 * 60 * 1000;
+    let lastGiftCollected = parseInt(localStorage.getItem("lastGiftCollected") || "0", 10);
     
-    /********************** بيانات المتجر **********************/
-    // نحتاج سلعتين فقط
+    // تعريف السلعتين في المتجر
     const shopItems = [
-      { id: 1, name: 'سلعة عشوائية', description: 'اضغط لشراء عنصر عشوائي من 30 عنصر', price: 5, type: 'random' },
+      { id: 1, name: 'سلعة عشوائية', description: 'شراء عنصر عشوائي من 30 عنصر', price: 5, type: 'random' },
       { id: 2, name: 'حزمة VIP', description: 'حزمة تمنحك مزايا حصرية', price: 50, type: 'fixed' }
     ];
     // إنشاء 30 عنصر عشوائي للسلعة الأولى
@@ -374,12 +351,10 @@
       randomItems.push(`عنصر ${i}`);
     }
     
-    /********************** وظائف التحديث والحفظ **********************/
+    /******************** دوال التحديث والحفظ ********************/
     function updatePointsDisplay() {
-      let pts = currentUser ? currentUser.points : 0;
-      document.getElementById("points-counter").innerText = pts;
+      document.getElementById("points-counter").innerText = points;
     }
-    // تحديث قائمة المشتريات بحيث تُعرض كل سلعة مع عناصرها
     function updatePurchasesList() {
       const container = document.getElementById("purchases-list");
       container.innerHTML = "";
@@ -389,17 +364,15 @@
           hasPurchases = true;
           const section = document.createElement("div");
           section.className = "purchase-section";
-          // عنوان السلعة
           const prod = shopItems.find(i => i.id == key);
           const header = document.createElement("h3");
           header.innerText = prod ? prod.name : "سلعة";
           section.appendChild(header);
-          // قائمة العناصر
           purchasedItems[key].forEach(item => {
-            const li = document.createElement("div");
-            li.className = "purchase-item";
-            li.innerText = item;
-            section.appendChild(li);
+            const div = document.createElement("div");
+            div.className = "purchase-item";
+            div.innerText = item;
+            section.appendChild(div);
           });
           container.appendChild(section);
         }
@@ -408,25 +381,32 @@
         container.innerHTML = '<p class="no-purchases" id="no-purchases">لا توجد مشتريات حتى الآن</p>';
       }
     }
-    // حفظ بيانات المستخدم والمشتريات في localStorage (للمحاكاة)
+    function showNotification(message) {
+      const notif = document.getElementById("notification");
+      notif.innerText = message;
+      notif.classList.add("show");
+      setTimeout(() => {
+        notif.classList.remove("show");
+      }, 3000);
+    }
+    // حفظ بيانات التطبيق في localStorage (للمحاكاة)
     function saveAppData() {
       if(currentUser) {
-        // تحديث بيانات المستخدم في قائمة المستخدمين
         let users = JSON.parse(localStorage.getItem("users") || "[]");
         users = users.map(u => u.email === currentUser.email ? currentUser : u);
         localStorage.setItem("users", JSON.stringify(users));
       }
+      localStorage.setItem("lastGiftCollected", lastGiftCollected);
       localStorage.setItem("purchasedItems", JSON.stringify(purchasedItems));
     }
     
-    /********************** وظائف تبديل المحتوى **********************/
-    function switchContent(contentId) {
-      const sections = document.querySelectorAll(".content-section");
-      sections.forEach(sec => sec.classList.remove("active-content"));
-      document.getElementById(contentId).classList.add("active-content");
+    /******************** تبديل المحتوى ********************/
+    function switchContent(sectionId) {
+      document.querySelectorAll(".content-section").forEach(sec => sec.classList.remove("active-content"));
+      document.getElementById(sectionId).classList.add("active-content");
     }
     
-    /********************** وظائف المتجر **********************/
+    /******************** المتجر ********************/
     function populateShopItems() {
       const container = document.getElementById("shop-items");
       container.innerHTML = "";
@@ -444,49 +424,17 @@
     }
     populateShopItems();
     
-    // شراء السلعة
-    document.getElementById("shop-items").addEventListener("click", function(e){
-      if(e.target && e.target.classList.contains("buy-btn")){
-        const itemId = parseInt(e.target.getAttribute("data-id"), 10);
-        const item = shopItems.find(i => i.id === itemId);
-        if(item && currentUser) {
-          if(currentUser.points >= item.price) {
-            currentUser.points -= item.price;
-            // إذا كانت السلعة من النوع العشوائي
-            if(item.type === "random") {
-              if(randomItems.length > 0) {
-                const randIndex = Math.floor(Math.random() * randomItems.length);
-                const selected = randomItems[randIndex];
-                purchasedItems[item.id].push(selected);
-                // حذف العنصر الذي تم شراؤه من القائمة
-                randomItems.splice(randIndex, 1);
-                alert(`تم شراء: ${selected}`);
-              } else {
-                alert("لا توجد عناصر متبقية لهذه السلعة");
-                return;
-              }
-            } else {
-              // للسلعة الثابتة
-              purchasedItems[item.id].push(item.name);
-              alert(`تم شراء: ${item.name}`);
-            }
-            updatePointsDisplay();
-            updatePurchasesList();
-            saveAppData();
-          } else {
-            alert("ليس لديك نقاط كافية!");
-          }
-        } else {
-          alert("يجب تسجيل الدخول أولاً");
-          openUserModal();
-        }
-      }
+    /******************** زر تبديل المحتوى ********************/
+    document.getElementById("gift-btn").addEventListener("click", () => switchContent("gift-content"));
+    document.getElementById("shop-btn").addEventListener("click", () => switchContent("shop-content"));
+    document.getElementById("purchases-btn").addEventListener("click", () => {
+      updatePurchasesList();
+      switchContent("purchases-content");
     });
+    document.getElementById("dev-btn").addEventListener("click", openDevModal);
     
-    /********************** وظيفة الهدية اليومية **********************/
-    const GIFT_COOLDOWN = 24 * 60 * 60 * 1000;
-    let lastGiftCollected = parseInt(localStorage.getItem("lastGiftCollected") || "0", 10);
-    document.getElementById("collect-gift-btn").addEventListener("click", function(){
+    /******************** الهدية اليومية ********************/
+    document.getElementById("collect-gift-btn").addEventListener("click", () => {
       if(!currentUser) {
         alert("يجب تسجيل الدخول أولاً");
         openUserModal();
@@ -494,7 +442,8 @@
       }
       const now = new Date().getTime();
       if(now - lastGiftCollected >= GIFT_COOLDOWN) {
-        currentUser.points += 5;
+        points += 5;
+        currentUser.points = points;
         lastGiftCollected = now;
         updatePointsDisplay();
         showNotification("تم إضافة 5 نقاط إلى حسابك");
@@ -520,35 +469,51 @@
     }
     startGiftTimer();
     
-    /********************** زر تبديل المحتوى **********************/
-    document.getElementById("gift-btn").addEventListener("click", () => switchContent("gift-content"));
-    document.getElementById("shop-btn").addEventListener("click", () => switchContent("shop-content"));
-    document.getElementById("purchases-btn").addEventListener("click", () => {
-      updatePurchasesList();
-      switchContent("purchases-content");
+    /******************** شراء السلعة ********************/
+    document.getElementById("shop-items").addEventListener("click", (e) => {
+      if(e.target && e.target.classList.contains("buy-btn")){
+        const itemId = parseInt(e.target.getAttribute("data-id"), 10);
+        const item = shopItems.find(i => i.id === itemId);
+        if(!currentUser) {
+          alert("يجب تسجيل الدخول أولاً");
+          openUserModal();
+          return;
+        }
+        if(currentUser.points >= item.price) {
+          currentUser.points -= item.price;
+          points = currentUser.points;
+          // إذا كانت السلعة من النوع العشوائي
+          if(item.type === "random") {
+            if(randomItems.length > 0) {
+              const randIndex = Math.floor(Math.random() * randomItems.length);
+              const selected = randomItems[randIndex];
+              purchasedItems[item.id].push(selected);
+              randomItems.splice(randIndex, 1);
+              alert(`تم شراء: ${selected}`);
+            } else {
+              alert("لا توجد عناصر متبقية لهذه السلعة");
+              return;
+            }
+          } else {
+            purchasedItems[item.id].push(item.name);
+            alert(`تم شراء: ${item.name}`);
+          }
+          updatePointsDisplay();
+          updatePurchasesList();
+          saveAppData();
+        } else {
+          alert("ليس لديك نقاط كافية!");
+        }
+      }
     });
-    document.getElementById("dev-btn").addEventListener("click", openDevModal);
     
-    /********************** وظيفة الإشعارات **********************/
-    function showNotification(message) {
-      const notif = document.getElementById("notification");
-      notif.innerText = message;
-      notif.classList.add("show");
-      setTimeout(() => {
-        notif.classList.remove("show");
-      }, 3000);
-    }
-    
-    /********************** نظام المستخدم (التسجيل والدخول) **********************/
-    // فتح نموذج المستخدم
+    /******************** نظام المستخدم ********************/
     function openUserModal() {
       document.getElementById("user-modal").style.display = "flex";
     }
-    // إغلاق نموذج المستخدم
     function closeUserModal() {
       document.getElementById("user-modal").style.display = "none";
     }
-    // تبديل بين تسجيل الدخول والتسجيل
     let isLoginMode = true;
     document.getElementById("user-toggle-text").addEventListener("click", () => {
       isLoginMode = !isLoginMode;
@@ -564,17 +529,16 @@
         document.getElementById("user-toggle-text").innerText = "لديك حساب؟ سجل الدخول";
       }
     });
-    // عند الضغط على زر المستخدم (دخول/إنشاء)
     document.getElementById("user-submit-btn").addEventListener("click", () => {
       const email = document.getElementById("user-email").value.trim();
       const password = document.getElementById("user-password").value.trim();
       const name = document.getElementById("user-name").value.trim();
-      if(isLoginMode){
-        // محاولة تسجيل الدخول
-        let users = JSON.parse(localStorage.getItem("users") || "[]");
+      let users = JSON.parse(localStorage.getItem("users") || "[]");
+      if(isLoginMode) {
         const user = users.find(u => u.email === email && u.password === password);
         if(user){
           currentUser = user;
+          points = user.points;
           showNotification("تم تسجيل الدخول بنجاح");
           closeUserModal();
           updatePointsDisplay();
@@ -583,12 +547,10 @@
           alert("بيانات الدخول غير صحيحة");
         }
       } else {
-        // إنشاء حساب جديد
         if(email === "" || password === "" || name === ""){
           alert("يرجى ملء جميع الحقول");
           return;
         }
-        let users = JSON.parse(localStorage.getItem("users") || "[]");
         if(users.find(u => u.email === email)){
           alert("هذا البريد مستخدم بالفعل");
           return;
@@ -597,65 +559,59 @@
         users.push(newUser);
         localStorage.setItem("users", JSON.stringify(users));
         currentUser = newUser;
+        points = 0;
         showNotification("تم إنشاء الحساب وتسجيل الدخول");
         closeUserModal();
         updatePointsDisplay();
         updateUserIcon();
       }
     });
-    // عند الضغط على أيقونة المستخدم: إذا لم يكن هناك مستخدم، فتح النموذج، وإذا كان موجوداً، عرض قائمة تسجيل الخروج
+    function updateUserIcon() {
+      const icon = document.getElementById("user-icon");
+      if(currentUser){
+        icon.innerText = currentUser.name;
+        icon.style.background = "#e94560";
+        icon.style.padding = "5px 10px";
+        icon.style.borderRadius = "20px";
+      } else {
+        icon.innerText = "";
+        icon.style.background = "url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M20 21v-2a4 4 0 0 0-3-3.87%22/%3E%3Cpath d=%22M4 21v-2a4 4 0 0 1 3-3.87%22/%3E%3Ccircle cx=%2212%22 cy=%227%22 r=%224%22/%3E%3C/svg%3E') no-repeat center";
+        icon.style.backgroundSize = "cover";
+      }
+    }
     document.getElementById("user-icon").addEventListener("click", () => {
       if(!currentUser) {
         openUserModal();
       } else {
-        if(confirm("هل تريد تسجيل الخروج؟")){
+        if(confirm("هل تريد تسجيل الخروج؟")) {
           currentUser = null;
-          updateUserIcon();
+          points = 0;
           updatePointsDisplay();
+          updateUserIcon();
         }
       }
     });
-    // تحديث عرض أيقونة المستخدم (عرض الاسم بدل الأيقونة)
-    function updateUserIcon() {
-      const icon = document.getElementById("user-icon");
-      if(currentUser){
-        icon.style.background = "none";
-        icon.innerText = currentUser.name;
-        icon.style.padding = "5px 10px";
-        icon.style.backgroundColor = "#e94560";
-        icon.style.borderRadius = "20px";
-      } else {
-        icon.innerText = "";
-        icon.style.background = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M4 21v-2a4 4 0 0 1 3-3.87'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E\") no-repeat center";
-        icon.style.backgroundSize = "cover";
-      }
-    }
     
-    /********************** نظام المطور **********************/
-    // عند الضغط على زر "أكتب المطور" نفتح نموذج المطور
+    /******************** نظام المطور ********************/
     function openDevModal() {
       document.getElementById("dev-modal").style.display = "flex";
     }
     function closeDevModal() {
       document.getElementById("dev-modal").style.display = "none";
     }
-    // عند ضغط زر تسجيل دخول المطور
     document.getElementById("dev-login-btn").addEventListener("click", () => {
-      const email = document.getElementById("dev-email").value.trim();
-      const password = document.getElementById("dev-password").value.trim();
-      // نحدد بيانات المطور مسبقاً (مثلاً)
-      if(email === "developer@site.com" && password === "dev123"){
+      const devEmail = document.getElementById("dev-email").value.trim();
+      const devPassword = document.getElementById("dev-password").value.trim();
+      if(devEmail === "developer@site.com" && devPassword === "dev123") {
         closeDevModal();
-        // عرض قسم المطور
         switchContent("dev-content");
       } else {
         alert("بيانات المطور غير صحيحة!");
       }
     });
-    // وظيفة إضافة نقاط (المطور)
     document.getElementById("add-points-btn").addEventListener("click", () => {
       const targetName = prompt("أدخل اسم الشخص لإضافة النقاط له:");
-      const amt = parseInt(prompt("أدخل عدد النقاط:"),10);
+      const amt = parseInt(prompt("أدخل عدد النقاط:"), 10);
       if(!isNaN(amt)) {
         let users = JSON.parse(localStorage.getItem("users") || "[]");
         let user = users.find(u => u.name === targetName);
@@ -663,6 +619,7 @@
           user.points += amt;
           if(currentUser && currentUser.email === user.email) {
             currentUser.points = user.points;
+            points = user.points;
             updatePointsDisplay();
           }
           localStorage.setItem("users", JSON.stringify(users));
@@ -672,10 +629,9 @@
         }
       }
     });
-    // وظيفة مسح نقاط (المطور)
     document.getElementById("remove-points-btn").addEventListener("click", () => {
       const targetName = prompt("أدخل اسم الشخص لمسح النقاط منه:");
-      const amt = parseInt(prompt("أدخل عدد النقاط:"),10);
+      const amt = parseInt(prompt("أدخل عدد النقاط:"), 10);
       if(!isNaN(amt)) {
         let users = JSON.parse(localStorage.getItem("users") || "[]");
         let user = users.find(u => u.name === targetName);
@@ -683,6 +639,7 @@
           user.points = Math.max(0, user.points - amt);
           if(currentUser && currentUser.email === user.email) {
             currentUser.points = user.points;
+            points = user.points;
             updatePointsDisplay();
           }
           localStorage.setItem("users", JSON.stringify(users));
@@ -693,10 +650,10 @@
       }
     });
     
-    /********************** تحديث البيانات عند تحميل الصفحة **********************/
+    /******************** التحديث عند تحميل الصفحة ********************/
     updatePointsDisplay();
     updatePurchasesList();
     updateUserIcon();
   </script>
 </body>
-  </html>
+</html>
