@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>متجر النقاط الفخم</title>
   <style>
-    /* التنسيقات الأساسية والخطوط */
+    /* الخطوط والإعدادات الأساسية */
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
     * {
       margin: 0;
@@ -184,7 +184,6 @@
     }
     .buy-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
     /* المشتريات */
-    .purchases-list { list-style: none; }
     .purchase-section { margin-bottom: 20px; }
     .purchase-section h3 { margin-bottom: 10px; color: #e94560; }
     .purchase-item { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; margin-bottom: 5px; border: 1px solid rgba(255,255,255,0.1); }
@@ -204,7 +203,7 @@
       z-index: 1000;
     }
     .notification.show { transform: translateX(0); }
-    /* أيقونة المستخدم ونموذج التسجيل/الدخول */
+    /* أيقونة المستخدم ونماذج التسجيل/الدخول */
     #user-icon {
       position: fixed;
       top: 20px;
@@ -219,8 +218,12 @@
       z-index: 1100;
     }
     #user-icon:hover { transform: scale(1.2); }
-    /* نموذج المستخدم */
-    #user-modal, #dev-modal {
+    /* نموذج المستخدم (تسجيل دخول وإنشاء حساب) */
+    #user-modal, 
+    /* نموذج حساب المستخدم (عرض بيانات الحساب مع زر تسجيل خروج) */
+    #account-modal,
+    /* نموذج المطور */
+    #dev-modal {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.7);
@@ -230,6 +233,7 @@
       z-index: 1200;
     }
     #user-modal .modal-content,
+    #account-modal .modal-content,
     #dev-modal .modal-content {
       background: #fff;
       color: #000;
@@ -257,6 +261,19 @@
       cursor: pointer;
       margin-top: 10px;
     }
+    /* نموذج حساب المستخدم */
+    #account-modal input { display: none; }
+    #account-modal .modal-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background: #d32f2f; /* أحمر جذاب */
+      color: #fff;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.3s ease;
+    }
+    #account-modal .modal-btn:hover { background: #b71c1c; }
   </style>
 </head>
 <body>
@@ -271,7 +288,19 @@
       <input type="password" id="user-password" placeholder="كلمة المرور">
       <input type="text" id="user-name" placeholder="الاسم" style="display:none;">
       <button class="modal-btn" id="user-submit-btn">دخول</button>
-      <p id="user-toggle-text" style="cursor:pointer; color:#e94560; margin-top:10px;">ليس لديك حساب؟ انشئ حساب</p>
+      <p id="user-toggle-text" style="cursor:pointer; color:#e94560; margin-top:10px;">
+        ليس لديك حساب؟ انشئ حساب
+      </p>
+    </div>
+  </div>
+  
+  <!-- نموذج حساب المستخدم (يعرض بيانات الحساب مع زر تسجيل خروج) -->
+  <div id="account-modal">
+    <div class="modal-content" id="account-modal-content">
+      <h2>حسابي</h2>
+      <p id="account-name"></p>
+      <p id="account-email"></p>
+      <button class="modal-btn" id="logout-btn">تسجيل الخروج</button>
     </div>
   </div>
   
@@ -310,7 +339,7 @@
       <div id="shop-content" class="content-section">
         <h2 class="content-title">المتجر</h2>
         <div class="shop-items" id="shop-items">
-          <!-- سيتم إضافة السلعتين عبر JavaScript -->
+          <!-- تُضاف السلعتين عبر JavaScript -->
         </div>
       </div>
       <!-- قسم المشتريات -->
@@ -332,11 +361,10 @@
   
   <script>
     /******************** المتغيرات والبيانات ********************/
-    let currentUser = null; // بيانات المستخدم الحالي
+    let currentUser = null; // لا يتم استرجاعه تلقائيًا عند تحديث الصفحة
     let points = 0;
-    // المشتريات تُخزن لكل سلعة (سلعة 1: عناصر عشوائية، سلعة 2: ثابتة)
+    // المشتريات تُخزن لكل سلعة: السلعة 1 (عشوائية) والسلعة 2 (VIP)
     let purchasedItems = { 1: [], 2: [] };
-    // آخر وقت تم الحصول فيه على الهدية
     const GIFT_COOLDOWN = 24 * 60 * 60 * 1000;
     let lastGiftCollected = parseInt(localStorage.getItem("lastGiftCollected") || "0", 10);
     
@@ -389,15 +417,11 @@
         notif.classList.remove("show");
       }, 3000);
     }
-    // حفظ بيانات التطبيق في localStorage (للمحاكاة)
+    // حفظ بيانات التطبيق (يُستخدم لتحديث بيانات المستخدم والمشتريات)
     function saveAppData() {
-      if(currentUser) {
-        let users = JSON.parse(localStorage.getItem("users") || "[]");
-        users = users.map(u => u.email === currentUser.email ? currentUser : u);
-        localStorage.setItem("users", JSON.stringify(users));
-      }
       localStorage.setItem("lastGiftCollected", lastGiftCollected);
       localStorage.setItem("purchasedItems", JSON.stringify(purchasedItems));
+      // لن نقوم بتخزين currentUser حتى لا يُعاد تسجيل الدخول تلقائيًا
     }
     
     /******************** تبديل المحتوى ********************/
@@ -424,7 +448,7 @@
     }
     populateShopItems();
     
-    /******************** زر تبديل المحتوى ********************/
+    /******************** أزرار تبديل المحتوى ********************/
     document.getElementById("gift-btn").addEventListener("click", () => switchContent("gift-content"));
     document.getElementById("shop-btn").addEventListener("click", () => switchContent("shop-content"));
     document.getElementById("purchases-btn").addEventListener("click", () => {
@@ -482,7 +506,6 @@
         if(currentUser.points >= item.price) {
           currentUser.points -= item.price;
           points = currentUser.points;
-          // إذا كانت السلعة من النوع العشوائي
           if(item.type === "random") {
             if(randomItems.length > 0) {
               const randIndex = Math.floor(Math.random() * randomItems.length);
@@ -508,12 +531,14 @@
     });
     
     /******************** نظام المستخدم ********************/
+    // فتح وإغلاق نموذج المستخدم
     function openUserModal() {
       document.getElementById("user-modal").style.display = "flex";
     }
     function closeUserModal() {
       document.getElementById("user-modal").style.display = "none";
     }
+    // تبديل بين نمط تسجيل الدخول والتسجيل
     let isLoginMode = true;
     document.getElementById("user-toggle-text").addEventListener("click", () => {
       isLoginMode = !isLoginMode;
@@ -533,6 +558,13 @@
       const email = document.getElementById("user-email").value.trim();
       const password = document.getElementById("user-password").value.trim();
       const name = document.getElementById("user-name").value.trim();
+      
+      // عند إنشاء حساب يجب التحقق من أن البريد ينتهي بـ "@gmail.com"
+      if(!isLoginMode && !email.endsWith("@gmail.com")){
+        alert("يجب أن يكون البريد الإلكتروني من نوع @gmail.com");
+        return;
+      }
+      
       let users = JSON.parse(localStorage.getItem("users") || "[]");
       if(isLoginMode) {
         const user = users.find(u => u.email === email && u.password === password);
@@ -566,6 +598,14 @@
         updateUserIcon();
       }
     });
+    // عند الضغط على أيقونة المستخدم: إذا لم يكن هناك مستخدم، فتح نموذج المستخدم؛ وإذا كان موجوداً، فتح نموذج حساب المستخدم
+    document.getElementById("user-icon").addEventListener("click", () => {
+      if(!currentUser) {
+        openUserModal();
+      } else {
+        openAccountModal();
+      }
+    });
     function updateUserIcon() {
       const icon = document.getElementById("user-icon");
       if(currentUser){
@@ -579,17 +619,23 @@
         icon.style.backgroundSize = "cover";
       }
     }
-    document.getElementById("user-icon").addEventListener("click", () => {
-      if(!currentUser) {
-        openUserModal();
-      } else {
-        if(confirm("هل تريد تسجيل الخروج؟")) {
-          currentUser = null;
-          points = 0;
-          updatePointsDisplay();
-          updateUserIcon();
-        }
-      }
+    // فتح نموذج حساب المستخدم
+    function openAccountModal() {
+      document.getElementById("account-name").innerText = "الاسم: " + currentUser.name;
+      document.getElementById("account-email").innerText = "البريد: " + currentUser.email;
+      document.getElementById("account-modal").style.display = "flex";
+    }
+    function closeAccountModal() {
+      document.getElementById("account-modal").style.display = "none";
+    }
+    // عند الضغط على زر تسجيل الخروج في حساب المستخدم
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      currentUser = null;
+      points = 0;
+      updatePointsDisplay();
+      updateUserIcon();
+      closeAccountModal();
+      showNotification("تم تسجيل الخروج");
     });
     
     /******************** نظام المطور ********************/
@@ -656,4 +702,4 @@
     updateUserIcon();
   </script>
 </body>
-</html>
+          </html>
