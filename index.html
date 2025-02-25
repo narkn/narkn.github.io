@@ -218,12 +218,8 @@
       z-index: 1100;
     }
     #user-icon:hover { transform: scale(1.2); }
-    /* نموذج المستخدم (تسجيل دخول وإنشاء حساب) */
-    #user-modal, 
-    /* نموذج حساب المستخدم (عرض بيانات الحساب مع زر تسجيل خروج) */
-    #account-modal,
-    /* نموذج المطور */
-    #dev-modal {
+    /* نماذج المستخدم والمطور وحساب المستخدم */
+    #user-modal, #account-modal, #dev-modal {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.7);
@@ -243,16 +239,14 @@
       max-width: 400px;
       text-align: center;
     }
-    #user-modal input,
-    #dev-modal input {
+    #user-modal input, #dev-modal input {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 5px;
     }
-    #user-modal .modal-btn,
-    #dev-modal .modal-btn {
+    #user-modal .modal-btn, #dev-modal .modal-btn {
       padding: 10px 20px;
       border: none;
       border-radius: 5px;
@@ -262,12 +256,11 @@
       margin-top: 10px;
     }
     /* نموذج حساب المستخدم */
-    #account-modal input { display: none; }
     #account-modal .modal-btn {
       padding: 10px 20px;
       border: none;
       border-radius: 5px;
-      background: #d32f2f; /* أحمر جذاب */
+      background: #d32f2f;
       color: #fff;
       cursor: pointer;
       margin-top: 10px;
@@ -280,7 +273,7 @@
   <!-- أيقونة المستخدم -->
   <div id="user-icon"></div>
   
-  <!-- نموذج المستخدم (تسجيل دخول وإنشاء حساب) -->
+  <!-- نموذج المستخدم (تسجيل دخول/إنشاء حساب) -->
   <div id="user-modal">
     <div class="modal-content" id="user-modal-content">
       <h2 id="user-modal-title">تسجيل الدخول</h2>
@@ -294,7 +287,7 @@
     </div>
   </div>
   
-  <!-- نموذج حساب المستخدم (يعرض بيانات الحساب مع زر تسجيل خروج) -->
+  <!-- نموذج حساب المستخدم (يعرض بيانات الحساب مع زر تسجيل الخروج) -->
   <div id="account-modal">
     <div class="modal-content" id="account-modal-content">
       <h2>حسابي</h2>
@@ -361,7 +354,7 @@
   
   <script>
     /******************** المتغيرات والبيانات ********************/
-    let currentUser = null; // لا يتم استرجاعه تلقائيًا عند تحديث الصفحة
+    let currentUser = null; // سيتم حفظ بيانات المستخدم هنا عبر localStorage
     let points = 0;
     // المشتريات تُخزن لكل سلعة: السلعة 1 (عشوائية) والسلعة 2 (VIP)
     let purchasedItems = { 1: [], 2: [] };
@@ -417,12 +410,27 @@
         notif.classList.remove("show");
       }, 3000);
     }
-    // حفظ بيانات التطبيق (يُستخدم لتحديث بيانات المستخدم والمشتريات)
+    // حفظ بيانات التطبيق (بما في ذلك آخر وقت وهدايا والمشتريات)
     function saveAppData() {
       localStorage.setItem("lastGiftCollected", lastGiftCollected);
       localStorage.setItem("purchasedItems", JSON.stringify(purchasedItems));
-      // لن نقوم بتخزين currentUser حتى لا يُعاد تسجيل الدخول تلقائيًا
+      // حفظ بيانات المستخدم الحالي حتى لا يُفقد عند تحديث الصفحة
+      if(currentUser) {
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      }
     }
+    
+    /******************** عند تحميل الصفحة ********************/
+    // استرجاع بيانات المستخدم الحالي إن وُجد
+    if(localStorage.getItem("currentUser")) {
+      currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      points = currentUser.points;
+    }
+    // كما يمكن استرجاع المشتريات إذا كانت محفوظة (اختياري)
+    if(localStorage.getItem("purchasedItems")) {
+      purchasedItems = JSON.parse(localStorage.getItem("purchasedItems"));
+    }
+    updatePointsDisplay();
     
     /******************** تبديل المحتوى ********************/
     function switchContent(sectionId) {
@@ -531,14 +539,12 @@
     });
     
     /******************** نظام المستخدم ********************/
-    // فتح وإغلاق نموذج المستخدم
     function openUserModal() {
       document.getElementById("user-modal").style.display = "flex";
     }
     function closeUserModal() {
       document.getElementById("user-modal").style.display = "none";
     }
-    // تبديل بين نمط تسجيل الدخول والتسجيل
     let isLoginMode = true;
     document.getElementById("user-toggle-text").addEventListener("click", () => {
       isLoginMode = !isLoginMode;
@@ -558,14 +564,8 @@
       const email = document.getElementById("user-email").value.trim();
       const password = document.getElementById("user-password").value.trim();
       const name = document.getElementById("user-name").value.trim();
-      
-      // عند إنشاء حساب يجب التحقق من أن البريد ينتهي بـ "@gmail.com"
-      if(!isLoginMode && !email.endsWith("@gmail.com")){
-        alert("يجب أن يكون البريد الإلكتروني من نوع @gmail.com");
-        return;
-      }
-      
       let users = JSON.parse(localStorage.getItem("users") || "[]");
+      
       if(isLoginMode) {
         const user = users.find(u => u.email === email && u.password === password);
         if(user){
@@ -579,6 +579,11 @@
           alert("بيانات الدخول غير صحيحة");
         }
       } else {
+        // عند إنشاء حساب يجب التحقق من أن البريد ينتهي بـ "@gmail.com"
+        if(!email.endsWith("@gmail.com")){
+          alert("يجب أن يكون البريد الإلكتروني من نوع @gmail.com");
+          return;
+        }
         if(email === "" || password === "" || name === ""){
           alert("يرجى ملء جميع الحقول");
           return;
@@ -596,6 +601,8 @@
         closeUserModal();
         updatePointsDisplay();
         updateUserIcon();
+        // حفظ المستخدم الحالي حتى لا يفقد عند تحديث الصفحة
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
       }
     });
     // عند الضغط على أيقونة المستخدم: إذا لم يكن هناك مستخدم، فتح نموذج المستخدم؛ وإذا كان موجوداً، فتح نموذج حساب المستخدم
@@ -619,7 +626,6 @@
         icon.style.backgroundSize = "cover";
       }
     }
-    // فتح نموذج حساب المستخدم
     function openAccountModal() {
       document.getElementById("account-name").innerText = "الاسم: " + currentUser.name;
       document.getElementById("account-email").innerText = "البريد: " + currentUser.email;
@@ -628,13 +634,13 @@
     function closeAccountModal() {
       document.getElementById("account-modal").style.display = "none";
     }
-    // عند الضغط على زر تسجيل الخروج في حساب المستخدم
     document.getElementById("logout-btn").addEventListener("click", () => {
       currentUser = null;
       points = 0;
       updatePointsDisplay();
       updateUserIcon();
       closeAccountModal();
+      localStorage.removeItem("currentUser");
       showNotification("تم تسجيل الخروج");
     });
     
@@ -696,10 +702,10 @@
       }
     });
     
-    /******************** التحديث عند تحميل الصفحة ********************/
+    /******************** تحديث بيانات عند تحميل الصفحة ********************/
     updatePointsDisplay();
     updatePurchasesList();
     updateUserIcon();
   </script>
 </body>
-          </html>
+        </html>
