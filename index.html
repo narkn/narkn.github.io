@@ -8,9 +8,7 @@
     /* إعدادات الخطوط والتهيئة الأساسية */
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      margin: 0; padding: 0; box-sizing: border-box;
       font-family: 'Tajawal', sans-serif;
     }
     body {
@@ -19,12 +17,9 @@
       animation: gradient 15s ease infinite;
       color: #fff;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-      position: relative;
-      overflow-x: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; padding: 20px;
+      position: relative; overflow-x: hidden;
     }
     @keyframes gradient {
       0% { background-position: 0% 50%; }
@@ -33,75 +28,177 @@
     }
     body::before {
       content: "";
-      position: absolute;
-      top: 0; left: 0;
+      position: absolute; top: 0; left: 0;
       width: 100%; height: 100%;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9h9-9v9zm10 0h9v-9h-9v9h9v9zm9-10v-9h-9v9h9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
       z-index: -1;
     }
     .container {
-      max-width: 800px;
-      width: 100%;
+      max-width: 800px; width: 100%;
       background: rgba(255,255,255,0.1);
       backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 30px;
+      border-radius: 20px; padding: 30px;
       margin-top: 20px;
       border: 1px solid rgba(255,255,255,0.18);
       position: relative;
     }
     h1 {
-      text-align: center;
-      margin-bottom: 30px;
-      font-size: 2.5rem;
-      color: #e94560;
+      text-align: center; margin-bottom: 30px;
+      font-size: 2.5rem; color: #e94560;
       text-shadow: 0 0 10px rgba(233,69,96,0.5);
       position: relative;
     }
     h1::after {
       content: "";
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
+      position: absolute; bottom: -10px; left: 50%;
       transform: translateX(-50%);
-      width: 100px;
-      height: 3px;
+      width: 100px; height: 3px;
       background: linear-gradient(90deg, transparent, #e94560, transparent);
     }
     .points-display {
       background: rgba(233,69,96,0.2);
-      padding: 15px;
-      border-radius: 15px;
-      margin-bottom: 30px;
-      text-align: center;
+      padding: 15px; border-radius: 15px;
+      margin-bottom: 30px; text-align: center;
       border: 1px solid rgba(233,69,96,0.5);
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
     }
     .points-display::before,
     .points-display::after {
       content: "";
-      position: absolute;
-      width: 40px;
-      height: 40px;
+      position: absolute; width: 40px; height: 40px;
       border-radius: 50%;
       background: rgba(233,69,96,0.5);
       filter: blur(15px);
     }
     .points-display::before { top: -10px; left: -10px; }
     .points-display::after { bottom: -10px; right: -10px; }
-    .points-value { font-size: 2rem; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+    .points-value { font-size: 2rem; font-weight: bold; color: #fff;
+      text-shadow: 0 0 10px rgba(255,255,255,0.5); }
     .points-label { font-size: 1.2rem; color: #e94560; margin-top: 5px; }
     .buttons {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-bottom: 30px;
+      display: flex; justify-content: space-between;
+      flex-wrap: wrap; gap: 20px; margin-bottom: 30px;
     }
-    /* أزرار الصفحة الرئيسية: تم إضافة زر "استيراد كود" هنا */
+    /* أزرار الصفحة الرئيسية */
     .btn {
+      flex: 1; min-width: 150px; padding: 15px;
+      border-radius: 15px; border: none;
+      background: linear-gradient(135deg, #0f3460, #e94560);
+      color: white; font-size: 1.1rem; font-weight: bold;
+      cursor: pointer; transition: all 0.3s ease;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+    .content-area {
+      background: rgba(15,52,96,0.5);
+      backdrop-filter: blur(5px);
+      border-radius: 15px; padding: 20px;
+      min-height: 300px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+    }
+    .content-section { display: none; }
+    .active-content { display: block; animation: fadeIn 0.5s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .gift-timer { text-align: center; margin-bottom: 20px; font-size: 1.2rem; }
+    .gift-btn-container { text-align: center; }
+    .collect-gift-btn {
+      padding: 12px 25px; border-radius: 30px; border: none;
+      background: linear-gradient(135deg, #e94560, #533483);
+      color: white; font-size: 1.1rem; font-weight: bold;
+      cursor: pointer; transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .collect-gift-btn:hover { transform: scale(1.05); }
+    /* المتجر */
+    .shop-items {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+      gap: 20px;
+    }
+    .shop-item {
+      background: rgba(255,255,255,0.1); border-radius: 15px;
+      padding: 15px; text-align: center;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .shop-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      background: rgba(255,255,255,0.15);
+    }
+    .item-name { font-weight: bold; margin-bottom: 10px; color: #fff; }
+    .item-description { font-size: 0.9rem; margin-bottom: 15px;
+      color: rgba(255,255,255,0.8); }
+    .item-price { font-weight: bold; color: #e94560; margin-bottom: 15px; }
+    .buy-btn {
+      padding: 8px 15px; border-radius: 20px; border: none;
+      background: linear-gradient(135deg, #e94560, #533483);
+      color: white; font-size: 0.9rem; font-weight: bold;
+      cursor: pointer; transition: all 0.3s ease; width: 100%;
+    }
+    .buy-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    /* المشتريات */
+    .purchase-section { margin-bottom: 20px; }
+    .purchase-section h3 { margin-bottom: 10px; color: #e94560; }
+    .purchase-item { background: rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 10px; margin-bottom: 5px;
+      border: 1px solid rgba(255,255,255,0.1); }
+    .no-purchases { text-align: center; color: rgba(255,255,255,0.7);
+      font-style: italic; margin-top: 50px; }
+    /* الإشعارات */
+    .notification {
+      position: fixed; top: 20px; right: 20px;
+      background: rgba(15,52,96,0.9); color: white;
+      padding: 15px 20px; border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transform: translateX(150%);
+      transition: transform 0.5s ease;
+      z-index: 1000;
+    }
+    .notification.show { transform: translateX(0); }
+    /* أيقونة المستخدم ونماذج التسجيل/الدخول/الحساب */
+    #user-icon {
+      position: fixed; top: 20px; left: 20px;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M4 21v-2a4 4 0 0 1 3-3.87'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E") no-repeat center;
+      background-size: cover; cursor: pointer;
+      transition: transform 0.3s ease; z-index: 1100;
+    }
+    #user-icon:hover { transform: scale(1.2); }
+    /* نماذج المستخدم والمطور وحساب المستخدم */
+    #user-modal, #account-modal, #dev-modal {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7); display: none;
+      align-items: center; justify-content: center; z-index: 1200;
+    }
+    #user-modal .modal-content,
+    #account-modal .modal-content,
+    #dev-modal .modal-content {
+      background: #fff; color: #000; padding: 20px;
+      border-radius: 10px; width: 90%; max-width: 400px;
+      text-align: center;
+    }
+    #user-modal input, #dev-modal input {
+      width: 100%; padding: 10px; margin: 10px 0;
+      border: 1px solid #ccc; border-radius: 5px;
+    }
+    #user-modal .modal-btn, #dev-modal .modal-btn {
+      padding: 10px 20px; border: none; border-radius: 5px;
+      background: #e94560; color: #fff; cursor: pointer; margin-top: 10px;
+    }
+    /* نموذج حساب المستخدم */
+    #account-modal .modal-btn {
+      padding: 10px 20px; border: none; border-radius: 5px;
+      background: #d32f2f; color: #fff; cursor: pointer;
+      margin-top: 10px; transition: background 0.3s ease;
+    }
+    #account-modal .modal-btn:hover { background: #b71c1c; }
+    /* زر الدعم الفني في الصفحة الرئيسية */
+    #support-btn {
       flex: 1;
       min-width: 150px;
       padding: 15px;
@@ -115,165 +212,16 @@
       transition: all 0.3s ease;
       box-shadow: 0 6px 15px rgba(0,0,0,0.3);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 10px;
     }
-    .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
-    .content-area {
-      background: rgba(15,52,96,0.5);
-      backdrop-filter: blur(5px);
-      border-radius: 15px;
-      padding: 20px;
-      min-height: 300px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      border: 1px solid rgba(255,255,255,0.1);
-      transition: all 0.3s ease;
+    #support-btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+    /* أيقونات الدعم الفني */
+    .support-icon {
+      width: 24px;
+      height: 24px;
     }
-    .content-section { display: none; }
-    .active-content { display: block; animation: fadeIn 0.5s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .gift-timer { text-align: center; margin-bottom: 20px; font-size: 1.2rem; }
-    .gift-btn-container { text-align: center; }
-    .collect-gift-btn {
-      padding: 12px 25px;
-      border-radius: 30px;
-      border: none;
-      background: linear-gradient(135deg, #e94560, #533483);
-      color: white;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-    .collect-gift-btn:hover { transform: scale(1.05); }
-    /* المتجر */
-    .shop-items {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
-      gap: 20px;
-    }
-    .shop-item {
-      background: rgba(255,255,255,0.1);
-      border-radius: 15px;
-      padding: 15px;
-      text-align: center;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .shop-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-      background: rgba(255,255,255,0.15);
-    }
-    .item-name { font-weight: bold; margin-bottom: 10px; color: #fff; }
-    .item-description { font-size: 0.9rem; margin-bottom: 15px; color: rgba(255,255,255,0.8); }
-    .item-price { font-weight: bold; color: #e94560; margin-bottom: 15px; }
-    .buy-btn {
-      padding: 8px 15px;
-      border-radius: 20px;
-      border: none;
-      background: linear-gradient(135deg, #e94560, #533483);
-      color: white;
-      font-size: 0.9rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      width: 100%;
-    }
-    .buy-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-    /* المشتريات */
-    .purchase-section { margin-bottom: 20px; }
-    .purchase-section h3 { margin-bottom: 10px; color: #e94560; }
-    .purchase-item { background: rgba(255,255,255,0.1);
-      border-radius: 10px; padding: 10px; margin-bottom: 5px;
-      border: 1px solid rgba(255,255,255,0.1); }
-    .no-purchases { text-align: center; color: rgba(255,255,255,0.7);
-      font-style: italic; margin-top: 50px; }
-    /* الإشعارات */
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(15,52,96,0.9);
-      color: white;
-      padding: 15px 20px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      transform: translateX(150%);
-      transition: transform 0.5s ease;
-      z-index: 1000;
-    }
-    .notification.show { transform: translateX(0); }
-    /* أيقونة المستخدم ونماذج التسجيل/الدخول/الحساب */
-    #user-icon {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M4 21v-2a4 4 0 0 1 3-3.87'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E") no-repeat center;
-      background-size: cover;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-      z-index: 1100;
-    }
-    #user-icon:hover { transform: scale(1.2); }
-    /* نماذج المستخدم والمطور وحساب المستخدم */
-    #user-modal, #account-modal, #dev-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.7);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1200;
-    }
-    #user-modal .modal-content,
-    #account-modal .modal-content,
-    #dev-modal .modal-content {
-      background: #fff;
-      color: #000;
-      padding: 20px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-    }
-    #user-modal input, #dev-modal input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    #user-modal .modal-btn, #dev-modal .modal-btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      background: #e94560;
-      color: #fff;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    /* نموذج حساب المستخدم */
-    #account-modal .modal-btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      background: #d32f2f;
-      color: #fff;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background 0.3s ease;
-    }
-    #account-modal .modal-btn:hover { background: #b71c1c; }
   </style>
 </head>
 <body>
@@ -288,9 +236,7 @@
       <input type="password" id="user-password" placeholder="كلمة المرور">
       <input type="text" id="user-name" placeholder="الاسم" style="display:none;">
       <button class="modal-btn" id="user-submit-btn">دخول</button>
-      <p id="user-toggle-text" style="cursor:pointer; color:#e94560; margin-top:10px;">
-        ليس لديك حساب؟ انشئ حساب
-      </p>
+      <p id="user-toggle-text" style="cursor:pointer; color:#e94560; margin-top:10px;">ليس لديك حساب؟ انشئ حساب</p>
     </div>
   </div>
   
@@ -313,7 +259,8 @@
       <button class="modal-btn" id="dev-login-btn">دخول المطور</button>
       <br>
       <!-- أزرار المطور الإضافية -->
-      <!-- تمت إزالة زر "استيراد كود" من هنا -->
+      <button class="btn" id="make-code-btn">صنع كود</button>
+      <button class="btn" id="add-product-btn">إضافة سلعة</button>
     </div>
   </div>
   
@@ -327,8 +274,20 @@
       <button class="btn" id="gift-btn">الهدية اليومية</button>
       <button class="btn" id="shop-btn">المتجر</button>
       <button class="btn" id="purchases-btn">مشترياتي</button>
-      <!-- زر استيراد الكود تم نقله إلى الصفحة الرئيسية -->
+      <!-- زر استيراد كود في الصفحة الرئيسية -->
       <button class="btn" id="import-code-btn">استيراد كود</button>
+      <!-- زر الدعم الفني الجديد -->
+      <button class="btn" id="support-btn">
+        الدعم الفني
+        <!-- أيقونة Telegram -->
+        <a href="https://t.me/hsushsuhsishsj_bot" target="_blank" style="text-decoration: none; color: white;">
+          <img class="support-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M22.54 2.46a2.93 2.93 0 0 0-2.07-.85H3.53A2.93 2.93 0 0 0 1.46 2.46 2.93 2.93 0 0 0 .65 4.53a2.86 2.86 0 0 0 .25 1.05l2.68 9.09a2.93 2.93 0 0 0 1.05 1.42 2.88 2.88 0 0 0 1.53.54 2.92 2.92 0 0 0 1.47-.42l2.19-1.42 3.25 3.12a.5.5 0 0 0 .81-.39V13.4a2.92 2.92 0 0 0 1.05-1.55l3.09-9.17a2.86 2.86 0 0 0 .25-1.05 2.93 2.93 0 0 0-1.11-2.07z'/%3E%3C/svg%3E" alt="Telegram">
+        </a>
+        <!-- أيقونة الإيميل -->
+        <a href="mailto:jdjelsnjeosbo@gmail.com" style="text-decoration: none; color: white;">
+          <img class="support-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4l-8 5-8-5V6l8 5 8-5z'/%3E%3C/svg%3E" alt="Email">
+        </a>
+      </button>
       <button class="btn" id="dev-btn">أكتب المطور</button>
     </div>
     <div class="content-area">
@@ -357,7 +316,7 @@
       <!-- قسم خيارات المطور -->
       <div id="dev-content" class="content-section">
         <h2 class="content-title">خيارات المطور</h2>
-        <button class="btn" id="add-points-btn">أضف نقاط</button>
+        <!-- تم حذف زر "أضف نقاط" من هنا -->
         <button class="btn" id="remove-points-btn">امسح نقاط</button>
         <button class="btn" id="make-code-btn">صنع كود</button>
         <button class="btn" id="add-product-btn">إضافة سلعة</button>
@@ -368,10 +327,8 @@
   
   <script>
     /******************** المتغيرات والبيانات ********************/
-    // استرجاع المستخدم الحالي من localStorage إن وجد
     let currentUser = localStorage.getItem("currentUser") ? JSON.parse(localStorage.getItem("currentUser")) : null;
     let points = currentUser ? currentUser.points : 0;
-    // تأكد من أن للمستخدم خاصية المشتريات؛ إن لم تكن موجودة نهيئها
     if(currentUser && !currentUser.purchasedItems) {
       currentUser.purchasedItems = { 1: [], 2: [] };
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
@@ -380,14 +337,12 @@
     const GIFT_COOLDOWN = 24 * 60 * 60 * 1000;
     let lastGiftCollected = parseInt(localStorage.getItem("lastGiftCollected") || "0", 10);
     
-    // تعريف السلعتين في المتجر
     const shopItems = [
       { id: 1, name: 'سلعة عشوائية', description: 'شراء عنصر عشوائي (المحتوى يُضاف عبر زر "إضافة سلعة")', price: 5, type: 'random' },
       { id: 2, name: 'حزمة VIP', description: 'حزمة تمنحك مزايا حصرية', price: 50, type: 'fixed' }
     ];
-    // بالنسبة للسلعة العشوائية، نبدأ بقائمة فارغة (حيث يتم إضافة المحتوى عبر زر "إضافة سلعة")
+    // بالنسبة للسلعة العشوائية نبدأ بقائمة فارغة؛ سيتم إضافة المحتوى عبر زر "إضافة سلعة"
     let randomItems = localStorage.getItem("randomItems") ? JSON.parse(localStorage.getItem("randomItems")) : [];
-    // قائمة الأكواد التي ينشئها المطور
     let couponCodes = localStorage.getItem("couponCodes") ? JSON.parse(localStorage.getItem("couponCodes")) : [];
     
     /******************** دوال التحديث والحفظ ********************/
@@ -474,7 +429,6 @@
     document.getElementById("gift-btn").addEventListener("click", () => switchContent("gift-content"));
     document.getElementById("shop-btn").addEventListener("click", () => switchContent("shop-content"));
     document.getElementById("purchases-btn").addEventListener("click", () => { updatePurchasesList(); switchContent("purchases-content"); });
-    // زر "استيراد كود" في الصفحة الرئيسية
     document.getElementById("import-code-btn").addEventListener("click", () => {
       let inputCode = prompt("أدخل الكود:");
       if(inputCode) {
@@ -691,28 +645,6 @@
         alert("بيانات المطور غير صحيحة!");
       }
     });
-    // زر "أضف نقاط" يبحث عن المستخدم باستخدام بريده الإلكتروني
-    document.getElementById("add-points-btn").addEventListener("click", () => {
-      const targetEmail = prompt("أدخل البريد الإلكتروني للشخص لإضافة النقاط له:").toLowerCase();
-      const amt = parseInt(prompt("أدخل عدد النقاط:"), 10);
-      if(!isNaN(amt)) {
-        let users = JSON.parse(localStorage.getItem("users") || "[]");
-        let user = users.find(u => u.email.toLowerCase() === targetEmail);
-        if(user) {
-          user.points += amt;
-          if(currentUser && currentUser.email.toLowerCase() === user.email.toLowerCase()) {
-            currentUser.points = user.points;
-            points = user.points;
-            updatePointsDisplay();
-            localStorage.setItem("currentUser", JSON.stringify(currentUser));
-          }
-          localStorage.setItem("users", JSON.stringify(users));
-          showNotification(`${amt} نقطة تمت إضافتها لـ ${targetEmail}`);
-        } else {
-          alert("لم يتم العثور على المستخدم");
-        }
-      }
-    });
     // زر "امسح نقاط" يبحث عن المستخدم باستخدام بريده الإلكتروني
     document.getElementById("remove-points-btn").addEventListener("click", () => {
       const targetEmail = prompt("أدخل البريد الإلكتروني للشخص لمسح النقاط منه:").toLowerCase();
@@ -735,7 +667,7 @@
         }
       }
     });
-    // زر "صنع كود": ينشئ كوبون نقاط
+    // زر "صنع كود" لإنشاء كوبون نقاط
     document.getElementById("make-code-btn").addEventListener("click", () => {
       let code = prompt("أدخل الكود المطلوب:");
       if(code) {
@@ -749,20 +681,23 @@
         }
       }
     });
-    // زر "إضافة سلعة": يضيف محتوى سلعة إلى قائمة randomItems
+    // زر "إضافة سلعة" لإضافة محتوى جديد إلى سلعة عشوائية
     document.getElementById("add-product-btn").addEventListener("click", () => {
-      let content = prompt("أرسل لي محتوى السلعة:");
+      let content = prompt("أدخل محتوى السلعة:");
       if(content) {
         randomItems.push(content);
         localStorage.setItem("randomItems", JSON.stringify(randomItems));
-        showNotification("تم إضافة السلعة إلى المتجر");
+        showNotification("تم إضافة السلعة إلى قائمة العناصر");
       }
     });
     
-    /******************** تحديث بيانات عند تحميل الصفحة ********************/
+    /******************** بدء تشغيل دعم الفني (تم إضافته في الصفحة الرئيسية) ********************/
+    // لا حاجة لأي جافا سكريبت إضافية حيث أن زر الدعم الفني يحتوي على روابط داخلية (anchor tags)
+    
+    /******************** عند تحميل الصفحة ********************/
     updatePointsDisplay();
     updatePurchasesList();
     updateUserIcon();
   </script>
 </body>
-</html>
+  </html>
