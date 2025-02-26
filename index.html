@@ -199,28 +199,17 @@
     #account-modal .modal-btn:hover { background: #b71c1c; }
     /* زر الدعم الفني في الصفحة الرئيسية */
     #support-btn {
-      flex: 1;
-      min-width: 150px;
-      padding: 15px;
-      border-radius: 15px;
-      border: none;
+      flex: 1; min-width: 150px; padding: 15px;
+      border-radius: 15px; border: none;
       background: linear-gradient(135deg, #0f3460, #e94560);
-      color: white;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      color: white; font-size: 1.1rem; font-weight: bold;
+      cursor: pointer; transition: all 0.3s ease;
       box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
     }
     #support-btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
-    /* أيقونات الدعم الفني */
     .support-icon {
-      width: 24px;
-      height: 24px;
+      width: 24px; height: 24px;
     }
   </style>
 </head>
@@ -228,7 +217,7 @@
   <!-- أيقونة المستخدم -->
   <div id="user-icon"></div>
   
-  <!-- نموذج المستخدم (تسجيل دخول/إنشاء حساب) -->
+  <!-- نموذج المستخدم (تسجيل دخول/إنشاء حساب) مع خيار دخول كمطور -->
   <div id="user-modal">
     <div class="modal-content" id="user-modal-content">
       <h2 id="user-modal-title">تسجيل الدخول</h2>
@@ -236,7 +225,12 @@
       <input type="password" id="user-password" placeholder="كلمة المرور">
       <input type="text" id="user-name" placeholder="الاسم" style="display:none;">
       <button class="modal-btn" id="user-submit-btn">دخول</button>
-      <p id="user-toggle-text" style="cursor:pointer; color:#e94560; margin-top:10px;">ليس لديك حساب؟ انشئ حساب</p>
+      <p id="user-toggle-text" style="cursor:pointer; color:#e94560; margin-top:10px;">
+        ليس لديك حساب؟ انشئ حساب
+      </p>
+      <p id="developer-toggle" style="cursor:pointer; color:#00bcd4; margin-top:10px;">
+        دخول كمطور
+      </p>
     </div>
   </div>
   
@@ -250,17 +244,13 @@
     </div>
   </div>
   
-  <!-- نموذج المطور -->
+  <!-- نموذج المطور (يظهر عند اختيار "دخول كمطور" من نموذج المستخدم) -->
   <div id="dev-modal">
     <div class="modal-content" id="dev-modal-content">
-      <h2>تسجيل المطور</h2>
+      <h2>تسجيل دخول المطور</h2>
       <input type="email" id="dev-email" placeholder="البريد الإلكتروني للمطور">
       <input type="password" id="dev-password" placeholder="رمز المطور">
-      <button class="modal-btn" id="dev-login-btn">دخول المطور</button>
-      <br>
-      <!-- أزرار المطور الإضافية -->
-      <button class="btn" id="make-code-btn">صنع كود</button>
-      <button class="btn" id="add-product-btn">إضافة سلعة</button>
+      <button class="modal-btn" id="dev-submit-btn">دخول المطور</button>
     </div>
   </div>
   
@@ -276,19 +266,16 @@
       <button class="btn" id="purchases-btn">مشترياتي</button>
       <!-- زر استيراد كود في الصفحة الرئيسية -->
       <button class="btn" id="import-code-btn">استيراد كود</button>
-      <!-- زر الدعم الفني الجديد -->
+      <!-- زر الدعم الفني -->
       <button class="btn" id="support-btn">
         الدعم الفني
-        <!-- أيقونة Telegram -->
-        <a href="https://t.me/hsushsuhsishsj_bot" target="_blank" style="text-decoration: none; color: white;">
+        <a href="https://t.me/hsushsuhsishsj_bot" target="_blank" style="text-decoration:none; color:white;">
           <img class="support-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M22.54 2.46a2.93 2.93 0 0 0-2.07-.85H3.53A2.93 2.93 0 0 0 1.46 2.46 2.93 2.93 0 0 0 .65 4.53a2.86 2.86 0 0 0 .25 1.05l2.68 9.09a2.93 2.93 0 0 0 1.05 1.42 2.88 2.88 0 0 0 1.53.54 2.92 2.92 0 0 0 1.47-.42l2.19-1.42 3.25 3.12a.5.5 0 0 0 .81-.39V13.4a2.92 2.92 0 0 0 1.05-1.55l3.09-9.17a2.86 2.86 0 0 0 .25-1.05 2.93 2.93 0 0 0-1.11-2.07z'/%3E%3C/svg%3E" alt="Telegram">
         </a>
-        <!-- أيقونة الإيميل -->
-        <a href="mailto:jdjelsnjeosbo@gmail.com" style="text-decoration: none; color: white;">
+        <a href="mailto:jdjelsnjeosbo@gmail.com" style="text-decoration:none; color:white;">
           <img class="support-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4l-8 5-8-5V6l8 5 8-5z'/%3E%3C/svg%3E" alt="Email">
         </a>
       </button>
-      <button class="btn" id="dev-btn">أكتب المطور</button>
     </div>
     <div class="content-area">
       <!-- قسم الهدية اليومية -->
@@ -313,10 +300,9 @@
           <p class="no-purchases" id="no-purchases">لا توجد مشتريات حتى الآن</p>
         </div>
       </div>
-      <!-- قسم خيارات المطور -->
+      <!-- قسم خيارات المطور (يظهر بعد تسجيل دخول المطور) -->
       <div id="dev-content" class="content-section">
         <h2 class="content-title">خيارات المطور</h2>
-        <!-- تم حذف زر "أضف نقاط" من هنا -->
         <button class="btn" id="remove-points-btn">امسح نقاط</button>
         <button class="btn" id="make-code-btn">صنع كود</button>
         <button class="btn" id="add-product-btn">إضافة سلعة</button>
@@ -341,7 +327,7 @@
       { id: 1, name: 'سلعة عشوائية', description: 'شراء عنصر عشوائي (المحتوى يُضاف عبر زر "إضافة سلعة")', price: 5, type: 'random' },
       { id: 2, name: 'حزمة VIP', description: 'حزمة تمنحك مزايا حصرية', price: 50, type: 'fixed' }
     ];
-    // بالنسبة للسلعة العشوائية نبدأ بقائمة فارغة؛ سيتم إضافة المحتوى عبر زر "إضافة سلعة"
+    // للسلعة العشوائية نبدأ بقائمة فارغة؛ سيتم إضافتها يدويًا عبر زر "إضافة سلعة"
     let randomItems = localStorage.getItem("randomItems") ? JSON.parse(localStorage.getItem("randomItems")) : [];
     let couponCodes = localStorage.getItem("couponCodes") ? JSON.parse(localStorage.getItem("couponCodes")) : [];
     
@@ -450,7 +436,6 @@
         }
       }
     });
-    document.getElementById("dev-btn").addEventListener("click", openDevModal);
     
     /******************** الهدية اليومية ********************/
     document.getElementById("collect-gift-btn").addEventListener("click", () => {
@@ -533,7 +518,10 @@
       document.getElementById("user-modal").style.display = "none";
     }
     let isLoginMode = true;
+    let isDeveloperMode = false;
+    // تغيير وضعية الدخول بين المستخدم والمطور
     document.getElementById("user-toggle-text").addEventListener("click", () => {
+      isDeveloperMode = false;
       isLoginMode = !isLoginMode;
       if(isLoginMode){
         document.getElementById("user-modal-title").innerText = "تسجيل الدخول";
@@ -547,47 +535,67 @@
         document.getElementById("user-toggle-text").innerText = "لديك حساب؟ سجل الدخول";
       }
     });
+    // إضافة خيار "دخول كمطور" يظهر تحت النموذج
+    document.getElementById("developer-toggle").addEventListener("click", () => {
+      isDeveloperMode = true;
+      document.getElementById("user-modal-title").innerText = "تسجيل دخول المطور";
+      document.getElementById("user-submit-btn").innerText = "دخول المطور";
+      document.getElementById("user-name").style.display = "none";
+      document.getElementById("user-toggle-text").style.display = "none";
+      document.getElementById("developer-toggle").style.display = "none";
+    });
     document.getElementById("user-submit-btn").addEventListener("click", () => {
       const email = document.getElementById("user-email").value.trim();
       const password = document.getElementById("user-password").value.trim();
       const name = document.getElementById("user-name").value.trim();
       let users = JSON.parse(localStorage.getItem("users") || "[]");
-      if(isLoginMode) {
-        const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
-        if(user){
-          currentUser = user;
-          points = user.points;
-          if(!currentUser.purchasedItems) { currentUser.purchasedItems = { 1: [], 2: [] }; }
-          showNotification("تم تسجيل الدخول بنجاح");
+      if(isDeveloperMode) {
+        // تحقق من بيانات المطور
+        if(email.toLowerCase() === "developer@site.com" && password === "dev123") {
+          // ننتقل إلى قسم المطور
+          closeUserModal();
+          switchContent("dev-content");
+        } else {
+          alert("بيانات دخول المطور غير صحيحة");
+        }
+      } else {
+        if(isLoginMode) {
+          const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+          if(user){
+            currentUser = user;
+            points = user.points;
+            if(!currentUser.purchasedItems) { currentUser.purchasedItems = { 1: [], 2: [] }; }
+            showNotification("تم تسجيل الدخول بنجاح");
+            closeUserModal();
+            updatePointsDisplay();
+            updateUserIcon();
+          } else {
+            alert("بيانات الدخول غير صحيحة");
+          }
+        } else {
+          if(!email.endsWith("@gmail.com")){
+            alert("يجب أن يكون البريد الإلكتروني من نوع @gmail.com");
+            return;
+          }
+          if(email === "" || password === "" || name === ""){
+            alert("يرجى ملء جميع الحقول");
+            return;
+          }
+          if(users.find(u => u.email.toLowerCase() === email.toLowerCase())){
+            alert("هذا البريد مستخدم بالفعل");
+            return;
+          }
+          const newUser = { email, password, name, points: 0, purchasedItems: { 1: [], 2: [] } };
+          users.push(newUser);
+          localStorage.setItem("users", JSON.stringify(users));
+          currentUser = newUser;
+          points = 0;
+          showNotification("تم إنشاء الحساب وتسجيل الدخول");
           closeUserModal();
           updatePointsDisplay();
           updateUserIcon();
-        } else {
-          alert("بيانات الدخول غير صحيحة");
+          localStorage.setItem("currentUser", JSON.stringify(currentUser));
         }
-      } else {
-        if(!email.endsWith("@gmail.com")){
-          alert("يجب أن يكون البريد الإلكتروني من نوع @gmail.com");
-          return;
-        }
-        if(email === "" || password === "" || name === ""){
-          alert("يرجى ملء جميع الحقول");
-          return;
-        }
-        if(users.find(u => u.email.toLowerCase() === email.toLowerCase())){
-          alert("هذا البريد مستخدم بالفعل");
-          return;
-        }
-        const newUser = { email, password, name, points: 0, purchasedItems: { 1: [], 2: [] } };
-        users.push(newUser);
-        localStorage.setItem("users", JSON.stringify(users));
-        currentUser = newUser;
-        points = 0;
-        showNotification("تم إنشاء الحساب وتسجيل الدخول");
-        closeUserModal();
-        updatePointsDisplay();
-        updateUserIcon();
-        localStorage.setItem("currentUser", JSON.stringify(currentUser));
       }
     });
     document.getElementById("user-icon").addEventListener("click", () => {
@@ -629,23 +637,19 @@
     });
     
     /******************** نظام المطور ********************/
-    function openDevModal() {
-      document.getElementById("dev-modal").style.display = "flex";
-    }
-    function closeDevModal() {
-      document.getElementById("dev-modal").style.display = "none";
-    }
-    document.getElementById("dev-login-btn").addEventListener("click", () => {
+    // في هذه النسخة، لا يوجد زر "أكتب المطور" في الصفحة الرئيسية؛ يتم الدخول للمطور من خلال خيار "دخول كمطور" في نموذج المستخدم.
+    // داخل قسم المطور تظهر أزرار "صنع كود" و"إضافة سلعة" و"امسح نقاط" (والتي تم إعدادها بالفعل)
+    document.getElementById("dev-submit-btn").addEventListener("click", () => {
       const devEmail = document.getElementById("dev-email").value.trim();
       const devPassword = document.getElementById("dev-password").value.trim();
-      if(devEmail === "developer@site.com" && devPassword === "dev123") {
+      if(devEmail.toLowerCase() === "developer@site.com" && devPassword === "dev123") {
         closeDevModal();
         switchContent("dev-content");
       } else {
-        alert("بيانات المطور غير صحيحة!");
+        alert("بيانات دخول المطور غير صحيحة");
       }
     });
-    // زر "امسح نقاط" يبحث عن المستخدم باستخدام بريده الإلكتروني
+    // زر "امسح نقاط" (في قسم المطور) يبحث عن المستخدم بواسطة بريده الإلكتروني
     document.getElementById("remove-points-btn").addEventListener("click", () => {
       const targetEmail = prompt("أدخل البريد الإلكتروني للشخص لمسح النقاط منه:").toLowerCase();
       const amt = parseInt(prompt("أدخل عدد النقاط:"), 10);
@@ -690,9 +694,6 @@
         showNotification("تم إضافة السلعة إلى قائمة العناصر");
       }
     });
-    
-    /******************** بدء تشغيل دعم الفني (تم إضافته في الصفحة الرئيسية) ********************/
-    // لا حاجة لأي جافا سكريبت إضافية حيث أن زر الدعم الفني يحتوي على روابط داخلية (anchor tags)
     
     /******************** عند تحميل الصفحة ********************/
     updatePointsDisplay();
