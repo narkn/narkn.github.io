@@ -164,7 +164,7 @@
     }
     .no-purchases { text-align: center; color: rgba(255,255,255,0.7);
       font-style: italic; margin-top: 50px; }
-    /* تصميم الإشعارات العامة */
+    /* تصميم نافذة الإشعارات العامة */
     #notifications-modal {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.75);
@@ -201,8 +201,7 @@
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.75);
       display: none;
-      align-items: center;
-      justify-content: center;
+      align-items: center; justify-content: center;
       z-index: 1200;
     }
     #user-modal .modal-content,
@@ -358,14 +357,14 @@
   <script>
     /******************** تهيئة البيانات ********************/
     // تهيئة الكوبونات الافتراضية إذا كانت فارغة
-    let couponCodes = localStorage.getItem("couponCodes") 
-      ? JSON.parse(localStorage.getItem("couponCodes")) 
+    let couponCodes = localStorage.getItem("couponCodes")
+      ? JSON.parse(localStorage.getItem("couponCodes"))
       : [{ code: "WELCOME10", points: 10 }];
-    // نبدأ بقائمة randomItems فارغة
-    let randomItems = localStorage.getItem("randomItems") 
-      ? JSON.parse(localStorage.getItem("randomItems")) 
+    // قائمة randomItems تبدأ فارغة
+    let randomItems = localStorage.getItem("randomItems")
+      ? JSON.parse(localStorage.getItem("randomItems"))
       : [];
-    // تهيئة الإشعارات العامة (الرسائل)
+    // تهيئة الإشعارات العامة
     let publicNotifications = localStorage.getItem("publicNotifications")
       ? JSON.parse(localStorage.getItem("publicNotifications"))
       : [];
@@ -457,6 +456,15 @@
       localStorage.setItem("couponCodes", JSON.stringify(couponCodes));
       localStorage.setItem("publicNotifications", JSON.stringify(publicNotifications));
     }
+    // للتحديث التلقائي بين النوافذ (إذا كان المستخدم يستخدم أكثر من نافذة)
+    window.addEventListener("storage", (e) => {
+      if (e.key === "publicNotifications") {
+        publicNotifications = JSON.parse(e.newValue);
+        if(document.getElementById("notifications-modal").style.display === "flex") {
+          updatePublicNotificationsModal();
+        }
+      }
+    });
     
     /******************** عند تحميل الصفحة ********************/
     updatePointsDisplay();
@@ -493,7 +501,6 @@
     document.getElementById("import-code-btn").addEventListener("click", () => {
       let inputCode = prompt("أدخل الكود:").trim();
       if (inputCode) {
-        // مقارنة حساسة للحالة
         let index = couponCodes.findIndex(c => c.code.toLowerCase() === inputCode.toLowerCase());
         if (index !== -1) {
           let coupon = couponCodes[index];
@@ -503,7 +510,7 @@
           }
           currentUser.points += coupon.points;
           points = currentUser.points;
-          // إضافة إشعار خاص يُظهر من استخدم الكوبون
+          // إضافة إشعار خاص يبين من استخدم الكوبون
           let managerMsg = `تنبيه المدير: الكود "${coupon.code}" تم استخدامه من قبل ${currentUser.name} (${currentUser.email})`;
           publicNotifications.push(managerMsg);
           publicNotifications.push(`تم استخدام الكود "${coupon.code}" ولن يعود متاحاً`);
@@ -521,6 +528,306 @@
       updatePublicNotificationsModal();
       document.getElementById("notifications-modal").style.display = "flex";
     });
+    
+    /******************** الهدية اليومية ********************/
+    document.getElementById("collect-gift-btn").addEventListener("click", () => {
+      if (!currentUser) {
+        alert("يجب تسجيل الدخول أولاً");
+        openUserModal();
+        return;
+      }
+      const now = new Date().getTime();
+      if (now - lastGiftCollected >= GIFT_COOLDOWN) {
+        points += 5;
+        currentUser.points = points;
+        lastGiftCollected = now;
+        updatePointsDisplay();
+        showNotification("تم إضافة 5 نقاط إلى حسابك");
+        saveAppData();
+      } else {
+        showNotification("انتظر حتى انتهاء المؤقت للحصول على الهدية");
+      }
+    });
+    function startGiftTimer() {
+      setInterval(() => {
+        const now = new Date().getTime();
+        const remaining = GIFT_COOLDOWN - (now - lastGiftCollected);
+        const timerEl = document.getElementById("gift-timer");
+        if (remaining > 0) {
+          const hours = Math.floor(remaining / (1000 * 60 * 60));
+          const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+          timerEl.innerText = `يمكنك الحصول على الهدية بعد: ${hours} ساعة ${minutes} دقيقة ${seconds} ثانية`;
+        } else {
+          timerEl.innerText = "احصل على هديتك اليومية!";
+        }
+      }, 1000);
+    }
+    startGiftTimer();
+    
+    /******************** شراء السلعة ********************/
+    document.getElementById("shop-items").addEventListener("click", (e) => {
+      if (e.target && e.target.classList.contains("buy-btn")) {
+        const itemId = parseInt(e.target.getAttribute("data-id"), 10);
+        const item = shopItems.find(i => i.id === itemId);
+        if (!currentUser) {
+          alert("يجب تسجيل الدخول أولاً");
+          openUserModal();
+          return;
+        }
+        if (currentUser.points >= item.price) {
+          currentUser.points -= item.price;
+          points = currentUser.points;
+          if (item.type === "random") {
+            if (randomItems.length > 0) {
+              const randIndex = Math.floor(Math.random() * randomItems.length);
+              currentUser.purchasedItems[item.id].push(randomItems[randIndex]);
+              randomItems.splice(randIndex, 1);
+              alert("تم شراء السلعة بنجاح");
+            } else {
+              alert("لا توجد عناصر متبقية لهذه السلعة");
+              return;
+            }
+          } else {
+            currentUser.purchasedItems[item.id].push(item.name);
+            alert(`تم شراء: ${item.name}`);
+          }
+          updatePointsDisplay();
+          updatePurchasesList();
+          saveAppData();
+        } else {
+          alert("ليس لديك نقاط كافية!");
+        }
+      }
+    });
+    
+    /******************** نظام المستخدم ********************/
+    function openUserModal() {
+      document.getElementById("user-modal").style.display = "flex";
+    }
+    function closeUserModal() {
+      document.getElementById("user-modal").style.display = "none";
+    }
+    let isLoginMode = true;
+    document.getElementById("user-toggle-text").addEventListener("click", () => {
+      isLoginMode = !isLoginMode;
+      if (isLoginMode) {
+        document.getElementById("user-modal-title").innerText = "تسجيل الدخول";
+        document.getElementById("user-submit-btn").innerText = "دخول";
+        document.getElementById("user-name").style.display = "none";
+        document.getElementById("user-toggle-text").innerText = "ليس لديك حساب؟ انشئ حساب";
+      } else {
+        document.getElementById("user-modal-title").innerText = "إنشاء حساب";
+        document.getElementById("user-submit-btn").innerText = "إنشاء";
+        document.getElementById("user-name").style.display = "block";
+        document.getElementById("user-toggle-text").innerText = "لديك حساب؟ سجل الدخول";
+      }
+    });
+    document.getElementById("user-submit-btn").addEventListener("click", () => {
+      const email = document.getElementById("user-email").value.trim();
+      const password = document.getElementById("user-password").value.trim();
+      const name = document.getElementById("user-name").value.trim();
+      let users = JSON.parse(localStorage.getItem("users") || "[]");
+      // إذا أدخل المستخدم بيانات المطور، نعتبره مطوراً
+      if (email.toLowerCase() === "developer@site.com" && password === "dev123") {
+        const devUser = { email, password, name: "المطور", points: 0, purchasedItems: { 1: [], 2: [] }, isDeveloper: true };
+        currentUser = devUser;
+        points = devUser.points;
+        showNotification("تم تسجيل دخول المطور");
+        closeUserModal();
+        updatePointsDisplay();
+        updateUserIcon();
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        document.getElementById("dev-btn").style.display = "flex";
+      } else {
+        if (isLoginMode) {
+          const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+          if (user) {
+            currentUser = user;
+            points = user.points;
+            if (!currentUser.purchasedItems) { currentUser.purchasedItems = { 1: [], 2: [] }; }
+            showNotification("تم تسجيل الدخول بنجاح");
+            closeUserModal();
+            updatePointsDisplay();
+            updateUserIcon();
+          } else {
+            alert("بيانات الدخول غير صحيحة");
+          }
+        } else {
+          if (!email.endsWith("@gmail.com")) {
+            alert("يجب أن يكون البريد الإلكتروني من نوع @gmail.com");
+            return;
+          }
+          if (email === "" || password === "" || name === "") {
+            alert("يرجى ملء جميع الحقول");
+            return;
+          }
+          if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+            alert("هذا البريد مستخدم بالفعل");
+            return;
+          }
+          const newUser = { email, password, name, points: 0, purchasedItems: { 1: [], 2: [] } };
+          users.push(newUser);
+          localStorage.setItem("users", JSON.stringify(users));
+          currentUser = newUser;
+          points = 0;
+          showNotification("تم إنشاء الحساب وتسجيل الدخول");
+          closeUserModal();
+          updatePointsDisplay();
+          updateUserIcon();
+          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        }
+      }
+    });
+    document.getElementById("user-icon").addEventListener("click", () => {
+      if (!currentUser) { openUserModal(); }
+      else { openAccountModal(); }
+    });
+    function updateUserIcon() {
+      const icon = document.getElementById("user-icon");
+      if (currentUser) {
+        icon.innerText = currentUser.name;
+        icon.style.background = "#e94560";
+        icon.style.padding = "5px 10px";
+        icon.style.borderRadius = "20px";
+        if (currentUser.isDeveloper) { document.getElementById("dev-btn").style.display = "flex"; }
+        else { document.getElementById("dev-btn").style.display = "none"; }
+      } else {
+        icon.innerText = "";
+        icon.style.background = "url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M20 21v-2a4 4 0 0 0-3-3.87%22/%3E%3Cpath d=%22M4 21v-2a4 4 0 0 1 3-3.87%22/%3E%3Ccircle cx=%2212%22 cy=%227%22 r=%224%22/%3E%3C/svg%3E') no-repeat center";
+        icon.style.backgroundSize = "cover";
+      }
+    }
+    function openAccountModal() {
+      document.getElementById("account-name").innerText = "الاسم: " + currentUser.name;
+      document.getElementById("account-email").innerText = "البريد: " + currentUser.email;
+      document.getElementById("account-modal").style.display = "flex";
+    }
+    function closeAccountModal() {
+      document.getElementById("account-modal").style.display = "none";
+    }
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      currentUser = null;
+      points = 0;
+      updatePointsDisplay();
+      updateUserIcon();
+      closeAccountModal();
+      localStorage.removeItem("currentUser");
+      showNotification("تم تسجيل الخروج");
+    });
+    
+    /******************** نظام المطور ********************/
+    document.getElementById("dev-submit-btn").addEventListener("click", () => {
+      const devEmail = document.getElementById("dev-email").value.trim();
+      const devPassword = document.getElementById("dev-password").value.trim();
+      if (devEmail.toLowerCase() === "developer@site.com" && devPassword === "dev123") {
+        closeDevModal();
+        switchContent("dev-content");
+      } else {
+        alert("بيانات دخول المطور غير صحيحة");
+      }
+    });
+    document.getElementById("dev-btn").addEventListener("click", () => {
+      switchContent("dev-content");
+    });
+    document.getElementById("remove-points-btn").addEventListener("click", () => {
+      const targetEmail = prompt("أدخل البريد الإلكتروني للشخص لمسح النقاط منه:").trim().toLowerCase();
+      const amt = parseInt(prompt("أدخل عدد النقاط:"), 10);
+      if (!isNaN(amt)) {
+        let users = JSON.parse(localStorage.getItem("users") || "[]");
+        let user = users.find(u => u.email.toLowerCase() === targetEmail);
+        if (user) {
+          user.points = Math.max(0, user.points - amt);
+          if (currentUser && currentUser.email.toLowerCase() === user.email.toLowerCase()) {
+            currentUser.points = user.points;
+            points = user.points;
+            updatePointsDisplay();
+            localStorage.setItem("currentUser", JSON.stringify(currentUser));
+          }
+          localStorage.setItem("users", JSON.stringify(users));
+          showNotification(`${amt} نقطة تمت مسحها من ${targetEmail}`);
+        } else {
+          alert("لم يتم العثور على المستخدم");
+        }
+      }
+    });
+    // زر "إنشاء كود" من قسم المطور: عند إنشائه يتم نشره في الإشعارات العامة بحيث يمكن لأي مستخدم استخدامه (مرة واحدة فقط)
+    document.getElementById("make-code-btn").addEventListener("click", () => {
+      let code = prompt("أدخل الكود المطلوب:").trim();
+      if (code) {
+        let pts = parseInt(prompt("أدخل عدد النقاط التي يحصل عليها المستخدم عند استخدام هذا الكود:"), 10);
+        if (!isNaN(pts) && pts > 0) {
+          couponCodes.push({ code: code, points: pts });
+          localStorage.setItem("couponCodes", JSON.stringify(couponCodes));
+          publicNotifications.push(`الكود "${code}" بـ ${pts} نقطة متاح للاستخدام`);
+          saveAppData();
+          showNotification("تم إنشاء الكود ونشره في الإشعارات");
+        } else {
+          alert("يرجى إدخال عدد نقاط صحيح.");
+        }
+      }
+    });
+    // زر "نشر إعلان" في قسم المطور
+    document.getElementById("publish-announcement-btn").addEventListener("click", () => {
+      let msg = prompt("أدخل نص الإعلان:").trim();
+      if (msg) {
+        publicNotifications.push(`إعلان: ${msg}`);
+        saveAppData();
+        showNotification("تم نشر الإعلان في الإشعارات");
+      }
+    });
+    // زر "إضافة سلعة" في قسم المطور
+    document.getElementById("add-product-btn").addEventListener("click", () => {
+      let content = prompt("أدخل محتوى السلعة:").trim();
+      if (content) {
+        randomItems.push(content);
+        localStorage.setItem("randomItems", JSON.stringify(randomItems));
+        showNotification("تم إضافة السلعة إلى قائمة العناصر");
+      }
+    });
+    // زر "إرسال إشعار" من قسم المطور لنشر رسالة عامة
+    document.getElementById("send-global-msg-btn").addEventListener("click", () => {
+      let msg = prompt("أدخل نص الإشعار العام:").trim();
+      if (msg) {
+        publicNotifications.push(`إشعار عام: ${msg}`);
+        saveAppData();
+        showNotification("تم إرسال الإشعار العام");
+      }
+    });
+    
+    /******************** عند تحميل الصفحة ********************/
+    updatePointsDisplay();
+    updatePurchasesList();
+    updateUserIcon();
+    
+    /******************** تحديث الإشعارات عند تغيير localStorage ********************/
+    window.addEventListener("storage", (e) => {
+      if (e.key === "publicNotifications") {
+        publicNotifications = JSON.parse(e.newValue);
+        // إذا كانت نافذة الإشعارات مفتوحة نقوم بتحديثها
+        if(document.getElementById("notifications-modal").style.display === "flex") {
+          updatePublicNotificationsModal();
+        }
+      }
+    });
+    
+    /******************** وظائف النافذة (الإشعارات) ********************/
+    function updatePublicNotificationsModal() {
+      const listEl = document.getElementById("notifications-list");
+      listEl.innerHTML = "";
+      if (publicNotifications.length === 0) {
+        listEl.innerHTML = "<p style='text-align:center;'>لا توجد إشعارات حتى الآن</p>";
+      } else {
+        publicNotifications.forEach(notif => {
+          const div = document.createElement("div");
+          div.style.borderBottom = "1px solid #ccc";
+          div.style.padding = "5px 0";
+          div.style.fontSize = "0.95rem";
+          div.innerText = notif;
+          listEl.appendChild(div);
+        });
+      }
+    }
     
     /******************** الهدية اليومية ********************/
     document.getElementById("collect-gift-btn").addEventListener("click", () => {
@@ -673,11 +980,8 @@
       }
     });
     document.getElementById("user-icon").addEventListener("click", () => {
-      if (!currentUser) {
-        openUserModal();
-      } else {
-        openAccountModal();
-      }
+      if (!currentUser) { openUserModal(); }
+      else { openAccountModal(); }
     });
     function updateUserIcon() {
       const icon = document.getElementById("user-icon");
@@ -686,11 +990,8 @@
         icon.style.background = "#e94560";
         icon.style.padding = "5px 10px";
         icon.style.borderRadius = "20px";
-        if (currentUser.isDeveloper) {
-          document.getElementById("dev-btn").style.display = "flex";
-        } else {
-          document.getElementById("dev-btn").style.display = "none";
-        }
+        if (currentUser.isDeveloper) { document.getElementById("dev-btn").style.display = "flex"; }
+        else { document.getElementById("dev-btn").style.display = "none"; }
       } else {
         icon.innerText = "";
         icon.style.background = "url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M20 21v-2a4 4 0 0 0-3-3.87%22/%3E%3Cpath d=%22M4 21v-2a4 4 0 0 1 3-3.87%22/%3E%3Ccircle cx=%2212%22 cy=%227%22 r=%224%22/%3E%3C/svg%3E') no-repeat center";
@@ -750,6 +1051,7 @@
         }
       }
     });
+    // زر "إنشاء كود" في قسم المطور: يتم نشر الكوبون للجميع ثم يُحذف عند استخدامه
     document.getElementById("make-code-btn").addEventListener("click", () => {
       let code = prompt("أدخل الكود المطلوب:").trim();
       if (code) {
@@ -765,14 +1067,16 @@
         }
       }
     });
+    // زر "نشر إعلان" في قسم المطور
     document.getElementById("publish-announcement-btn").addEventListener("click", () => {
       let msg = prompt("أدخل نص الإعلان:").trim();
       if (msg) {
         publicNotifications.push(`إعلان: ${msg}`);
         saveAppData();
-        showNotification("تم نشر الإعلان");
+        showNotification("تم نشر الإعلان في الإشعارات");
       }
     });
+    // زر "إضافة سلعة" في قسم المطور
     document.getElementById("add-product-btn").addEventListener("click", () => {
       let content = prompt("أدخل محتوى السلعة:").trim();
       if (content) {
@@ -781,11 +1085,1181 @@
         showNotification("تم إضافة السلعة إلى قائمة العناصر");
       }
     });
+    // زر "إرسال إشعار" في قسم المطور لنشر رسالة عامة
+    document.getElementById("send-global-msg-btn").addEventListener("click", () => {
+      let msg = prompt("أدخل نص الإشعار العام:").trim();
+      if (msg) {
+        publicNotifications.push(`إشعار عام: ${msg}`);
+        saveAppData();
+        showNotification("تم إرسال الإشعار العام");
+      }
+    });
     
     /******************** عند تحميل الصفحة ********************/
     updatePointsDisplay();
     updatePurchasesList();
     updateUserIcon();
+    
+    /******************** التحديث بين النوافذ ********************/
+    window.addEventListener("storage", (e) => {
+      if (e.key === "publicNotifications") {
+        publicNotifications = JSON.parse(e.newValue);
+        if(document.getElementById("notifications-modal").style.display === "flex") {
+          updatePublicNotificationsModal();
+        }
+      }
+    });
+    
+    /******************** وظائف نافذة الإشعارات ********************/
+    function updatePublicNotificationsModal() {
+      const listEl = document.getElementById("notifications-list");
+      listEl.innerHTML = "";
+      if (publicNotifications.length === 0) {
+        listEl.innerHTML = "<p style='text-align:center;'>لا توجد إشعارات حتى الآن</p>";
+      } else {
+        publicNotifications.forEach(notif => {
+          const div = document.createElement("div");
+          div.style.borderBottom = "1px solid #ccc";
+          div.style.padding = "5px 0";
+          div.style.fontSize = "0.95rem";
+          div.innerText = notif;
+          listEl.appendChild(div);
+        });
+      }
+    }
+    
+    /******************** الهدية اليومية ********************/
+    document.getElementById("collect-gift-btn").addEventListener("click", () => {
+      if (!currentUser) {
+        alert("يجب تسجيل الدخول أولاً");
+        openUserModal();
+        return;
+      }
+      const now = new Date().getTime();
+      if (now - lastGiftCollected >= GIFT_COOLDOWN) {
+        points += 5;
+        currentUser.points = points;
+        lastGiftCollected = now;
+        updatePointsDisplay();
+        showNotification("تم إضافة 5 نقاط إلى حسابك");
+        saveAppData();
+      } else {
+        showNotification("انتظر حتى انتهاء المؤقت للحصول على الهدية");
+      }
+    });
+    function startGiftTimer() {
+      setInterval(() => {
+        const now = new Date().getTime();
+        const remaining = GIFT_COOLDOWN - (now - lastGiftCollected);
+        const timerEl = document.getElementById("gift-timer");
+        if (remaining > 0) {
+          const hours = Math.floor(remaining / (1000 * 60 * 60));
+          const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+          timerEl.innerText = `يمكنك الحصول على الهدية بعد: ${hours} ساعة ${minutes} دقيقة ${seconds} ثانية`;
+        } else {
+          timerEl.innerText = "احصل على هديتك اليومية!";
+        }
+      }, 1000);
+    }
+    startGiftTimer();
+    
+    /******************** شراء السلعة ********************/
+    document.getElementById("shop-items").addEventListener("click", (e) => {
+      if (e.target && e.target.classList.contains("buy-btn")) {
+        const itemId = parseInt(e.target.getAttribute("data-id"), 10);
+        const item = shopItems.find(i => i.id === itemId);
+        if (!currentUser) {
+          alert("يجب تسجيل الدخول أولاً");
+          openUserModal();
+          return;
+        }
+        if (currentUser.points >= item.price) {
+          currentUser.points -= item.price;
+          points = currentUser.points;
+          if (item.type === "random") {
+            if (randomItems.length > 0) {
+              const randIndex = Math.floor(Math.random() * randomItems.length);
+              currentUser.purchasedItems[item.id].push(randomItems[randIndex]);
+              randomItems.splice(randIndex, 1);
+              alert("تم شراء السلعة بنجاح");
+            } else {
+              alert("لا توجد عناصر متبقية لهذه السلعة");
+              return;
+            }
+          } else {
+            currentUser.purchasedItems[item.id].push(item.name);
+            alert(`تم شراء: ${item.name}`);
+          }
+          updatePointsDisplay();
+          updatePurchasesList();
+          saveAppData();
+        } else {
+          alert("ليس لديك نقاط كافية!");
+        }
+      }
+    });
+    
+    /******************** نظام المستخدم ********************/
+    function openUserModal() {
+      document.getElementById("user-modal").style.display = "flex";
+    }
+    function closeUserModal() {
+      document.getElementById("user-modal").style.display = "none";
+    }
+    let isLoginMode = true;
+    document.getElementById("user-toggle-text").addEventListener("click", () => {
+      isLoginMode = !isLoginMode;
+      if (isLoginMode) {
+        document.getElementById("user-modal-title").innerText = "تسجيل الدخول";
+        document.getElementById("user-submit-btn").innerText = "دخول";
+        document.getElementById("user-name").style.display = "none";
+        document.getElementById("user-toggle-text").innerText = "ليس لديك حساب؟ انشئ حساب";
+      } else {
+        document.getElementById("user-modal-title").innerText = "إنشاء حساب";
+        document.getElementById("user-submit-btn").innerText = "إنشاء";
+        document.getElementById("user-name").style.display = "block";
+        document.getElementById("user-toggle-text").innerText = "لديك حساب؟ سجل الدخول";
+      }
+    });
+    document.getElementById("user-submit-btn").addEventListener("click", () => {
+      const email = document.getElementById("user-email").value.trim();
+      const password = document.getElementById("user-password").value.trim();
+      const name = document.getElementById("user-name").value.trim();
+      let users = JSON.parse(localStorage.getItem("users") || "[]");
+      // إذا أدخل المستخدم بيانات المطور نعتبره مطوراً
+      if (email.toLowerCase() === "developer@site.com" && password === "dev123") {
+        const devUser = { email, password, name: "المطور", points: 0, purchasedItems: { 1: [], 2: [] }, isDeveloper: true };
+        currentUser = devUser;
+        points = devUser.points;
+        showNotification("تم تسجيل دخول المطور");
+        closeUserModal();
+        updatePointsDisplay();
+        updateUserIcon();
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        document.getElementById("dev-btn").style.display = "flex";
+      } else {
+        if (isLoginMode) {
+          const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+          if (user) {
+            currentUser = user;
+            points = user.points;
+            if (!currentUser.purchasedItems) { currentUser.purchasedItems = { 1: [], 2: [] }; }
+            showNotification("تم تسجيل الدخول بنجاح");
+            closeUserModal();
+            updatePointsDisplay();
+            updateUserIcon();
+          } else {
+            alert("بيانات الدخول غير صحيحة");
+          }
+        } else {
+          if (!email.endsWith("@gmail.com")) {
+            alert("يجب أن يكون البريد الإلكتروني من نوع @gmail.com");
+            return;
+          }
+          if (email === "" || password === "" || name === "") {
+            alert("يرجى ملء جميع الحقول");
+            return;
+          }
+          if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+            alert("هذا البريد مستخدم بالفعل");
+            return;
+          }
+          const newUser = { email, password, name, points: 0, purchasedItems: { 1: [], 2: [] } };
+          users.push(newUser);
+          localStorage.setItem("users", JSON.stringify(users));
+          currentUser = newUser;
+          points = 0;
+          showNotification("تم إنشاء الحساب وتسجيل الدخول");
+          closeUserModal();
+          updatePointsDisplay();
+          updateUserIcon();
+          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        }
+      }
+    });
+    document.getElementById("user-icon").addEventListener("click", () => {
+      if (!currentUser) { openUserModal(); }
+      else { openAccountModal(); }
+    });
+    function updateUserIcon() {
+      const icon = document.getElementById("user-icon");
+      if (currentUser) {
+        icon.innerText = currentUser.name;
+        icon.style.background = "#e94560";
+        icon.style.padding = "5px 10px";
+        icon.style.borderRadius = "20px";
+        if (currentUser.isDeveloper) { document.getElementById("dev-btn").style.display = "flex"; }
+        else { document.getElementById("dev-btn").style.display = "none"; }
+      } else {
+        icon.innerText = "";
+        icon.style.background = "url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M20 21v-2a4 4 0 0 0-3-3.87%22/%3E%3Cpath d=%22M4 21v-2a4 4 0 0 1 3-3.87%22/%3E%3Ccircle cx=%2212%22 cy=%227%22 r=%224%22/%3E%3C/svg%3E') no-repeat center";
+        icon.style.backgroundSize = "cover";
+      }
+    }
+    function openAccountModal() {
+      document.getElementById("account-name").innerText = "الاسم: " + currentUser.name;
+      document.getElementById("account-email").innerText = "البريد: " + currentUser.email;
+      document.getElementById("account-modal").style.display = "flex";
+    }
+    function closeAccountModal() {
+      document.getElementById("account-modal").style.display = "none";
+    }
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      currentUser = null;
+      points = 0;
+      updatePointsDisplay();
+      updateUserIcon();
+      closeAccountModal();
+      localStorage.removeItem("currentUser");
+      showNotification("تم تسجيل الخروج");
+    });
+    
+    /******************** تحديث الإشعارات عند تغيير localStorage ********************/
+    window.addEventListener("storage", (e) => {
+      if (e.key === "publicNotifications") {
+        publicNotifications = JSON.parse(e.newValue);
+        if(document.getElementById("notifications-modal").style.display === "flex") {
+          updatePublicNotificationsModal();
+        }
+      }
+    });
+    
+    /******************** وظائف نافذة الإشعارات ********************/
+    function updatePublicNotificationsModal() {
+      const listEl = document.getElementById("notifications-list");
+      listEl.innerHTML = "";
+      if (publicNotifications.length === 0) {
+        listEl.innerHTML = "<p style='text-align:center;'>لا توجد إشعارات حتى الآن</p>";
+      } else {
+        publicNotifications.forEach(notif => {
+          const div = document.createElement("div");
+          div.style.borderBottom = "1px solid #ccc";
+          div.style.padding = "5px 0";
+          div.style.fontSize = "0.95rem";
+          div.innerText = notif;
+          listEl.appendChild(div);
+        });
+      }
+    }
+    
+    /******************** الهدية اليومية ********************/
+    document.getElementById("collect-gift-btn").addEventListener("click", () => {
+      if (!currentUser) {
+        alert("يجب تسجيل الدخول أولاً");
+        openUserModal();
+        return;
+      }
+      const now = new Date().getTime();
+      if (now - lastGiftCollected >= GIFT_COOLDOWN) {
+        points += 5;
+        currentUser.points = points;
+        lastGiftCollected = now;
+        updatePointsDisplay();
+        showNotification("تم إضافة 5 نقاط إلى حسابك");
+        saveAppData();
+      } else {
+        showNotification("انتظر حتى انتهاء المؤقت للحصول على الهدية");
+      }
+    });
+    function startGiftTimer() {
+      setInterval(() => {
+        const now = new Date().getTime();
+        const remaining = GIFT_COOLDOWN - (now - lastGiftCollected);
+        const timerEl = document.getElementById("gift-timer");
+        if (remaining > 0) {
+          const hours = Math.floor(remaining / (1000 * 60 * 60));
+          const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+          timerEl.innerText = `يمكنك الحصول على الهدية بعد: ${hours} ساعة ${minutes} دقيقة ${seconds} ثانية`;
+        } else {
+          timerEl.innerText = "احصل على هديتك اليومية!";
+        }
+      }, 1000);
+    }
+    startGiftTimer();
+    
+    /******************** شراء السلعة ********************/
+    document.getElementById("shop-items").addEventListener("click", (e) => {
+      if (e.target && e.target.classList.contains("buy-btn")) {
+        const itemId = parseInt(e.target.getAttribute("data-id"), 10);
+        const item = shopItems.find(i => i.id === itemId);
+        if (!currentUser) {
+          alert("يجب تسجيل الدخول أولاً");
+          openUserModal();
+          return;
+        }
+        if (currentUser.points >= item.price) {
+          currentUser.points -= item.price;
+          points = currentUser.points;
+          if (item.type === "random") {
+            if (randomItems.length > 0) {
+              const randIndex = Math.floor(Math.random() * randomItems.length);
+              currentUser.purchasedItems[item.id].push(randomItems[randIndex]);
+              randomItems.splice(randIndex, 1);
+              alert("تم شراء السلعة بنجاح");
+            } else {
+              alert("لا توجد عناصر متبقية لهذه السلعة");
+              return;
+            }
+          } else {
+            currentUser.purchasedItems[item.id].push(item.name);
+            alert(`تم شراء: ${item.name}`);
+          }
+          updatePointsDisplay();
+          updatePurchasesList();
+          saveAppData();
+        } else {
+          alert("ليس لديك نقاط كافية!");
+        }
+      }
+    });
+    
+    /******************** نظام المستخدم ********************/
+    function openUserModal() {
+      document.getElementById("user-modal").style.display = "flex";
+    }
+    function closeUserModal() {
+      document.getElementById("user-modal").style.display = "none";
+    }
+    let isLoginMode = true;
+    document.getElementById("user-toggle-text").addEventListener("click", () => {
+      isLoginMode = !isLoginMode;
+      if (isLoginMode) {
+        document.getElementById("user-modal-title").innerText = "تسجيل الدخول";
+        document.getElementById("user-submit-btn").innerText = "دخول";
+        document.getElementById("user-name").style.display = "none";
+        document.getElementById("user-toggle-text").innerText = "ليس لديك حساب؟ انشئ حساب";
+      } else {
+        document.getElementById("user-modal-title").innerText = "إنشاء حساب";
+        document.getElementById("user-submit-btn").innerText = "إنشاء";
+        document.getElementById("user-name").style.display = "block";
+        document.getElementById("user-toggle-text").innerText = "لديك حساب؟ سجل الدخول";
+      }
+    });
+    document.getElementById("user-submit-btn").addEventListener("click", () => {
+      const email = document.getElementById("user-email").value.trim();
+      const password = document.getElementById("user-password").value.trim();
+      const name = document.getElementById("user-name").value.trim();
+      let users = JSON.parse(localStorage.getItem("users") || "[]");
+      if (email.toLowerCase() === "developer@site.com" && password === "dev123") {
+        const devUser = { email, password, name: "المطور", points: 0, purchasedItems: { 1: [], 2: [] }, isDeveloper: true };
+        currentUser = devUser;
+        points = devUser.points;
+        showNotification("تم تسجيل دخول المطور");
+        closeUserModal();
+        updatePointsDisplay();
+        updateUserIcon();
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        document.getElementById("dev-btn").style.display = "flex";
+      } else {
+        if (isLoginMode) {
+          const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+          if (user) {
+            currentUser = user;
+            points = user.points;
+            if (!currentUser.purchasedItems) { currentUser.purchasedItems = { 1: [], 2: [] }; }
+            showNotification("تم تسجيل الدخول بنجاح");
+            closeUserModal();
+            updatePointsDisplay();
+            updateUserIcon();
+          } else {
+            alert("بيانات الدخول غير صحيحة");
+          }
+        } else {
+          if (!email.endsWith("@gmail.com")) {
+            alert("يجب أن يكون البريد الإلكتروني من نوع @gmail.com");
+            return;
+          }
+          if (email === "" || password === "" || name === "") {
+            alert("يرجى ملء جميع الحقول");
+            return;
+          }
+          if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+            alert("هذا البريد مستخدم بالفعل");
+            return;
+          }
+          const newUser = { email, password, name, points: 0, purchasedItems: { 1: [], 2: [] } };
+          users.push(newUser);
+          localStorage.setItem("users", JSON.stringify(users));
+          currentUser = newUser;
+          points = 0;
+          showNotification("تم إنشاء الحساب وتسجيل الدخول");
+          closeUserModal();
+          updatePointsDisplay();
+          updateUserIcon();
+          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        }
+      }
+    });
+    document.getElementById("user-icon").addEventListener("click", () => {
+      if (!currentUser) { openUserModal(); }
+      else { openAccountModal(); }
+    });
+    function updateUserIcon() {
+      const icon = document.getElementById("user-icon");
+      if (currentUser) {
+        icon.innerText = currentUser.name;
+        icon.style.background = "#e94560";
+        icon.style.padding = "5px 10px";
+        icon.style.borderRadius = "20px";
+        if (currentUser.isDeveloper) { document.getElementById("dev-btn").style.display = "flex"; }
+        else { document.getElementById("dev-btn").style.display = "none"; }
+      } else {
+        icon.innerText = "";
+        icon.style.background = "url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M20 21v-2a4 4 0 0 0-3-3.87%22/%3E%3Cpath d=%22M4 21v-2a4 4 0 0 1 3-3.87%22/%3E%3Ccircle cx=%2212%22 cy=%227%22 r=%224%22/%3E%3C/svg%3E') no-repeat center";
+        icon.style.backgroundSize = "cover";
+      }
+    }
+    function openAccountModal() {
+      document.getElementById("account-name").innerText = "الاسم: " + currentUser.name;
+      document.getElementById("account-email").innerText = "البريد: " + currentUser.email;
+      document.getElementById("account-modal").style.display = "flex";
+    }
+    function closeAccountModal() {
+      document.getElementById("account-modal").style.display = "none";
+    }
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      currentUser = null;
+      points = 0;
+      updatePointsDisplay();
+      updateUserIcon();
+      closeAccountModal();
+      localStorage.removeItem("currentUser");
+      showNotification("تم تسجيل الخروج");
+    });
+    
+    /******************** نظام المطور ********************/
+    document.getElementById("dev-submit-btn").addEventListener("click", () => {
+      const devEmail = document.getElementById("dev-email").value.trim();
+      const devPassword = document.getElementById("dev-password").value.trim();
+      if (devEmail.toLowerCase() === "developer@site.com" && devPassword === "dev123") {
+        closeDevModal();
+        switchContent("dev-content");
+      } else {
+        alert("بيانات دخول المطور غير صحيحة");
+      }
+    });
+    document.getElementById("dev-btn").addEventListener("click", () => {
+      switchContent("dev-content");
+    });
+    document.getElementById("remove-points-btn").addEventListener("click", () => {
+      const targetEmail = prompt("أدخل البريد الإلكتروني للشخص لمسح النقاط منه:").trim().toLowerCase();
+      const amt = parseInt(prompt("أدخل عدد النقاط:"), 10);
+      if (!isNaN(amt)) {
+        let users = JSON.parse(localStorage.getItem("users") || "[]");
+        let user = users.find(u => u.email.toLowerCase() === targetEmail);
+        if (user) {
+          user.points = Math.max(0, user.points - amt);
+          if (currentUser && currentUser.email.toLowerCase() === user.email.toLowerCase()) {
+            currentUser.points = user.points;
+            points = user.points;
+            updatePointsDisplay();
+            localStorage.setItem("currentUser", JSON.stringify(currentUser));
+          }
+          localStorage.setItem("users", JSON.stringify(users));
+          showNotification(`${amt} نقطة تمت مسحها من ${targetEmail}`);
+        } else {
+          alert("لم يتم العثور على المستخدم");
+        }
+      }
+    });
+    // زر "إنشاء كود" في قسم المطور: عند إنشائه يُنشر الكوبون (متاح للجميع) ثم عند استخدامه يُزال
+    document.getElementById("make-code-btn").addEventListener("click", () => {
+      let code = prompt("أدخل الكود المطلوب:").trim();
+      if (code) {
+        let pts = parseInt(prompt("أدخل عدد النقاط التي يحصل عليها المستخدم عند استخدام هذا الكود:"), 10);
+        if (!isNaN(pts) && pts > 0) {
+          couponCodes.push({ code: code, points: pts });
+          localStorage.setItem("couponCodes", JSON.stringify(couponCodes));
+          publicNotifications.push(`الكود "${code}" بـ ${pts} نقطة متاح للاستخدام`);
+          saveAppData();
+          showNotification("تم إنشاء الكود ونشره في الإشعارات");
+        } else {
+          alert("يرجى إدخال عدد نقاط صحيح.");
+        }
+      }
+    });
+    // زر "نشر إعلان" في قسم المطور
+    document.getElementById("publish-announcement-btn").addEventListener("click", () => {
+      let msg = prompt("أدخل نص الإعلان:").trim();
+      if (msg) {
+        publicNotifications.push(`إعلان: ${msg}`);
+        saveAppData();
+        showNotification("تم نشر الإعلان في الإشعارات");
+      }
+    });
+    // زر "إضافة سلعة" في قسم المطور
+    document.getElementById("add-product-btn").addEventListener("click", () => {
+      let content = prompt("أدخل محتوى السلعة:").trim();
+      if (content) {
+        randomItems.push(content);
+        localStorage.setItem("randomItems", JSON.stringify(randomItems));
+        showNotification("تم إضافة السلعة إلى قائمة العناصر");
+      }
+    });
+    // زر "إرسال إشعار" في قسم المطور لنشر رسالة عامة
+    document.getElementById("send-global-msg-btn").addEventListener("click", () => {
+      let msg = prompt("أدخل نص الإشعار العام:").trim();
+      if (msg) {
+        publicNotifications.push(`إشعار عام: ${msg}`);
+        saveAppData();
+        showNotification("تم إرسال الإشعار العام");
+      }
+    });
+    
+    /******************** عند تحميل الصفحة ********************/
+    updatePointsDisplay();
+    updatePurchasesList();
+    updateUserIcon();
+    
+    /******************** التحديث بين النوافذ ********************/
+    window.addEventListener("storage", (e) => {
+      if (e.key === "publicNotifications") {
+        publicNotifications = JSON.parse(e.newValue);
+        if(document.getElementById("notifications-modal").style.display === "flex") {
+          updatePublicNotificationsModal();
+        }
+      }
+    });
+    
+    /******************** وظائف نافذة الإشعارات ********************/
+    function updatePublicNotificationsModal() {
+      const listEl = document.getElementById("notifications-list");
+      listEl.innerHTML = "";
+      if (publicNotifications.length === 0) {
+        listEl.innerHTML = "<p style='text-align:center;'>لا توجد إشعارات حتى الآن</p>";
+      } else {
+        publicNotifications.forEach(notif => {
+          const div = document.createElement("div");
+          div.style.borderBottom = "1px solid #ccc";
+          div.style.padding = "5px 0";
+          div.style.fontSize = "0.95rem";
+          div.innerText = notif;
+          listEl.appendChild(div);
+        });
+      }
+    }
+    
+    /******************** الهدية اليومية ********************/
+    document.getElementById("collect-gift-btn").addEventListener("click", () => {
+      if (!currentUser) {
+        alert("يجب تسجيل الدخول أولاً");
+        openUserModal();
+        return;
+      }
+      const now = new Date().getTime();
+      if (now - lastGiftCollected >= GIFT_COOLDOWN) {
+        points += 5;
+        currentUser.points = points;
+        lastGiftCollected = now;
+        updatePointsDisplay();
+        showNotification("تم إضافة 5 نقاط إلى حسابك");
+        saveAppData();
+      } else {
+        showNotification("انتظر حتى انتهاء المؤقت للحصول على الهدية");
+      }
+    });
+    function startGiftTimer() {
+      setInterval(() => {
+        const now = new Date().getTime();
+        const remaining = GIFT_COOLDOWN - (now - lastGiftCollected);
+        const timerEl = document.getElementById("gift-timer");
+        if (remaining > 0) {
+          const hours = Math.floor(remaining / (1000 * 60 * 60));
+          const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+          timerEl.innerText = `يمكنك الحصول على الهدية بعد: ${hours} ساعة ${minutes} دقيقة ${seconds} ثانية`;
+        } else {
+          timerEl.innerText = "احصل على هديتك اليومية!";
+        }
+      }, 1000);
+    }
+    startGiftTimer();
+    
+    /******************** شراء السلعة ********************/
+    document.getElementById("shop-items").addEventListener("click", (e) => {
+      if (e.target && e.target.classList.contains("buy-btn")) {
+        const itemId = parseInt(e.target.getAttribute("data-id"), 10);
+        const item = shopItems.find(i => i.id === itemId);
+        if (!currentUser) {
+          alert("يجب تسجيل الدخول أولاً");
+          openUserModal();
+          return;
+        }
+        if (currentUser.points >= item.price) {
+          currentUser.points -= item.price;
+          points = currentUser.points;
+          if (item.type === "random") {
+            if (randomItems.length > 0) {
+              const randIndex = Math.floor(Math.random() * randomItems.length);
+              currentUser.purchasedItems[item.id].push(randomItems[randIndex]);
+              randomItems.splice(randIndex, 1);
+              alert("تم شراء السلعة بنجاح");
+            } else {
+              alert("لا توجد عناصر متبقية لهذه السلعة");
+              return;
+            }
+          } else {
+            currentUser.purchasedItems[item.id].push(item.name);
+            alert(`تم شراء: ${item.name}`);
+          }
+          updatePointsDisplay();
+          updatePurchasesList();
+          saveAppData();
+        } else {
+          alert("ليس لديك نقاط كافية!");
+        }
+      }
+    });
+    
+    /******************** نظام المستخدم ********************/
+    function openUserModal() {
+      document.getElementById("user-modal").style.display = "flex";
+    }
+    function closeUserModal() {
+      document.getElementById("user-modal").style.display = "none";
+    }
+    let isLoginMode = true;
+    document.getElementById("user-toggle-text").addEventListener("click", () => {
+      isLoginMode = !isLoginMode;
+      if (isLoginMode) {
+        document.getElementById("user-modal-title").innerText = "تسجيل الدخول";
+        document.getElementById("user-submit-btn").innerText = "دخول";
+        document.getElementById("user-name").style.display = "none";
+        document.getElementById("user-toggle-text").innerText = "ليس لديك حساب؟ انشئ حساب";
+      } else {
+        document.getElementById("user-modal-title").innerText = "إنشاء حساب";
+        document.getElementById("user-submit-btn").innerText = "إنشاء";
+        document.getElementById("user-name").style.display = "block";
+        document.getElementById("user-toggle-text").innerText = "لديك حساب؟ سجل الدخول";
+      }
+    });
+    document.getElementById("user-submit-btn").addEventListener("click", () => {
+      const email = document.getElementById("user-email").value.trim();
+      const password = document.getElementById("user-password").value.trim();
+      const name = document.getElementById("user-name").value.trim();
+      let users = JSON.parse(localStorage.getItem("users") || "[]");
+      if (email.toLowerCase() === "developer@site.com" && password === "dev123") {
+        const devUser = { email, password, name: "المطور", points: 0, purchasedItems: { 1: [], 2: [] }, isDeveloper: true };
+        currentUser = devUser;
+        points = devUser.points;
+        showNotification("تم تسجيل دخول المطور");
+        closeUserModal();
+        updatePointsDisplay();
+        updateUserIcon();
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        document.getElementById("dev-btn").style.display = "flex";
+      } else {
+        if (isLoginMode) {
+          const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+          if (user) {
+            currentUser = user;
+            points = user.points;
+            if (!currentUser.purchasedItems) { currentUser.purchasedItems = { 1: [], 2: [] }; }
+            showNotification("تم تسجيل الدخول بنجاح");
+            closeUserModal();
+            updatePointsDisplay();
+            updateUserIcon();
+          } else {
+            alert("بيانات الدخول غير صحيحة");
+          }
+        } else {
+          if (!email.endsWith("@gmail.com")) {
+            alert("يجب أن يكون البريد الإلكتروني من نوع @gmail.com");
+            return;
+          }
+          if (email === "" || password === "" || name === "") {
+            alert("يرجى ملء جميع الحقول");
+            return;
+          }
+          if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+            alert("هذا البريد مستخدم بالفعل");
+            return;
+          }
+          const newUser = { email, password, name, points: 0, purchasedItems: { 1: [], 2: [] } };
+          users.push(newUser);
+          localStorage.setItem("users", JSON.stringify(users));
+          currentUser = newUser;
+          points = 0;
+          showNotification("تم إنشاء الحساب وتسجيل الدخول");
+          closeUserModal();
+          updatePointsDisplay();
+          updateUserIcon();
+          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        }
+      }
+    });
+    document.getElementById("user-icon").addEventListener("click", () => {
+      if (!currentUser) { openUserModal(); }
+      else { openAccountModal(); }
+    });
+    function updateUserIcon() {
+      const icon = document.getElementById("user-icon");
+      if (currentUser) {
+        icon.innerText = currentUser.name;
+        icon.style.background = "#e94560";
+        icon.style.padding = "5px 10px";
+        icon.style.borderRadius = "20px";
+        if (currentUser.isDeveloper) { document.getElementById("dev-btn").style.display = "flex"; }
+        else { document.getElementById("dev-btn").style.display = "none"; }
+      } else {
+        icon.innerText = "";
+        icon.style.background = "url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M20 21v-2a4 4 0 0 0-3-3.87%22/%3E%3Cpath d=%22M4 21v-2a4 4 0 0 1 3-3.87%22/%3E%3Ccircle cx=%2212%22 cy=%227%22 r=%224%22/%3E%3C/svg%3E') no-repeat center";
+        icon.style.backgroundSize = "cover";
+      }
+    }
+    function openAccountModal() {
+      document.getElementById("account-name").innerText = "الاسم: " + currentUser.name;
+      document.getElementById("account-email").innerText = "البريد: " + currentUser.email;
+      document.getElementById("account-modal").style.display = "flex";
+    }
+    function closeAccountModal() {
+      document.getElementById("account-modal").style.display = "none";
+    }
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      currentUser = null;
+      points = 0;
+      updatePointsDisplay();
+      updateUserIcon();
+      closeAccountModal();
+      localStorage.removeItem("currentUser");
+      showNotification("تم تسجيل الخروج");
+    });
+    
+    /******************** تحديث الإشعارات بين النوافذ ********************/
+    window.addEventListener("storage", (e) => {
+      if (e.key === "publicNotifications") {
+        publicNotifications = JSON.parse(e.newValue);
+        if(document.getElementById("notifications-modal").style.display === "flex") {
+          updatePublicNotificationsModal();
+        }
+      }
+    });
+    
+    /******************** وظائف نافذة الإشعارات ********************/
+    function updatePublicNotificationsModal() {
+      const listEl = document.getElementById("notifications-list");
+      listEl.innerHTML = "";
+      if (publicNotifications.length === 0) {
+        listEl.innerHTML = "<p style='text-align:center;'>لا توجد إشعارات حتى الآن</p>";
+      } else {
+        publicNotifications.forEach(notif => {
+          const div = document.createElement("div");
+          div.style.borderBottom = "1px solid #ccc";
+          div.style.padding = "5px 0";
+          div.style.fontSize = "0.95rem";
+          div.innerText = notif;
+          listEl.appendChild(div);
+        });
+      }
+    }
+    
+    /******************** الهدية اليومية ********************/
+    document.getElementById("collect-gift-btn").addEventListener("click", () => {
+      if (!currentUser) {
+        alert("يجب تسجيل الدخول أولاً");
+        openUserModal();
+        return;
+      }
+      const now = new Date().getTime();
+      if (now - lastGiftCollected >= GIFT_COOLDOWN) {
+        points += 5;
+        currentUser.points = points;
+        lastGiftCollected = now;
+        updatePointsDisplay();
+        showNotification("تم إضافة 5 نقاط إلى حسابك");
+        saveAppData();
+      } else {
+        showNotification("انتظر حتى انتهاء المؤقت للحصول على الهدية");
+      }
+    });
+    function startGiftTimer() {
+      setInterval(() => {
+        const now = new Date().getTime();
+        const remaining = GIFT_COOLDOWN - (now - lastGiftCollected);
+        const timerEl = document.getElementById("gift-timer");
+        if (remaining > 0) {
+          const hours = Math.floor(remaining / (1000 * 60 * 60));
+          const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+          timerEl.innerText = `يمكنك الحصول على الهدية بعد: ${hours} ساعة ${minutes} دقيقة ${seconds} ثانية`;
+        } else {
+          timerEl.innerText = "احصل على هديتك اليومية!";
+        }
+      }, 1000);
+    }
+    startGiftTimer();
+    
+    /******************** شراء السلعة ********************/
+    document.getElementById("shop-items").addEventListener("click", (e) => {
+      if (e.target && e.target.classList.contains("buy-btn")) {
+        const itemId = parseInt(e.target.getAttribute("data-id"), 10);
+        const item = shopItems.find(i => i.id === itemId);
+        if (!currentUser) {
+          alert("يجب تسجيل الدخول أولاً");
+          openUserModal();
+          return;
+        }
+        if (currentUser.points >= item.price) {
+          currentUser.points -= item.price;
+          points = currentUser.points;
+          if (item.type === "random") {
+            if (randomItems.length > 0) {
+              const randIndex = Math.floor(Math.random() * randomItems.length);
+              currentUser.purchasedItems[item.id].push(randomItems[randIndex]);
+              randomItems.splice(randIndex, 1);
+              alert("تم شراء السلعة بنجاح");
+            } else {
+              alert("لا توجد عناصر متبقية لهذه السلعة");
+              return;
+            }
+          } else {
+            currentUser.purchasedItems[item.id].push(item.name);
+            alert(`تم شراء: ${item.name}`);
+          }
+          updatePointsDisplay();
+          updatePurchasesList();
+          saveAppData();
+        } else {
+          alert("ليس لديك نقاط كافية!");
+        }
+      }
+    });
+    
+    /******************** نظام المستخدم ********************/
+    function openUserModal() {
+      document.getElementById("user-modal").style.display = "flex";
+    }
+    function closeUserModal() {
+      document.getElementById("user-modal").style.display = "none";
+    }
+    let isLoginMode = true;
+    document.getElementById("user-toggle-text").addEventListener("click", () => {
+      isLoginMode = !isLoginMode;
+      if (isLoginMode) {
+        document.getElementById("user-modal-title").innerText = "تسجيل الدخول";
+        document.getElementById("user-submit-btn").innerText = "دخول";
+        document.getElementById("user-name").style.display = "none";
+        document.getElementById("user-toggle-text").innerText = "ليس لديك حساب؟ انشئ حساب";
+      } else {
+        document.getElementById("user-modal-title").innerText = "إنشاء حساب";
+        document.getElementById("user-submit-btn").innerText = "إنشاء";
+        document.getElementById("user-name").style.display = "block";
+        document.getElementById("user-toggle-text").innerText = "لديك حساب؟ سجل الدخول";
+      }
+    });
+    document.getElementById("user-submit-btn").addEventListener("click", () => {
+      const email = document.getElementById("user-email").value.trim();
+      const password = document.getElementById("user-password").value.trim();
+      const name = document.getElementById("user-name").value.trim();
+      let users = JSON.parse(localStorage.getItem("users") || "[]");
+      if (email.toLowerCase() === "developer@site.com" && password === "dev123") {
+        const devUser = { email, password, name: "المطور", points: 0, purchasedItems: { 1: [], 2: [] }, isDeveloper: true };
+        currentUser = devUser;
+        points = devUser.points;
+        showNotification("تم تسجيل دخول المطور");
+        closeUserModal();
+        updatePointsDisplay();
+        updateUserIcon();
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        document.getElementById("dev-btn").style.display = "flex";
+      } else {
+        if (isLoginMode) {
+          const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+          if (user) {
+            currentUser = user;
+            points = user.points;
+            if (!currentUser.purchasedItems) { currentUser.purchasedItems = { 1: [], 2: [] }; }
+            showNotification("تم تسجيل الدخول بنجاح");
+            closeUserModal();
+            updatePointsDisplay();
+            updateUserIcon();
+          } else {
+            alert("بيانات الدخول غير صحيحة");
+          }
+        } else {
+          if (!email.endsWith("@gmail.com")) {
+            alert("يجب أن يكون البريد الإلكتروني من نوع @gmail.com");
+            return;
+          }
+          if (email === "" || password === "" || name === "") {
+            alert("يرجى ملء جميع الحقول");
+            return;
+          }
+          if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+            alert("هذا البريد مستخدم بالفعل");
+            return;
+          }
+          const newUser = { email, password, name, points: 0, purchasedItems: { 1: [], 2: [] } };
+          users.push(newUser);
+          localStorage.setItem("users", JSON.stringify(users));
+          currentUser = newUser;
+          points = 0;
+          showNotification("تم إنشاء الحساب وتسجيل الدخول");
+          closeUserModal();
+          updatePointsDisplay();
+          updateUserIcon();
+          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        }
+      }
+    });
+    document.getElementById("user-icon").addEventListener("click", () => {
+      if (!currentUser) { openUserModal(); }
+      else { openAccountModal(); }
+    });
+    function updateUserIcon() {
+      const icon = document.getElementById("user-icon");
+      if (currentUser) {
+        icon.innerText = currentUser.name;
+        icon.style.background = "#e94560";
+        icon.style.padding = "5px 10px";
+        icon.style.borderRadius = "20px";
+        if (currentUser.isDeveloper) { document.getElementById("dev-btn").style.display = "flex"; }
+        else { document.getElementById("dev-btn").style.display = "none"; }
+      } else {
+        icon.innerText = "";
+        icon.style.background = "url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M20 21v-2a4 4 0 0 0-3-3.87%22/%3E%3Cpath d=%22M4 21v-2a4 4 0 0 1 3-3.87%22/%3E%3Ccircle cx=%2212%22 cy=%227%22 r=%224%22/%3E%3C/svg%3E') no-repeat center";
+        icon.style.backgroundSize = "cover";
+      }
+    }
+    function openAccountModal() {
+      document.getElementById("account-name").innerText = "الاسم: " + currentUser.name;
+      document.getElementById("account-email").innerText = "البريد: " + currentUser.email;
+      document.getElementById("account-modal").style.display = "flex";
+    }
+    function closeAccountModal() {
+      document.getElementById("account-modal").style.display = "none";
+    }
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      currentUser = null;
+      points = 0;
+      updatePointsDisplay();
+      updateUserIcon();
+      closeAccountModal();
+      localStorage.removeItem("currentUser");
+      showNotification("تم تسجيل الخروج");
+    });
+    
+    /******************** تحديث الإشعارات بين النوافذ ********************/
+    window.addEventListener("storage", (e) => {
+      if (e.key === "publicNotifications") {
+        publicNotifications = JSON.parse(e.newValue);
+        if(document.getElementById("notifications-modal").style.display === "flex") {
+          updatePublicNotificationsModal();
+        }
+      }
+    });
+    
+    /******************** وظائف نافذة الإشعارات ********************/
+    function updatePublicNotificationsModal() {
+      const listEl = document.getElementById("notifications-list");
+      listEl.innerHTML = "";
+      if (publicNotifications.length === 0) {
+        listEl.innerHTML = "<p style='text-align:center;'>لا توجد إشعارات حتى الآن</p>";
+      } else {
+        publicNotifications.forEach(notif => {
+          const div = document.createElement("div");
+          div.style.borderBottom = "1px solid #ccc";
+          div.style.padding = "5px 0";
+          div.style.fontSize = "0.95rem";
+          div.innerText = notif;
+          listEl.appendChild(div);
+        });
+      }
+    }
+    
+    /******************** زر عرض الإشعارات العامة ********************/
+    document.getElementById("notifications-btn").addEventListener("click", () => {
+      updatePublicNotificationsModal();
+      document.getElementById("notifications-modal").style.display = "flex";
+    });
+    
+    /******************** الهدية اليومية ********************/
+    document.getElementById("collect-gift-btn").addEventListener("click", () => {
+      if (!currentUser) {
+        alert("يجب تسجيل الدخول أولاً");
+        openUserModal();
+        return;
+      }
+      const now = new Date().getTime();
+      if (now - lastGiftCollected >= GIFT_COOLDOWN) {
+        points += 5;
+        currentUser.points = points;
+        lastGiftCollected = now;
+        updatePointsDisplay();
+        showNotification("تم إضافة 5 نقاط إلى حسابك");
+        saveAppData();
+      } else {
+        showNotification("انتظر حتى انتهاء المؤقت للحصول على الهدية");
+      }
+    });
+    function startGiftTimer() {
+      setInterval(() => {
+        const now = new Date().getTime();
+        const remaining = GIFT_COOLDOWN - (now - lastGiftCollected);
+        const timerEl = document.getElementById("gift-timer");
+        if (remaining > 0) {
+          const hours = Math.floor(remaining / (1000 * 60 * 60));
+          const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+          timerEl.innerText = `يمكنك الحصول على الهدية بعد: ${hours} ساعة ${minutes} دقيقة ${seconds} ثانية`;
+        } else {
+          timerEl.innerText = "احصل على هديتك اليومية!";
+        }
+      }, 1000);
+    }
+    startGiftTimer();
+    
+    /******************** شراء السلعة ********************/
+    document.getElementById("shop-items").addEventListener("click", (e) => {
+      if (e.target && e.target.classList.contains("buy-btn")) {
+        const itemId = parseInt(e.target.getAttribute("data-id"), 10);
+        const item = shopItems.find(i => i.id === itemId);
+        if (!currentUser) {
+          alert("يجب تسجيل الدخول أولاً");
+          openUserModal();
+          return;
+        }
+        if (currentUser.points >= item.price) {
+          currentUser.points -= item.price;
+          points = currentUser.points;
+          if (item.type === "random") {
+            if (randomItems.length > 0) {
+              const randIndex = Math.floor(Math.random() * randomItems.length);
+              currentUser.purchasedItems[item.id].push(randomItems[randIndex]);
+              randomItems.splice(randIndex, 1);
+              alert("تم شراء السلعة بنجاح");
+            } else {
+              alert("لا توجد عناصر متبقية لهذه السلعة");
+              return;
+            }
+          } else {
+            currentUser.purchasedItems[item.id].push(item.name);
+            alert(`تم شراء: ${item.name}`);
+          }
+          updatePointsDisplay();
+          updatePurchasesList();
+          saveAppData();
+        } else {
+          alert("ليس لديك نقاط كافية!");
+        }
+      }
+    });
+    
+    /******************** نظام المستخدم ********************/
+    function openUserModal() {
+      document.getElementById("user-modal").style.display = "flex";
+    }
+    function closeUserModal() {
+      document.getElementById("user-modal").style.display = "none";
+    }
+    let isLoginMode = true;
+    document.getElementById("user-toggle-text").addEventListener("click", () => {
+      isLoginMode = !isLoginMode;
+      if (isLoginMode) {
+        document.getElementById("user-modal-title").innerText = "تسجيل الدخول";
+        document.getElementById("user-submit-btn").innerText = "دخول";
+        document.getElementById("user-name").style.display = "none";
+        document.getElementById("user-toggle-text").innerText = "ليس لديك حساب؟ انشئ حساب";
+      } else {
+        document.getElementById("user-modal-title").innerText = "إنشاء حساب";
+        document.getElementById("user-submit-btn").innerText = "إنشاء";
+        document.getElementById("user-name").style.display = "block";
+        document.getElementById("user-toggle-text").innerText = "لديك حساب؟ سجل الدخول";
+      }
+    });
+    document.getElementById("user-submit-btn").addEventListener("click", () => {
+      const email = document.getElementById("user-email").value.trim();
+      const password = document.getElementById("user-password").value.trim();
+      const name = document.getElementById("user-name").value.trim();
+      let users = JSON.parse(localStorage.getItem("users") || "[]");
+      if (email.toLowerCase() === "developer@site.com" && password === "dev123") {
+        const devUser = { email, password, name: "المطور", points: 0, purchasedItems: { 1: [], 2: [] }, isDeveloper: true };
+        currentUser = devUser;
+        points = devUser.points;
+        showNotification("تم تسجيل دخول المطور");
+        closeUserModal();
+        updatePointsDisplay();
+        updateUserIcon();
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        document.getElementById("dev-btn").style.display = "flex";
+      } else {
+        if (isLoginMode) {
+          const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+          if (user) {
+            currentUser = user;
+            points = user.points;
+            if (!currentUser.purchasedItems) { currentUser.purchasedItems = { 1: [], 2: [] }; }
+            showNotification("تم تسجيل الدخول بنجاح");
+            closeUserModal();
+            updatePointsDisplay();
+            updateUserIcon();
+          } else {
+            alert("بيانات الدخول غير صحيحة");
+          }
+        } else {
+          if (!email.endsWith("@gmail.com")) {
+            alert("يجب أن يكون البريد الإلكتروني من نوع @gmail.com");
+            return;
+          }
+          if (email === "" || password === "" || name === "") {
+            alert("يرجى ملء جميع الحقول");
+            return;
+          }
+          if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+            alert("هذا البريد مستخدم بالفعل");
+            return;
+          }
+          const newUser = { email, password, name, points: 0, purchasedItems: { 1: [], 2: [] } };
+          users.push(newUser);
+          localStorage.setItem("users", JSON.stringify(users));
+          currentUser = newUser;
+          points = 0;
+          showNotification("تم إنشاء الحساب وتسجيل الدخول");
+          closeUserModal();
+          updatePointsDisplay();
+          updateUserIcon();
+          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        }
+      }
+    });
+    document.getElementById("user-icon").addEventListener("click", () => {
+      if (!currentUser) { openUserModal(); }
+      else { openAccountModal(); }
+    });
+    function updateUserIcon() {
+      const icon = document.getElementById("user-icon");
+      if (currentUser) {
+        icon.innerText = currentUser.name;
+        icon.style.background = "#e94560";
+        icon.style.padding = "5px 10px";
+        icon.style.borderRadius = "20px";
+        if (currentUser.isDeveloper) { document.getElementById("dev-btn").style.display = "flex"; }
+        else { document.getElementById("dev-btn").style.display = "none"; }
+      } else {
+        icon.innerText = "";
+        icon.style.background = "url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M20 21v-2a4 4 0 0 0-3-3.87%22/%3E%3Cpath d=%22M4 21v-2a4 4 0 0 1 3-3.87%22/%3E%3Ccircle cx=%2212%22 cy=%227%22 r=%224%22/%3E%3C/svg%3E') no-repeat center";
+        icon.style.backgroundSize = "cover";
+      }
+    }
+    function openAccountModal() {
+      document.getElementById("account-name").innerText = "الاسم: " + currentUser.name;
+      document.getElementById("account-email").innerText = "البريد: " + currentUser.email;
+      document.getElementById("account-modal").style.display = "flex";
+    }
+    function closeAccountModal() {
+      document.getElementById("account-modal").style.display = "none";
+    }
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      currentUser = null;
+      points = 0;
+      updatePointsDisplay();
+      updateUserIcon();
+      closeAccountModal();
+      localStorage.removeItem("currentUser");
+      showNotification("تم تسجيل الخروج");
+    });
   </script>
 </body>
-  </html>
+</html>
