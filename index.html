@@ -8,14 +8,9 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
-    body {
-      background-color: #f8f9fa;
-    }
-    /* شريط التنقل */
-    .navbar {
-      margin-bottom: 20px;
-    }
-    /* تنسيق الأقسام العامة */
+    body { background-color: #f8f9fa; }
+    .navbar { margin-bottom: 20px; }
+    /* أقسام الصفحة */
     .section {
       display: none;
       max-width: 900px;
@@ -26,11 +21,10 @@
       border-radius: 5px;
       margin-bottom: 20px;
     }
-    .section.active {
-      display: block;
-    }
-    /* تصميم بطاقة السكربت في الصفحة الرئيسية (عرض الصورة فقط) */
+    .section.active { display: block; }
+    /* تصميم بطاقة السكربت في الصفحة الرئيسية */
     .script-card {
+      position: relative;
       cursor: pointer;
       overflow: hidden;
       border: 1px solid #dee2e6;
@@ -43,21 +37,27 @@
       height: auto;
       display: block;
     }
-    .script-card:hover {
-      transform: scale(1.03);
+    .script-card:hover { transform: scale(1.03); }
+    /* أيقونة عدد المشاهدات وتاريخ النشر */
+    .overlay {
+      position: absolute;
+      top: 5px;
+      padding: 5px 10px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      border-radius: 3px;
+      font-size: 0.9rem;
     }
-    /* تصميم صفحة تفاصيل السكربت بنمط "محرر البرمجة" */
+    .overlay.views { left: 5px; }
+    .overlay.date { right: 5px; }
+    /* صفحة التفاصيل بنمط محرر الشيفرة */
     #detailSection {
       background-color: #2d2d2d;
       color: #f8f8f2;
       font-family: 'Courier New', Courier, monospace;
     }
-    #detailSection h2 {
-      color: #66d9ef;
-    }
-    #detailSection .detail-desc {
-      margin-bottom: 20px;
-    }
+    #detailSection h2 { color: #66d9ef; }
+    #detailSection .detail-desc { margin-bottom: 20px; }
     #detailSection pre {
       background-color: #272822;
       padding: 15px;
@@ -65,6 +65,22 @@
       overflow-x: auto;
       font-size: 0.95rem;
     }
+    /* تأثير لصورة التفاصيل: عرض الصورة بنمط أبيض/شاحب */
+    #detailImage {
+      width: 100%;
+      height: auto;
+      filter: grayscale(100%) brightness(1.2);
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    /* قسم التعليقات */
+    .comment {
+      border-bottom: 1px solid #ccc;
+      padding: 10px 0;
+    }
+    .comment .comment-author { font-weight: bold; }
+    .comment .comment-text { margin: 5px 0; }
   </style>
 </head>
 <body>
@@ -77,16 +93,9 @@
       </button>
       <div class="collapse navbar-collapse" id="navContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <!-- زر الصفحة الرئيسية -->
-          <li class="nav-item">
-            <a class="nav-link" href="#" id="navHome">الرئيسية</a>
-          </li>
-          <!-- زر نشر سكربت -->
-          <li class="nav-item">
-            <a class="nav-link" href="#" id="navPostScript">نشر سكربت</a>
-          </li>
+          <li class="nav-item"><a class="nav-link" href="#" id="navHome">الرئيسية</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" id="navPostScript">نشر سكربت</a></li>
         </ul>
-        <!-- زر الحساب -->
         <button class="btn btn-outline-light" id="accountBtn">
           <i class="bi bi-person-circle"></i> الحساب
         </button>
@@ -94,7 +103,7 @@
     </div>
   </nav>
 
-  <!-- قسم الصفحة الرئيسية: عرض السكربتات المنشورة (يظهر صورة فقط) -->
+  <!-- قسم الصفحة الرئيسية: عرض السكربتات المنشورة -->
   <div id="homeSection" class="section active">
     <h2 class="mb-3">السكربتات المنشورة</h2>
     <!-- حقل البحث -->
@@ -102,7 +111,6 @@
       <input type="text" id="searchInput" class="form-control" placeholder="ابحث عن سكربت">
       <button class="btn btn-outline-secondary" id="searchBtn" type="button">بحث</button>
     </div>
-    <!-- قائمة عرض السكربتات (بطاقات الصور) -->
     <div id="scriptsList" class="row g-3"></div>
   </div>
 
@@ -130,19 +138,32 @@
     </form>
   </div>
 
-  <!-- قسم تفاصيل السكربت (واجهة برمجة) -->
+  <!-- قسم تفاصيل السكربت (واجهة برمجة مع تعليقات) -->
   <div id="detailSection" class="section">
-    <button class="btn btn-secondary mb-3" id="backToHome"><i class="bi bi-arrow-return-left"></i> العودة للرئيسية</button>
+    <button class="btn btn-secondary mb-3" id="backToHome">
+      <i class="bi bi-arrow-return-left"></i> العودة للرئيسية
+    </button>
+    <!-- عرض الصورة بنمط أبيض/شاحب -->
+    <img id="detailImage" src="" alt="صورة السكربت">
     <h2 id="detailName"></h2>
     <p class="detail-desc" id="detailDesc"></p>
     <h5>الكود:</h5>
     <pre id="detailCode"></pre>
+    <!-- قسم التعليقات -->
+    <hr style="border-color: #555;">
+    <h4>التعليقات</h4>
+    <div id="commentsList"></div>
+    <form id="commentForm" class="mt-3">
+      <div class="mb-3">
+        <textarea class="form-control" id="commentText" placeholder="اكتب تعليقك هنا" rows="3" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-info">إضافة تعليق</button>
+    </form>
   </div>
 
   <!-- قسم تسجيل الدخول وإنشاء الحساب -->
   <div id="loginSection" class="section">
     <h2 class="mb-3 text-center">تسجيل الدخول وإنشاء الحساب</h2>
-    <!-- تبويبات تسجيل الدخول والتسجيل -->
     <ul class="nav nav-tabs" id="authTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="loginTabBtn" data-bs-toggle="tab" data-bs-target="#loginTab" type="button" role="tab">تسجيل دخول</button>
@@ -198,18 +219,17 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     // المتغيرات العامة
-    let currentUser = null; // بيانات المستخدم بعد التسجيل/تسجيل الدخول
-    let publishedScripts = []; // لتخزين السكربتات المنشورة
-
-    // دالة إظهار قسم معين وإخفاء الأقسام الأخرى
+    let currentUser = null; // بيانات المستخدم الحالي
+    let publishedScripts = []; 
+    // لكل سكربت: { name, code, desc, image, views, date, viewedBy, comments }
+    
+    // دالة إظهار قسم معين
     function showSection(sectionId) {
-      const sections = document.querySelectorAll('.section');
-      sections.forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
       document.getElementById(sectionId).classList.add('active');
     }
-
-    // تحديث عرض السكربتات في الصفحة الرئيسية
-    // هنا يتم عرض بطاقة لكل سكربت تحتوي على الصورة فقط، وعند الضغط تستدعي دالة عرض التفاصيل
+    
+    // تحديث قائمة السكربتات في الصفحة الرئيسية
     function updateScriptsList(filter = "") {
       const listDiv = document.getElementById('scriptsList');
       listDiv.innerHTML = "";
@@ -222,31 +242,69 @@
         return;
       }
       filteredScripts.forEach((script, index) => {
-        // تصميم البطاقة باستخدام Bootstrap grid
         const colDiv = document.createElement('div');
         colDiv.className = "col-sm-6 col-md-4";
         const cardDiv = document.createElement('div');
         cardDiv.className = "script-card";
-        cardDiv.innerHTML = `<img src="${script.image}" alt="صورة السكربت">`;
-        // عند الضغط على البطاقة يتم استدعاء دالة عرض تفاصيل السكربت
+        cardDiv.innerHTML = `
+          <img src="${script.image}" alt="صورة السكربت">
+          <div class="overlay views"><i class="bi bi-eye"></i> ${script.views}</div>
+          <div class="overlay date">${script.date}</div>
+        `;
+        // عند الضغط: تحديث المشاهدات ثم عرض تفاصيل السكربت
         cardDiv.addEventListener('click', () => {
+          if(currentUser) {
+            if(!script.viewedBy.includes(currentUser.id)) {
+              script.views++;
+              script.viewedBy.push(currentUser.id);
+            }
+          } else {
+            script.views++;
+          }
+          updateScriptsList();
           showScriptDetail(index);
         });
         colDiv.appendChild(cardDiv);
         listDiv.appendChild(colDiv);
       });
     }
-
-    // دالة عرض تفاصيل السكربت في صفحة مخصصة بنمط واجهة برمجة
+    
+    // عرض تفاصيل السكربت في صفحة التفاصيل
+    let currentDetailScriptIndex = null;
     function showScriptDetail(index) {
       const script = publishedScripts[index];
       document.getElementById('detailName').textContent = script.name;
       document.getElementById('detailDesc').textContent = script.desc;
       document.getElementById('detailCode').textContent = script.code;
+      document.getElementById('detailImage').src = script.image;
+      currentDetailScriptIndex = index;
+      updateCommentsList();
       showSection('detailSection');
     }
-
-    // التحقق من بريد التسجيل (يجب أن يكون @gmail.com)
+    
+    // تحديث قسم التعليقات في صفحة التفاصيل
+    function updateCommentsList() {
+      const commentsDiv = document.getElementById('commentsList');
+      commentsDiv.innerHTML = "";
+      if(currentDetailScriptIndex === null) return;
+      const script = publishedScripts[currentDetailScriptIndex];
+      if(script.comments.length === 0) {
+        commentsDiv.innerHTML = "<p class='text-muted'>لا توجد تعليقات بعد.</p>";
+        return;
+      }
+      script.comments.forEach(comment => {
+        const commentDiv = document.createElement('div');
+        commentDiv.className = "comment";
+        commentDiv.innerHTML = `
+          <div class="comment-author">${comment.author}</div>
+          <div class="comment-text">${comment.text}</div>
+          <div class="comment-date text-muted" style="font-size: 0.8rem;">${comment.date}</div>
+        `;
+        commentsDiv.appendChild(commentDiv);
+      });
+    }
+    
+    // التحقق من بريد التسجيل وإنشاء الحساب
     function validateRegisterEmail() {
       const email = document.getElementById('registerEmail').value;
       const regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
@@ -254,15 +312,14 @@
         alert("يجب استخدام بريد إلكتروني ينتهي بـ @gmail.com");
         return false;
       }
-      // إنشاء الحساب
       const password = document.getElementById('registerPassword').value;
-      const userId = Date.now(); // رقم هوية بسيط يعتمد على الوقت
+      const userId = Date.now();
       currentUser = { email, password, id: userId };
       alert("تم إنشاء الحساب بنجاح!");
       showAccountInfo();
-      return false; // لمنع إعادة تحميل الصفحة
+      return false;
     }
-
+    
     // معالجة تسجيل الدخول
     document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
@@ -275,7 +332,7 @@
         alert("بيانات الدخول غير صحيحة أو الحساب غير موجود.");
       }
     });
-
+    
     // عرض معلومات الحساب
     function showAccountInfo() {
       document.getElementById('accEmail').textContent = currentUser.email;
@@ -283,15 +340,15 @@
       document.getElementById('accId').textContent = currentUser.id;
       showSection('accountSection');
     }
-
+    
     // تسجيل الخروج
     document.getElementById('logoutBtn').addEventListener('click', function() {
       currentUser = null;
       alert("تم تسجيل الخروج");
       showSection('loginSection');
     });
-
-    // زر الحساب في شريط التنقل
+    
+    // زر الحساب في الشريط العلوي
     document.getElementById('accountBtn').addEventListener('click', function() {
       if(currentUser) {
         showAccountInfo();
@@ -299,14 +356,13 @@
         showSection('loginSection');
       }
     });
-
-    // التنقل عبر شريط التنقل
+    
+    // تنقل شريط التنقل
     document.getElementById('navHome').addEventListener('click', function(e) {
       e.preventDefault();
       updateScriptsList();
       showSection('homeSection');
     });
-
     document.getElementById('navPostScript').addEventListener('click', function(e) {
       e.preventDefault();
       if(!currentUser) {
@@ -316,15 +372,15 @@
       }
       showSection('postScriptSection');
     });
-
-    // معالجة البحث
+    
+    // البحث
     document.getElementById('searchInput').addEventListener('input', function() {
       updateScriptsList(this.value);
     });
     document.getElementById('searchBtn').addEventListener('click', function() {
       updateScriptsList(document.getElementById('searchInput').value);
     });
-
+    
     // نشر سكربت جديد
     document.getElementById('postScriptForm').addEventListener('submit', function(e) {
       e.preventDefault();
@@ -336,23 +392,49 @@
       if(imageInput.files && imageInput.files[0]) {
         imageURL = URL.createObjectURL(imageInput.files[0]);
       } else {
-        // صورة افتراضية تعبر عن البرمجة (يمكن تغيير الرابط لصورة فخمة تناسب التصميم)
         imageURL = "https://via.placeholder.com/300x200?text=Programming";
       }
-      const newScript = { name, code, desc, image: imageURL };
+      const dateStr = new Date().toLocaleString();
+      const newScript = { 
+        name, code, desc, image: imageURL, 
+        views: 0, 
+        date: dateStr, 
+        viewedBy: [], 
+        comments: [] 
+      };
       publishedScripts.unshift(newScript);
       alert("تم نشر السكربت!");
       this.reset();
       updateScriptsList();
       showSection('homeSection');
     });
-
-    // زر العودة من صفحة التفاصيل إلى الصفحة الرئيسية
+    
+    // معالجة إضافة تعليق في صفحة التفاصيل
+    document.getElementById('commentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      if(!currentUser) {
+        alert("يرجى تسجيل الدخول لإضافة تعليق.");
+        return;
+      }
+      const commentText = document.getElementById('commentText').value;
+      const comment = {
+        author: currentUser.email,
+        text: commentText,
+        date: new Date().toLocaleString()
+      };
+      if(currentDetailScriptIndex !== null) {
+        publishedScripts[currentDetailScriptIndex].comments.push(comment);
+        updateCommentsList();
+        this.reset();
+      }
+    });
+    
+    // العودة للرئيسية من صفحة التفاصيل
     document.getElementById('backToHome').addEventListener('click', function() {
       showSection('homeSection');
     });
-
-    // عند تحميل الصفحة، عرض الصفحة الرئيسية افتراضيًا
+    
+    // عند تحميل الصفحة، عرض الصفحة الرئيسية
     document.addEventListener('DOMContentLoaded', function() {
       updateScriptsList();
       showSection('homeSection');
