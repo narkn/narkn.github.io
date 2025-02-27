@@ -8,10 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <style>
     /* الأساسيات والتأثيرات العامة */
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
-      font-family: 'Tajawal', sans-serif;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
     body {
       background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
       background-size: 400% 400%;
@@ -90,8 +87,8 @@
       font-size: 1.2rem; color: #e94560; margin-top: 8px;
     }
     .buttons {
-      display: flex; justify-content: center;
-      flex-wrap: wrap; gap: 20px; margin-bottom: 30px;
+      display: flex; justify-content: center; flex-wrap: wrap;
+      gap: 20px; margin-bottom: 30px;
     }
     /* تصميم الأزرار الرئيسية */
     .btn {
@@ -105,10 +102,7 @@
       display: flex; flex-direction: column; align-items: center;
       justify-content: center; gap: 8px;
     }
-    .btn:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 25px rgba(0,0,0,0.4);
-    }
+    .btn:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
     .content-area {
       background: rgba(15,52,96,0.6);
       backdrop-filter: blur(6px);
@@ -120,13 +114,8 @@
     }
     .content-section { display: none; }
     .active-content { display: block; animation: fadeIn 0.5s ease; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .gift-timer {
-      text-align: center; margin-bottom: 20px; font-size: 1.3rem;
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .gift-timer { text-align: center; margin-bottom: 20px; font-size: 1.3rem; }
     .gift-btn-container { text-align: center; }
     .collect-gift-btn {
       padding: 12px 30px; border-radius: 30px; border: none;
@@ -173,53 +162,33 @@
       border-radius: 10px; padding: 10px; margin-bottom: 5px;
       border: 1px solid rgba(255,255,255,0.15); font-size: 0.95rem;
     }
-    .no-purchases {
-      text-align: center; color: rgba(255,255,255,0.7);
-      font-style: italic; margin-top: 50px;
-    }
-    /* تصميم الإشعارات العامة (النافذة) */
+    .no-purchases { text-align: center; color: rgba(255,255,255,0.7);
+      font-style: italic; margin-top: 50px; }
+    /* تصميم الإشعارات العامة */
     #notifications-modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.75);
       display: none;
-      align-items: center;
-      justify-content: center;
+      align-items: center; justify-content: center;
       z-index: 1300;
     }
     #notifications-modal .modal-content {
-      background: #fff;
-      color: #000;
-      padding: 25px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 500px;
-      text-align: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      max-height: 80vh;
-      overflow-y: auto;
+      background: #fff; color: #000; padding: 25px;
+      border-radius: 10px; width: 90%; max-width: 500px;
+      text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      max-height: 80vh; overflow-y: auto; margin-top: 20px;
     }
-    #notifications-modal .modal-content h2 {
-      margin-bottom: 15px;
-      font-family: 'Playfair Display', serif;
-    }
+    #notifications-modal .modal-content h2 { margin-bottom: 15px; font-family: 'Playfair Display', serif; }
     #notifications-modal .modal-btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      background: #e94560;
-      color: #fff;
-      cursor: pointer;
-      margin-top: 15px;
-      transition: background 0.3s ease;
+      padding: 10px 20px; border: none; border-radius: 5px;
+      background: #e94560; color: #fff; cursor: pointer;
+      margin-top: 15px; transition: background 0.3s ease;
     }
     #notifications-modal .modal-btn:hover { background: #d73850; }
     /* أيقونة المستخدم */
     #user-icon {
-      position: fixed;
-      top: 20px; left: 20px;
-      width: 45px; height: 45px;
-      border-radius: 50%;
+      position: fixed; top: 20px; left: 20px;
+      width: 45px; height: 45px; border-radius: 50%;
       background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M4 21v-2a4 4 0 0 1 3-3.87'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E") no-repeat center;
       background-size: cover;
       cursor: pointer;
@@ -229,8 +198,7 @@
     #user-icon:hover { transform: scale(1.2); }
     /* نماذج التسجيل والدخول وحساب المستخدم والمطور */
     #user-modal, #account-modal, #dev-modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.75);
       display: none;
       align-items: center;
@@ -249,20 +217,16 @@
       border: 1px solid #ccc; border-radius: 5px; font-size: 1rem;
     }
     #user-modal .modal-btn, #dev-modal .modal-btn {
-      padding: 12px 25px;
-      border: none; border-radius: 5px;
-      background: #e94560;
-      color: #fff; cursor: pointer;
+      padding: 12px 25px; border: none; border-radius: 5px;
+      background: #e94560; color: #fff; cursor: pointer;
       font-size: 1.1rem; margin-top: 10px;
       transition: background 0.3s ease;
     }
     #user-modal .modal-btn:hover, #dev-modal .modal-btn:hover { background: #d73850; }
     /* نموذج حساب المستخدم */
     #account-modal .modal-btn {
-      padding: 12px 25px;
-      border: none; border-radius: 5px;
-      background: #d32f2f;
-      color: #fff; cursor: pointer;
+      padding: 12px 25px; border: none; border-radius: 5px;
+      background: #d32f2f; color: #fff; cursor: pointer;
       margin-top: 10px; transition: background 0.3s ease;
       font-size: 1.1rem;
     }
@@ -301,7 +265,7 @@
     </div>
   </div>
   
-  <!-- نموذج حساب المستخدم (يعرض بيانات الحساب مع زر تسجيل الخروج) -->
+  <!-- نموذج حساب المستخدم (عرض بيانات الحساب مع زر تسجيل الخروج) -->
   <div id="account-modal">
     <div class="modal-content" id="account-modal-content">
       <h2>حسابي</h2>
@@ -311,7 +275,7 @@
     </div>
   </div>
   
-  <!-- نموذج المطور (يظهر عند إدخال بيانات المطور في نموذج المستخدم) -->
+  <!-- نموذج المطور (عند إدخال بيانات المطور) -->
   <div id="dev-modal">
     <div class="modal-content" id="dev-modal-content">
       <h2>تسجيل دخول المطور</h2>
@@ -381,15 +345,10 @@
       <!-- قسم خيارات المطور (يظهر فقط إذا كان الحساب مطوراً) -->
       <div id="dev-content" class="content-section">
         <h2 class="content-title">خيارات المطور</h2>
-        <!-- زر إنشاء كوبون (يمكن استخدامه مرة واحدة) -->
         <button class="btn" id="make-code-btn">إنشاء كود</button>
-        <!-- زر نشر إعلان من المطور -->
         <button class="btn" id="publish-announcement-btn">نشر إعلان</button>
-        <!-- زر إضافة سلعة (تُضاف السلعة العشوائية) -->
         <button class="btn" id="add-product-btn">إضافة سلعة</button>
-        <!-- زر لإرسال إشعار عام من المطور (يمكنه كتابة رسالة تظهر للجميع) -->
         <button class="btn" id="send-global-msg-btn">إرسال إشعار</button>
-        <!-- زر لمسح نقاط (كما هو موجود) -->
         <button class="btn" id="remove-points-btn">امسح نقاط</button>
       </div>
     </div>
@@ -398,15 +357,15 @@
   
   <script>
     /******************** تهيئة البيانات ********************/
-    // تهيئة الكوبونات الافتراضية بحيث يكون الكوبون متاحاً للجميع (يُستخدم مرة واحدة فقط)
-    let couponCodes = localStorage.getItem("couponCodes")
-      ? JSON.parse(localStorage.getItem("couponCodes"))
+    // تهيئة الكوبونات الافتراضية إذا كانت فارغة
+    let couponCodes = localStorage.getItem("couponCodes") 
+      ? JSON.parse(localStorage.getItem("couponCodes")) 
       : [{ code: "WELCOME10", points: 10 }];
-    // قائمة السلعة العشوائية تبدأ فارغة
-    let randomItems = localStorage.getItem("randomItems")
-      ? JSON.parse(localStorage.getItem("randomItems"))
+    // نبدأ بقائمة randomItems فارغة
+    let randomItems = localStorage.getItem("randomItems") 
+      ? JSON.parse(localStorage.getItem("randomItems")) 
       : [];
-    // قائمة الإشعارات العامة (الرسائل والإعلانات)
+    // تهيئة الإشعارات العامة (الرسائل)
     let publicNotifications = localStorage.getItem("publicNotifications")
       ? JSON.parse(localStorage.getItem("publicNotifications"))
       : [];
@@ -419,8 +378,8 @@
       currentUser.purchasedItems = { 1: [], 2: [] };
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
     }
-    let purchasedItems = currentUser && currentUser.purchasedItems
-      ? currentUser.purchasedItems
+    let purchasedItems = currentUser && currentUser.purchasedItems 
+      ? currentUser.purchasedItems 
       : { 1: [], 2: [] };
     const GIFT_COOLDOWN = 24 * 60 * 60 * 1000;
     let lastGiftCollected = parseInt(localStorage.getItem("lastGiftCollected") || "0", 10);
@@ -464,6 +423,22 @@
         container.innerHTML = '<p class="no-purchases" id="no-purchases">لا توجد مشتريات حتى الآن</p>';
       }
     }
+    function updatePublicNotificationsModal() {
+      const listEl = document.getElementById("notifications-list");
+      listEl.innerHTML = "";
+      if (publicNotifications.length === 0) {
+        listEl.innerHTML = "<p style='text-align:center;'>لا توجد إشعارات حتى الآن</p>";
+      } else {
+        publicNotifications.forEach(notif => {
+          const div = document.createElement("div");
+          div.style.borderBottom = "1px solid #ccc";
+          div.style.padding = "5px 0";
+          div.style.fontSize = "0.95rem";
+          div.innerText = notif;
+          listEl.appendChild(div);
+        });
+      }
+    }
     function showNotification(message) {
       const notif = document.getElementById("notification");
       notif.innerText = message;
@@ -481,22 +456,6 @@
       localStorage.setItem("randomItems", JSON.stringify(randomItems));
       localStorage.setItem("couponCodes", JSON.stringify(couponCodes));
       localStorage.setItem("publicNotifications", JSON.stringify(publicNotifications));
-    }
-    function updatePublicNotificationsModal() {
-      const listEl = document.getElementById("notifications-list");
-      listEl.innerHTML = "";
-      if (publicNotifications.length === 0) {
-        listEl.innerHTML = "<p style='text-align:center;'>لا توجد إشعارات حتى الآن</p>";
-      } else {
-        publicNotifications.forEach(notif => {
-          const div = document.createElement("div");
-          div.style.borderBottom = "1px solid #ccc";
-          div.style.padding = "5px 0";
-          div.style.fontSize = "0.95rem";
-          div.innerText = notif;
-          listEl.appendChild(div);
-        });
-      }
     }
     
     /******************** عند تحميل الصفحة ********************/
@@ -532,22 +491,21 @@
     document.getElementById("shop-btn").addEventListener("click", () => switchContent("shop-content"));
     document.getElementById("purchases-btn").addEventListener("click", () => { updatePurchasesList(); switchContent("purchases-content"); });
     document.getElementById("import-code-btn").addEventListener("click", () => {
-      let inputCode = prompt("أدخل الكود:");
+      let inputCode = prompt("أدخل الكود:").trim();
       if (inputCode) {
-        let index = couponCodes.findIndex(c => c.code === inputCode);
+        // مقارنة حساسة للحالة
+        let index = couponCodes.findIndex(c => c.code.toLowerCase() === inputCode.toLowerCase());
         if (index !== -1) {
           let coupon = couponCodes[index];
           if (!currentUser) {
             alert("يجب تسجيل الدخول لاستخدام الكود");
             return;
           }
-          // عند استخدام الكود، يتم إضافته لإشعار المدير ونشر رسالة عامة ثم حذفه (يمكن استخدامه مرة واحدة فقط)
           currentUser.points += coupon.points;
           points = currentUser.points;
-          // إضافة إشعار يُظهر من استخدم الكود
+          // إضافة إشعار خاص يُظهر من استخدم الكوبون
           let managerMsg = `تنبيه المدير: الكود "${coupon.code}" تم استخدامه من قبل ${currentUser.name} (${currentUser.email})`;
           publicNotifications.push(managerMsg);
-          // إضافة إشعار عام بأن الكود تم استخدامه
           publicNotifications.push(`تم استخدام الكود "${coupon.code}" ولن يعود متاحاً`);
           couponCodes.splice(index, 1);
           updatePointsDisplay();
@@ -663,7 +621,7 @@
       const password = document.getElementById("user-password").value.trim();
       const name = document.getElementById("user-name").value.trim();
       let users = JSON.parse(localStorage.getItem("users") || "[]");
-      // إذا أدخل المستخدم بيانات المطور، نعتبره مطوراً
+      // إذا أدخل المستخدم بيانات المطور نعتبره مطوراً
       if (email.toLowerCase() === "developer@site.com" && password === "dev123") {
         const devUser = { email, password, name: "المطور", points: 0, purchasedItems: { 1: [], 2: [] }, isDeveloper: true };
         currentUser = devUser;
@@ -772,7 +730,7 @@
       switchContent("dev-content");
     });
     document.getElementById("remove-points-btn").addEventListener("click", () => {
-      const targetEmail = prompt("أدخل البريد الإلكتروني للشخص لمسح النقاط منه:").toLowerCase();
+      const targetEmail = prompt("أدخل البريد الإلكتروني للشخص لمسح النقاط منه:").trim().toLowerCase();
       const amt = parseInt(prompt("أدخل عدد النقاط:"), 10);
       if (!isNaN(amt)) {
         let users = JSON.parse(localStorage.getItem("users") || "[]");
@@ -792,13 +750,11 @@
         }
       }
     });
-    // زر "إنشاء كود" في قسم المطور
     document.getElementById("make-code-btn").addEventListener("click", () => {
-      let code = prompt("أدخل الكود المطلوب:");
+      let code = prompt("أدخل الكود المطلوب:").trim();
       if (code) {
         let pts = parseInt(prompt("أدخل عدد النقاط التي يحصل عليها المستخدم عند استخدام هذا الكود:"), 10);
         if (!isNaN(pts) && pts > 0) {
-          // أضف الكوبون إلى القائمة ثم أضف إشعار عام بأن الكوبون متاح
           couponCodes.push({ code: code, points: pts });
           localStorage.setItem("couponCodes", JSON.stringify(couponCodes));
           publicNotifications.push(`الكود "${code}" بـ ${pts} نقطة متاح للاستخدام`);
@@ -809,18 +765,16 @@
         }
       }
     });
-    // زر "نشر إعلان" في قسم المطور
     document.getElementById("publish-announcement-btn").addEventListener("click", () => {
-      let msg = prompt("أدخل نص الإعلان:");
+      let msg = prompt("أدخل نص الإعلان:").trim();
       if (msg) {
         publicNotifications.push(`إعلان: ${msg}`);
         saveAppData();
         showNotification("تم نشر الإعلان");
       }
     });
-    // زر "إضافة سلعة" في قسم المطور
     document.getElementById("add-product-btn").addEventListener("click", () => {
-      let content = prompt("أدخل محتوى السلعة:");
+      let content = prompt("أدخل محتوى السلعة:").trim();
       if (content) {
         randomItems.push(content);
         localStorage.setItem("randomItems", JSON.stringify(randomItems));
@@ -834,4 +788,4 @@
     updateUserIcon();
   </script>
 </body>
-</html>
+  </html>
