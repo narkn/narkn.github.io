@@ -14,11 +14,11 @@
     .navbar {
       margin-bottom: 20px;
     }
-    /* تنسيق الأقسام العامة */
+    /* الأقسام العامة */
     .section {
       display: none;
       max-width: 900px;
-      margin: auto;
+      margin: 20px auto;
       background-color: #fff;
       padding: 20px;
       border: 1px solid #dee2e6;
@@ -28,7 +28,7 @@
     .section.active {
       display: block;
     }
-    /* تصميم بطاقة السكربت في الصفحة الرئيسية */
+    /* بطاقة السكربت في الصفحة الرئيسية */
     .script-card {
       position: relative;
       cursor: pointer;
@@ -36,7 +36,7 @@
       border: 1px solid #dee2e6;
       border-radius: 5px;
       margin-bottom: 15px;
-      transition: transform 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s;
     }
     .script-card img {
       width: 100%;
@@ -45,22 +45,38 @@
     }
     .script-card:hover {
       transform: scale(1.03);
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
     }
-    /* أيقونات العرض والتاريخ */
-    .overlay {
+    /* فقاعة عدد المشاهدات (على شكل دائرة) */
+    .overlay.views {
       position: absolute;
-      top: 5px;
-      padding: 5px 10px;
+      top: 10px;
+      left: 10px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.8);
+      color: #333;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+    }
+    .overlay.views:hover {
+      transform: scale(1.1);
+    }
+    /* عرض التاريخ على يمين البطاقة */
+    .overlay.date {
+      position: absolute;
+      top: 10px;
+      right: 10px;
       background: rgba(0, 0, 0, 0.6);
       color: #fff;
+      padding: 5px 10px;
       border-radius: 3px;
       font-size: 0.9rem;
-    }
-    .overlay.views {
-      left: 5px;
-    }
-    .overlay.date {
-      right: 5px;
     }
     /* قسم تفاصيل السكربت – واجهة تشفيرة */
     #detailSection {
@@ -114,7 +130,7 @@
       font-size: 0.8rem;
       color: #555;
     }
-    /* أقسام تسجيل الدخول، إنشاء الحساب، والمعلومات */
+    /* أقسام تسجيل الدخول/إنشاء الحساب والمعلومات */
     .auth-container {
       max-width: 500px;
       margin: 20px auto;
@@ -265,11 +281,12 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     // المتغيرات العامة
-    let currentUser = null; // بيانات المستخدم الحالي (تُفقد عند تحديث الصفحة)
+    let currentUser = null; // بيانات المستخدم الحالي (لن يتم حفظها بين التحديثات)
     let publishedScripts = []; 
     // لكل سكربت: { name, code, desc, image, views, date, viewedBy, comments }
+    let currentDetailScriptIndex = null;
     
-    // دالة إظهار قسم معين
+    // دالة إظهار قسم معين (افتراضيًا نعرض الصفحة الرئيسية عند التحميل)
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
       document.getElementById(sectionId).classList.add('active');
@@ -297,7 +314,7 @@
           <div class="overlay views"><i class="bi bi-eye"></i> ${script.views}</div>
           <div class="overlay date">${script.date}</div>
         `;
-        // عند الضغط على البطاقة: زيادة عدد المشاهدات (مرة لكل حساب) ثم عرض صفحة التفاصيل
+        // عند الضغط على البطاقة: تحديث عدد المشاهدات (مرة لكل حساب) ثم عرض صفحة التفاصيل
         cardDiv.addEventListener('click', () => {
           if(currentUser) {
             if(!script.viewedBy.includes(currentUser.id)) {
@@ -315,11 +332,9 @@
       });
     }
     
-    // عرض صفحة تفاصيل السكربت وتقسيمها إلى قسم تفاصيل وتعليقات منفصلين
-    let currentDetailScriptIndex = null;
+    // عرض صفحة تفاصيل السكربت مع فصل قسم التعليقات
     function showScriptDetail(index) {
       const script = publishedScripts[index];
-      // تحديث قسم تفاصيل السكربت
       document.getElementById('detailName').textContent = script.name;
       document.getElementById('detailDesc').textContent = script.desc;
       document.getElementById('detailCode').textContent = script.code;
@@ -351,7 +366,7 @@
       });
     }
     
-    // التحقق من بريد التسجيل (يجب أن ينتهي بـ @gmail.com) وإنشاء الحساب
+    // التحقق من بريد التسجيل وإنشاء الحساب (يجب أن ينتهي بـ @gmail.com)
     function validateRegisterEmail() {
       const email = document.getElementById('registerEmail').value;
       const regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
@@ -360,7 +375,7 @@
         return false;
       }
       const password = document.getElementById('registerPassword').value;
-      const userId = Date.now(); // رقم هوية بسيط
+      const userId = Date.now();
       currentUser = { email, password, id: userId };
       alert("تم إنشاء الحساب بنجاح!");
       showAccountInfo();
@@ -484,11 +499,11 @@
       showSection('homeSection');
     });
     
-    // عند تحميل الصفحة: نبدأ بالصفحة الرئيسية دائمًا
+    // عند تحميل الصفحة: يتم عرض الصفحة الرئيسية دائمًا (حتى وإن كان المستخدم مسجل)
     document.addEventListener('DOMContentLoaded', function() {
       updateScriptsList();
       showSection('homeSection');
     });
   </script>
 </body>
-                                  </html>
+          </html>
