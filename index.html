@@ -32,8 +32,7 @@
     }
     /* الحاوية الرئيسية */
     .container {
-      max-width: 900px;
-      width: 100%;
+      max-width: 900px; width: 100%;
       background: rgba(255,255,255,0.05);
       backdrop-filter: blur(12px);
       border-radius: 25px;
@@ -81,49 +80,34 @@
     .points-display::before { top: -10px; left: -10px; }
     .points-display::after { bottom: -10px; right: -10px; }
     .points-value {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #fff;
+      font-size: 2.5rem; font-weight: bold; color: #fff;
       text-shadow: 0 0 15px rgba(255,255,255,0.6);
     }
     .points-label {
-      font-size: 1.2rem;
-      color: #e94560;
-      margin-top: 8px;
+      font-size: 1.2rem; color: #e94560; margin-top: 8px;
     }
     .buttons {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-bottom: 30px;
+      display: flex; justify-content: center;
+      flex-wrap: wrap; gap: 20px; margin-bottom: 30px;
     }
     /* تصميم الأزرار الرئيسية */
     .btn {
-      flex: 1;
-      min-width: 150px;
+      flex: 1; min-width: 150px;
       padding: 15px 20px;
-      border-radius: 20px;
-      border: none;
+      border-radius: 20px; border: none;
       background: linear-gradient(135deg, #0f3460, #e94560);
-      color: #fff;
-      font-size: 1.1rem;
-      font-weight: bold;
+      color: #fff; font-size: 1.1rem; font-weight: bold;
       cursor: pointer;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 8px;
     }
     .btn:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
     .content-area {
       background: rgba(15,52,96,0.6);
       backdrop-filter: blur(6px);
-      border-radius: 20px;
-      padding: 30px;
+      border-radius: 20px; padding: 30px;
       min-height: 320px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.4);
       border: 1px solid rgba(255,255,255,0.15);
@@ -132,22 +116,14 @@
     .content-section { display: none; }
     .active-content { display: block; animation: fadeIn 0.5s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .gift-timer {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 1.3rem;
-    }
+    .gift-timer { text-align: center; margin-bottom: 20px; font-size: 1.3rem; }
     .gift-btn-container { text-align: center; }
     .collect-gift-btn {
       padding: 12px 30px;
-      border-radius: 30px;
-      border: none;
+      border-radius: 30px; border: none;
       background: linear-gradient(135deg, #e94560, #533483);
-      color: #fff;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      color: #fff; font-size: 1.1rem; font-weight: bold;
+      cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;
       box-shadow: 0 8px 20px rgba(0,0,0,0.3);
     }
     .collect-gift-btn:hover { transform: scale(1.05); }
@@ -159,9 +135,7 @@
     }
     .shop-item {
       background: rgba(255,255,255,0.1);
-      border-radius: 15px;
-      padding: 20px;
-      text-align: center;
+      border-radius: 15px; padding: 20px; text-align: center;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       border: 1px solid rgba(255,255,255,0.15);
     }
@@ -170,66 +144,31 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.4);
       background: rgba(255,255,255,0.15);
     }
-    .item-name {
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #fff;
-      font-size: 1.2rem;
-    }
-    .item-description {
-      font-size: 0.95rem;
-      margin-bottom: 15px;
-      color: rgba(255,255,255,0.85);
-    }
-    .item-price {
-      font-weight: bold;
-      color: #e94560;
-      margin-bottom: 15px;
-      font-size: 1rem;
-    }
+    .item-name { font-weight: bold; margin-bottom: 10px; color: #fff; font-size: 1.2rem; }
+    .item-description { font-size: 0.95rem; margin-bottom: 15px; color: rgba(255,255,255,0.85); }
+    .item-price { font-weight: bold; color: #e94560; margin-bottom: 15px; font-size: 1rem; }
     .buy-btn {
-      padding: 8px 15px;
-      border-radius: 20px;
-      border: none;
+      padding: 8px 15px; border-radius: 20px; border: none;
       background: linear-gradient(135deg, #e94560, #533483);
-      color: #fff;
-      font-size: 0.95rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      color: #fff; font-size: 0.95rem; font-weight: bold;
+      cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;
       width: 100%;
     }
     .buy-btn:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
     /* تصميم المشتريات */
     .purchase-section { margin-bottom: 20px; }
-    .purchase-section h3 {
-      margin-bottom: 10px;
-      color: #e94560;
-      font-size: 1.2rem;
-    }
+    .purchase-section h3 { margin-bottom: 10px; color: #e94560; font-size: 1.2rem; }
     .purchase-item {
       background: rgba(255,255,255,0.1);
-      border-radius: 10px;
-      padding: 10px;
-      margin-bottom: 5px;
-      border: 1px solid rgba(255,255,255,0.15);
-      font-size: 0.95rem;
+      border-radius: 10px; padding: 10px; margin-bottom: 5px;
+      border: 1px solid rgba(255,255,255,0.15); font-size: 0.95rem;
     }
-    .no-purchases {
-      text-align: center;
-      color: rgba(255,255,255,0.7);
-      font-style: italic;
-      margin-top: 50px;
-    }
+    .no-purchases { text-align: center; color: rgba(255,255,255,0.7); font-style: italic; margin-top: 50px; }
     /* تصميم الإشعارات */
     .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(15,52,96,0.9);
-      color: #fff;
-      padding: 15px 25px;
-      border-radius: 10px;
+      position: fixed; top: 20px; right: 20px;
+      background: rgba(15,52,96,0.9); color: #fff;
+      padding: 15px 25px; border-radius: 10px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.4);
       transform: translateX(150%);
       transition: transform 0.5s ease;
@@ -238,12 +177,8 @@
     .notification.show { transform: translateX(0); }
     /* أيقونة المستخدم */
     #user-icon {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
+      position: fixed; top: 20px; left: 20px;
+      width: 45px; height: 45px; border-radius: 50%;
       background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M4 21v-2a4 4 0 0 1 3-3.87'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E") no-repeat center;
       background-size: cover;
       cursor: pointer;
@@ -253,8 +188,7 @@
     #user-icon:hover { transform: scale(1.2); }
     /* نماذج التسجيل والدخول وحساب المستخدم والمطور */
     #user-modal, #account-modal, #dev-modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.75);
       display: none;
       align-items: center;
@@ -264,14 +198,9 @@
     #user-modal .modal-content,
     #account-modal .modal-content,
     #dev-modal .modal-content {
-      background: #fff;
-      color: #000;
-      padding: 25px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      background: #fff; color: #000; padding: 25px;
+      border-radius: 10px; width: 90%; max-width: 400px;
+      text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.3);
     }
     #user-modal input, #dev-modal input {
       width: 100%;
@@ -327,8 +256,7 @@
     }
     #support-btn:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
     .support-icon {
-      width: 24px;
-      height: 24px;
+      width: 24px; height: 24px;
     }
   </style>
 </head>
@@ -344,9 +272,7 @@
       <input type="password" id="user-password" placeholder="كلمة المرور">
       <input type="text" id="user-name" placeholder="الاسم" style="display:none;">
       <button class="modal-btn" id="user-submit-btn">دخول</button>
-      <p id="user-toggle-text" style="cursor:pointer; color:#e94560; margin-top:10px;">
-        ليس لديك حساب؟ انشئ حساب
-      </p>
+      <p id="user-toggle-text" style="cursor:pointer; color:#e94560; margin-top:10px;">ليس لديك حساب؟ انشئ حساب</p>
     </div>
   </div>
   
@@ -390,7 +316,7 @@
           <img class="support-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4l-8 5-8-5V6l8 5 8-5z'/%3E%3C/svg%3E" alt="Email">
         </a>
       </button>
-      <!-- زر المطور يظهر فقط إذا كان currentUser مطوراً -->
+      <!-- زر المطور يظهر فقط إذا كان المستخدم مطوراً -->
       <button class="btn" id="dev-btn" style="display:none;">أكتب المطور</button>
     </div>
     <div class="content-area">
@@ -416,7 +342,7 @@
           <p class="no-purchases" id="no-purchases">لا توجد مشتريات حتى الآن</p>
         </div>
       </div>
-      <!-- قسم خيارات المطور (يظهر فقط إذا كان currentUser مطوراً) -->
+      <!-- قسم خيارات المطور (يظهر فقط إذا كان المستخدم مطوراً) -->
       <div id="dev-content" class="content-section">
         <h2 class="content-title">خيارات المطور</h2>
         <button class="btn" id="remove-points-btn">امسح نقاط</button>
@@ -429,13 +355,26 @@
   
   <script>
     /******************** المتغيرات والبيانات ********************/
-    let currentUser = localStorage.getItem("currentUser") ? JSON.parse(localStorage.getItem("currentUser")) : null;
+    // ملاحظة: لتعزيز إمكانية استخدام الكوبونات والسلع على أجهزة مختلفة،
+    // نُهيئ بعض القيم الافتراضية إذا كانت غير موجودة في localStorage.
+    let couponCodes = localStorage.getItem("couponCodes") 
+      ? JSON.parse(localStorage.getItem("couponCodes")) 
+      : [{ code: "WELCOME10", points: 10 }];  // كوبون افتراضي
+    let randomItems = localStorage.getItem("randomItems") 
+      ? JSON.parse(localStorage.getItem("randomItems")) 
+      : ["منتج افتراضي 1", "منتج افتراضي 2"]; // منتجات افتراضية
+    
+    let currentUser = localStorage.getItem("currentUser") 
+      ? JSON.parse(localStorage.getItem("currentUser")) 
+      : null;
     let points = currentUser ? currentUser.points : 0;
     if(currentUser && !currentUser.purchasedItems) {
       currentUser.purchasedItems = { 1: [], 2: [] };
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
     }
-    let purchasedItems = currentUser && currentUser.purchasedItems ? currentUser.purchasedItems : { 1: [], 2: [] };
+    let purchasedItems = currentUser && currentUser.purchasedItems 
+      ? currentUser.purchasedItems 
+      : { 1: [], 2: [] };
     const GIFT_COOLDOWN = 24 * 60 * 60 * 1000;
     let lastGiftCollected = parseInt(localStorage.getItem("lastGiftCollected") || "0", 10);
     
@@ -443,8 +382,6 @@
       { id: 1, name: 'سلعة عشوائية', description: 'شراء عنصر عشوائي (المحتوى يُضاف عبر زر "إضافة سلعة")', price: 5, type: 'random' },
       { id: 2, name: 'حزمة VIP', description: 'حزمة تمنحك مزايا حصرية', price: 50, type: 'fixed' }
     ];
-    let randomItems = localStorage.getItem("randomItems") ? JSON.parse(localStorage.getItem("randomItems")) : [];
-    let couponCodes = localStorage.getItem("couponCodes") ? JSON.parse(localStorage.getItem("couponCodes")) : [];
     
     /******************** دوال التحديث والحفظ ********************/
     function updatePointsDisplay() {
@@ -542,12 +479,12 @@
           }
           currentUser.points += coupon.points;
           points = currentUser.points;
-          // عدم حذف الكود بحيث يبقى متاحاً
+          // لا نقوم بحذف الكود حتى يكون متاحاً على أجهزة أخرى
           updatePointsDisplay();
           saveAppData();
           showNotification(`تم استيراد الكود وإضافة ${coupon.points} نقطة`);
         } else {
-          alert("الكود غير موجود أو تم استخدامه بالفعل");
+          alert("الكود غير موجود");
         }
       }
     });
@@ -604,7 +541,6 @@
           if(item.type === "random") {
             if(randomItems.length > 0) {
               const randIndex = Math.floor(Math.random() * randomItems.length);
-              // حذف العنصر من القائمة دون إظهاره في التنبيه
               currentUser.purchasedItems[item.id].push(randomItems[randIndex]);
               randomItems.splice(randIndex, 1);
               alert("تم شراء السلعة بنجاح");
