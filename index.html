@@ -4,19 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>موقع السكربتات المتكامل</title>
-  <!-- ربط Bootstrap -->
+  <!-- ربط Bootstrap وأيقونات Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- يمكن ربط أيقونات Bootstrap (اختياري) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
       background-color: #f8f9fa;
     }
-    /* تنسيق الشريط العلوي */
+    /* شريط التنقل */
     .navbar {
       margin-bottom: 20px;
     }
-    /* أقسام الصفحة الرئيسية */
+    /* تنسيق الأقسام العامة */
     .section {
       display: none;
       max-width: 900px;
@@ -27,18 +26,48 @@
       border-radius: 5px;
       margin-bottom: 20px;
     }
-    /* إظهار القسم النشط */
     .section.active {
       display: block;
     }
-    /* بعض التنسيقات لبطاقات السكربتات */
+    /* تصميم بطاقة السكربت في الصفحة الرئيسية (عرض الصورة فقط) */
     .script-card {
+      cursor: pointer;
+      overflow: hidden;
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
       margin-bottom: 15px;
+      transition: transform 0.3s;
+    }
+    .script-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .script-card:hover {
+      transform: scale(1.03);
+    }
+    /* تصميم صفحة تفاصيل السكربت بنمط "محرر البرمجة" */
+    #detailSection {
+      background-color: #2d2d2d;
+      color: #f8f8f2;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    #detailSection h2 {
+      color: #66d9ef;
+    }
+    #detailSection .detail-desc {
+      margin-bottom: 20px;
+    }
+    #detailSection pre {
+      background-color: #272822;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+      font-size: 0.95rem;
     }
   </style>
 </head>
 <body>
-
   <!-- شريط التنقل -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
@@ -48,7 +77,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <!-- زر الرئيسية -->
+          <!-- زر الصفحة الرئيسية -->
           <li class="nav-item">
             <a class="nav-link" href="#" id="navHome">الرئيسية</a>
           </li>
@@ -57,7 +86,7 @@
             <a class="nav-link" href="#" id="navPostScript">نشر سكربت</a>
           </li>
         </ul>
-        <!-- أيقونة الحساب -->
+        <!-- زر الحساب -->
         <button class="btn btn-outline-light" id="accountBtn">
           <i class="bi bi-person-circle"></i> الحساب
         </button>
@@ -65,7 +94,7 @@
     </div>
   </nav>
 
-  <!-- قسم الصفحة الرئيسية (عرض السكربتات المنشورة) -->
+  <!-- قسم الصفحة الرئيسية: عرض السكربتات المنشورة (يظهر صورة فقط) -->
   <div id="homeSection" class="section active">
     <h2 class="mb-3">السكربتات المنشورة</h2>
     <!-- حقل البحث -->
@@ -73,8 +102,8 @@
       <input type="text" id="searchInput" class="form-control" placeholder="ابحث عن سكربت">
       <button class="btn btn-outline-secondary" id="searchBtn" type="button">بحث</button>
     </div>
-    <!-- قائمة عرض السكربتات -->
-    <div id="scriptsList"></div>
+    <!-- قائمة عرض السكربتات (بطاقات الصور) -->
+    <div id="scriptsList" class="row g-3"></div>
   </div>
 
   <!-- قسم نشر سكربت جديد -->
@@ -99,6 +128,15 @@
       </div>
       <button type="submit" class="btn btn-primary">نشر السكربت</button>
     </form>
+  </div>
+
+  <!-- قسم تفاصيل السكربت (واجهة برمجة) -->
+  <div id="detailSection" class="section">
+    <button class="btn btn-secondary mb-3" id="backToHome"><i class="bi bi-arrow-return-left"></i> العودة للرئيسية</button>
+    <h2 id="detailName"></h2>
+    <p class="detail-desc" id="detailDesc"></p>
+    <h5>الكود:</h5>
+    <pre id="detailCode"></pre>
   </div>
 
   <!-- قسم تسجيل الدخول وإنشاء الحساب -->
@@ -147,7 +185,7 @@
     </div>
   </div>
 
-  <!-- قسم حساب المستخدم -->
+  <!-- قسم معلومات الحساب -->
   <div id="accountSection" class="section">
     <h2 class="mb-3">معلومات الحساب</h2>
     <p><strong>البريد الإلكتروني:</strong> <span id="accEmail"></span></p>
@@ -159,11 +197,11 @@
   <!-- سكربتات Bootstrap وJavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // المتغيرات العالمية
-    let currentUser = null; // سيتم تخزين بيانات المستخدم هنا عند التسجيل أو تسجيل الدخول
-    let publishedScripts = []; // مصفوفة لتخزين السكربتات المنشورة
+    // المتغيرات العامة
+    let currentUser = null; // بيانات المستخدم بعد التسجيل/تسجيل الدخول
+    let publishedScripts = []; // لتخزين السكربتات المنشورة
 
-    // وظيفة إظهار قسم معين وإخفاء الأقسام الأخرى
+    // دالة إظهار قسم معين وإخفاء الأقسام الأخرى
     function showSection(sectionId) {
       const sections = document.querySelectorAll('.section');
       sections.forEach(sec => sec.classList.remove('active'));
@@ -171,6 +209,7 @@
     }
 
     // تحديث عرض السكربتات في الصفحة الرئيسية
+    // هنا يتم عرض بطاقة لكل سكربت تحتوي على الصورة فقط، وعند الضغط تستدعي دالة عرض التفاصيل
     function updateScriptsList(filter = "") {
       const listDiv = document.getElementById('scriptsList');
       listDiv.innerHTML = "";
@@ -182,28 +221,32 @@
         listDiv.innerHTML = "<p class='text-muted'>لا توجد سكربتات منشورة.</p>";
         return;
       }
-      filteredScripts.forEach(script => {
-        const card = document.createElement('div');
-        card.className = "card script-card";
-        card.innerHTML = `
-          <div class="row g-0">
-            <div class="col-md-4">
-              <img src="${script.image}" class="img-fluid rounded-start" alt="صورة السكربت">
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title">${script.name}</h5>
-                <p class="card-text">${script.desc}</p>
-                <pre class="card-text bg-light p-2">${script.code}</pre>
-              </div>
-            </div>
-          </div>
-        `;
-        listDiv.appendChild(card);
+      filteredScripts.forEach((script, index) => {
+        // تصميم البطاقة باستخدام Bootstrap grid
+        const colDiv = document.createElement('div');
+        colDiv.className = "col-sm-6 col-md-4";
+        const cardDiv = document.createElement('div');
+        cardDiv.className = "script-card";
+        cardDiv.innerHTML = `<img src="${script.image}" alt="صورة السكربت">`;
+        // عند الضغط على البطاقة يتم استدعاء دالة عرض تفاصيل السكربت
+        cardDiv.addEventListener('click', () => {
+          showScriptDetail(index);
+        });
+        colDiv.appendChild(cardDiv);
+        listDiv.appendChild(colDiv);
       });
     }
 
-    // التحقق من بريد التسجيل (@gmail.com)
+    // دالة عرض تفاصيل السكربت في صفحة مخصصة بنمط واجهة برمجة
+    function showScriptDetail(index) {
+      const script = publishedScripts[index];
+      document.getElementById('detailName').textContent = script.name;
+      document.getElementById('detailDesc').textContent = script.desc;
+      document.getElementById('detailCode').textContent = script.code;
+      showSection('detailSection');
+    }
+
+    // التحقق من بريد التسجيل (يجب أن يكون @gmail.com)
     function validateRegisterEmail() {
       const email = document.getElementById('registerEmail').value;
       const regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
@@ -211,10 +254,9 @@
         alert("يجب استخدام بريد إلكتروني ينتهي بـ @gmail.com");
         return false;
       }
-      // إنشاء حساب جديد
+      // إنشاء الحساب
       const password = document.getElementById('registerPassword').value;
-      // توليد رقم هوية بسيط (مثال: باستخدام الوقت الحالي)
-      const userId = Date.now();
+      const userId = Date.now(); // رقم هوية بسيط يعتمد على الوقت
       currentUser = { email, password, id: userId };
       alert("تم إنشاء الحساب بنجاح!");
       showAccountInfo();
@@ -226,7 +268,6 @@
       e.preventDefault();
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
-      // في هذا المثال البسيط، إذا كان المستخدم قد قام بإنشاء حساب مسبقاً
       if(currentUser && currentUser.email === email && currentUser.password === password) {
         alert("تم تسجيل الدخول بنجاح!");
         showAccountInfo();
@@ -235,7 +276,7 @@
       }
     });
 
-    // عرض صفحة الحساب
+    // عرض معلومات الحساب
     function showAccountInfo() {
       document.getElementById('accEmail').textContent = currentUser.email;
       document.getElementById('accPassword').textContent = currentUser.password;
@@ -243,14 +284,14 @@
       showSection('accountSection');
     }
 
-    // معالجة تسجيل الخروج
+    // تسجيل الخروج
     document.getElementById('logoutBtn').addEventListener('click', function() {
       currentUser = null;
       alert("تم تسجيل الخروج");
       showSection('loginSection');
     });
 
-    // زر الحساب في الشريط العلوي
+    // زر الحساب في شريط التنقل
     document.getElementById('accountBtn').addEventListener('click', function() {
       if(currentUser) {
         showAccountInfo();
@@ -259,7 +300,7 @@
       }
     });
 
-    // معالجة تنقل شريط التنقل
+    // التنقل عبر شريط التنقل
     document.getElementById('navHome').addEventListener('click', function(e) {
       e.preventDefault();
       updateScriptsList();
@@ -268,7 +309,6 @@
 
     document.getElementById('navPostScript').addEventListener('click', function(e) {
       e.preventDefault();
-      // التأكد من تسجيل الدخول قبل نشر سكربت (يمكنك تفعيل هذه الخاصية حسب الحاجة)
       if(!currentUser) {
         alert("يرجى تسجيل الدخول أولاً");
         showSection('loginSection');
@@ -277,7 +317,7 @@
       showSection('postScriptSection');
     });
 
-    // معالجة البحث في الصفحة الرئيسية
+    // معالجة البحث
     document.getElementById('searchInput').addEventListener('input', function() {
       updateScriptsList(this.value);
     });
@@ -285,7 +325,7 @@
       updateScriptsList(document.getElementById('searchInput').value);
     });
 
-    // معالجة نشر السكربت الجديد
+    // نشر سكربت جديد
     document.getElementById('postScriptForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const name = document.getElementById('scriptName').value;
@@ -293,27 +333,30 @@
       const desc = document.getElementById('scriptDesc').value;
       const imageInput = document.getElementById('scriptImage');
       let imageURL = "";
-      // إذا اختار المستخدم صورة، نستخدم الكائن URL لعرض معاينة الصورة
       if(imageInput.files && imageInput.files[0]) {
         imageURL = URL.createObjectURL(imageInput.files[0]);
       } else {
-        // صورة افتراضية (يمكنك تغيير الرابط إلى صورة برمجة مناسبة)
+        // صورة افتراضية تعبر عن البرمجة (يمكن تغيير الرابط لصورة فخمة تناسب التصميم)
         imageURL = "https://via.placeholder.com/300x200?text=Programming";
       }
-      // إنشاء كائن السكربت وإضافته للمصفوفة
       const newScript = { name, code, desc, image: imageURL };
-      publishedScripts.unshift(newScript); // إضافة في البداية ليظهر أحدث السكربتات أولاً
+      publishedScripts.unshift(newScript);
       alert("تم نشر السكربت!");
       this.reset();
       updateScriptsList();
       showSection('homeSection');
     });
 
-    // عند تحميل الصفحة، يمكن عرض الصفحة الرئيسية افتراضيًا
+    // زر العودة من صفحة التفاصيل إلى الصفحة الرئيسية
+    document.getElementById('backToHome').addEventListener('click', function() {
+      showSection('homeSection');
+    });
+
+    // عند تحميل الصفحة، عرض الصفحة الرئيسية افتراضيًا
     document.addEventListener('DOMContentLoaded', function() {
       updateScriptsList();
       showSection('homeSection');
     });
   </script>
 </body>
-            </html>
+</html>
