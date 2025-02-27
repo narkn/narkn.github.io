@@ -47,7 +47,7 @@
       transform: scale(1.03);
       box-shadow: 0 0 15px rgba(0,0,0,0.3);
     }
-    /* فقاعة عدد المشاهدات (على شكل دائرة) */
+    /* فقاعة عرض المشاهدات على شكل دائرة */
     .overlay.views {
       position: absolute;
       top: 10px;
@@ -280,13 +280,34 @@
   <!-- سكربتات Bootstrap وJavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // المتغيرات العامة
-    let currentUser = null; // بيانات المستخدم الحالي (لن يتم حفظها بين التحديثات)
+    /***************** المتغيرات العامة والتخزين المحلي *****************/
+    let currentUser = null; // بيانات المستخدم الحالي
     let publishedScripts = []; 
-    // لكل سكربت: { name, code, desc, image, views, date, viewedBy, comments }
     let currentDetailScriptIndex = null;
-    
-    // دالة إظهار قسم معين (افتراضيًا نعرض الصفحة الرئيسية عند التحميل)
+
+    // حفظ البيانات في localStorage
+    function saveData() {
+      localStorage.setItem("publishedScripts", JSON.stringify(publishedScripts));
+      if(currentUser) {
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      } else {
+        localStorage.removeItem("currentUser");
+      }
+    }
+    // تحميل البيانات من localStorage
+    function loadData() {
+      const scriptsData = localStorage.getItem("publishedScripts");
+      if(scriptsData) {
+        publishedScripts = JSON.parse(scriptsData);
+      }
+      const userData = localStorage.getItem("currentUser");
+      if(userData) {
+        currentUser = JSON.parse(userData);
+      }
+    }
+
+    /***************** الدوال العامة *****************/
+    // إظهار قسم معين
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
       document.getElementById(sectionId).classList.add('active');
@@ -324,6 +345,7 @@
           } else {
             script.views++;
           }
+          saveData();
           updateScriptsList();
           showScriptDetail(index);
         });
@@ -366,6 +388,7 @@
       });
     }
     
+    /***************** تسجيل الدخول وإنشاء الحساب *****************/
     // التحقق من بريد التسجيل وإنشاء الحساب (يجب أن ينتهي بـ @gmail.com)
     function validateRegisterEmail() {
       const email = document.getElementById('registerEmail').value;
@@ -378,6 +401,7 @@
       const userId = Date.now();
       currentUser = { email, password, id: userId };
       alert("تم إنشاء الحساب بنجاح!");
+      saveData();
       showAccountInfo();
       return false;
     }
@@ -406,6 +430,7 @@
     // تسجيل الخروج
     document.getElementById('logoutBtn').addEventListener('click', function() {
       currentUser = null;
+      saveData();
       alert("تم تسجيل الخروج");
       showSection('loginSection');
     });
@@ -419,7 +444,7 @@
       }
     });
     
-    // التنقل عبر شريط التنقل
+    /***************** التنقل والبحث *****************/
     document.getElementById('navHome').addEventListener('click', function(e) {
       e.preventDefault();
       updateScriptsList();
@@ -434,8 +459,6 @@
       }
       showSection('postScriptSection');
     });
-    
-    // البحث في الصفحة الرئيسية
     document.getElementById('searchInput').addEventListener('input', function() {
       updateScriptsList(this.value);
     });
@@ -443,7 +466,7 @@
       updateScriptsList(document.getElementById('searchInput').value);
     });
     
-    // نشر سكربت جديد
+    /***************** نشر سكربت جديد *****************/
     document.getElementById('postScriptForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const name = document.getElementById('scriptName').value;
@@ -468,13 +491,14 @@
         comments: [] 
       };
       publishedScripts.unshift(newScript);
+      saveData();
       alert("تم نشر السكربت!");
       this.reset();
       updateScriptsList();
       showSection('homeSection');
     });
     
-    // إضافة تعليق في صفحة التفاصيل
+    /***************** إضافة تعليق *****************/
     document.getElementById('commentForm').addEventListener('submit', function(e) {
       e.preventDefault();
       if(!currentUser) {
@@ -489,6 +513,7 @@
       };
       if(currentDetailScriptIndex !== null) {
         publishedScripts[currentDetailScriptIndex].comments.push(comment);
+        saveData();
         updateCommentsList();
         this.reset();
       }
@@ -499,11 +524,13 @@
       showSection('homeSection');
     });
     
-    // عند تحميل الصفحة: يتم عرض الصفحة الرئيسية دائمًا (حتى وإن كان المستخدم مسجل)
+    /***************** عند تحميل الصفحة *****************/
     document.addEventListener('DOMContentLoaded', function() {
+      loadData();
       updateScriptsList();
+      // نعرض الصفحة الرئيسية افتراضيًا بغض النظر عن وجود حساب
       showSection('homeSection');
     });
   </script>
 </body>
-          </html>
+</html>
