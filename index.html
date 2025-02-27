@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -78,17 +78,6 @@
       border-radius: 3px;
       font-size: 0.9rem;
     }
-    /* معلومات السكربت أسفل الصورة */
-    .script-info {
-      padding: 10px;
-      background-color: #f8f8f8;
-    }
-    .script-info h5 {
-      margin: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
     /* قسم تفاصيل السكربت – واجهة تشفيرة */
     #detailSection {
       background-color: #2d2d2d;
@@ -150,27 +139,10 @@
       border-radius: 5px;
       background-color: #fff;
     }
-    /* لون نص التاب المحدد */
-    .nav-tabs .nav-link.active {
-      color: #0d6efd;
-      font-weight: bold;
-    }
-    /* إضافة إشارة للمستخدم المسجل دخوله */
-    .logged-in-indicator {
-      color: #fff;
-      background-color: #28a745;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 0.8rem;
-      margin-right: 5px;
-    }
-    /* إصلاح طول نص زائد */
-    .truncate {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
   </style>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
   <!-- شريط التنقل -->
@@ -186,12 +158,12 @@
           <li class="nav-item"><a class="nav-link" href="#" id="navPostScript">نشر سكربت</a></li>
         </ul>
         <button class="btn btn-outline-light" id="accountBtn">
-          <i class="bi bi-person-circle"></i> <span id="accountBtnText">الحساب</span>
+          <i class="bi bi-person-circle"></i> الحساب
         </button>
       </div>
     </div>
   </nav>
-
+  
   <!-- الصفحة الرئيسية: عرض السكربتات المنشورة -->
   <div id="homeSection" class="section active">
     <h2 class="mb-3">السكربتات المنشورة</h2>
@@ -202,7 +174,7 @@
     </div>
     <div id="scriptsList" class="row g-3"></div>
   </div>
-
+  
   <!-- قسم نشر سكربت جديد -->
   <div id="postScriptSection" class="section">
     <h2 class="mb-3">نشر سكربت جديد</h2>
@@ -220,23 +192,13 @@
         <textarea class="form-control" id="scriptDesc" rows="3" required></textarea>
       </div>
       <div class="mb-3">
-        <label for="scriptCategory" class="form-label">الفئة</label>
-        <select class="form-control" id="scriptCategory" required>
-          <option value="javascript">JavaScript</option>
-          <option value="python">Python</option>
-          <option value="php">PHP</option>
-          <option value="html">HTML/CSS</option>
-          <option value="other">أخرى</option>
-        </select>
-      </div>
-      <div class="mb-3">
         <label for="scriptImage" class="form-label">اختيار صورة (اختياري)</label>
         <input type="file" class="form-control" id="scriptImage" accept="image/*">
       </div>
       <button type="submit" class="btn btn-primary">نشر السكربت</button>
     </form>
   </div>
-
+  
   <!-- قسم تفاصيل السكربت مع قسم منفصل للتعليقات -->
   <div id="detailSection" class="section">
     <button class="btn btn-secondary mb-3" id="backToHome">
@@ -246,16 +208,9 @@
     <div id="scriptDetails">
       <img id="detailImage" src="" alt="صورة السكربت">
       <h2 id="detailName"></h2>
-      <div class="d-flex justify-content-between mb-2">
-        <span><i class="bi bi-person-circle"></i> <span id="detailAuthor"></span></span>
-        <span><i class="bi bi-calendar3"></i> <span id="detailDate"></span></span>
-      </div>
       <p class="detail-desc" id="detailDesc"></p>
       <h5>الكود:</h5>
       <pre id="detailCode"></pre>
-      <button class="btn btn-info mb-3" id="copyCodeBtn">
-        <i class="bi bi-clipboard"></i> نسخ الكود
-      </button>
     </div>
     <hr style="border-color: #555;">
     <!-- قسم التعليقات المنفصل -->
@@ -270,7 +225,7 @@
       </form>
     </div>
   </div>
-
+  
   <!-- قسم تسجيل الدخول وإنشاء الحساب -->
   <div id="loginSection" class="section auth-container">
     <h2 class="mb-3 text-center">تسجيل الدخول وإنشاء الحساب</h2>
@@ -299,11 +254,7 @@
       </div>
       <!-- نموذج إنشاء الحساب -->
       <div class="tab-pane fade" id="registerTab" role="tabpanel">
-        <form id="registerForm">
-          <div class="mb-3">
-            <label for="registerName" class="form-label">الاسم</label>
-            <input type="text" class="form-control" id="registerName" required>
-          </div>
+        <form id="registerForm" onsubmit="return validateRegisterEmail();">
           <div class="mb-3">
             <label for="registerEmail" class="form-label">
               البريد الإلكتروني <span class="text-danger">(يجب أن يكون @gmail.com)</span>
@@ -319,305 +270,309 @@
       </div>
     </div>
   </div>
-
+  
   <!-- قسم معلومات الحساب -->
   <div id="accountSection" class="section auth-container">
     <h2 class="mb-3">معلومات الحساب</h2>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title"><i class="bi bi-person-badge"></i> البيانات الشخصية</h5>
-        <p><strong>الاسم:</strong> <span id="accName"></span></p>
-        <p><strong>البريد الإلكتروني:</strong> <span id="accEmail"></span></p>
-        <p><strong>رقم المستخدم:</strong> <span id="accId"></span></p>
-      </div>
-    </div>
-    
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title"><i class="bi bi-code-square"></i> إحصائيات</h5>
-        <p><strong>عدد السكربتات المنشورة:</strong> <span id="accScriptsCount"></span></p>
-        <p><strong>عدد التعليقات:</strong> <span id="accCommentsCount"></span></p>
-      </div>
-    </div>
-    
+    <p><strong>البريد الإلكتروني:</strong> <span id="accEmail"></span></p>
+    <p><strong>كلمة المرور:</strong> <span id="accPassword"></span></p>
+    <p><strong>رقم الهوية:</strong> <span id="accId"></span></p>
     <button class="btn btn-danger" id="logoutBtn">تسجيل الخروج</button>
   </div>
-
-  <!-- إشعار النجاح -->
-  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-    <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-header bg-success text-white">
-        <strong class="me-auto"><i class="bi bi-check-circle"></i> تم بنجاح</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-      <div class="toast-body" id="toastMessage">
-        تمت العملية بنجاح
-      </div>
-    </div>
-  </div>
-
-  <!-- سكربتات Bootstrap وJavaScript -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- سكربتات JavaScript -->
   <script>
-    /***************** المتغيرات العامة والتخزين المحلي *****************/
-    let currentUser = null; // بيانات المستخدم الحالي
-    let users = []; // قاعدة بيانات المستخدمين
-    let publishedScripts = []; // قائمة السكربتات المنشورة
-    let currentDetailScriptIndex = null; // مؤشر السكربت المعروض حاليًا
-    
-    // مُعرِّف المخزن المشترك (محاكاة قاعدة بيانات مشتركة)
-    const SHARED_DB_KEY = 'shared_scripts_database';
-    const USERS_DB_KEY = 'shared_users_database';
-    
-    // إظهار رسالة نجاح
-    function showSuccess(message) {
-      document.getElementById('toastMessage').textContent = message;
-      const toast = new bootstrap.Toast(document.getElementById('successToast'));
-      toast.show();
-    }
-    
-    // حفظ البيانات في localStorage (بما في ذلك المستخدمين)
-    function saveData() {
-      // حفظ السكربتات في مخزن مشترك
-      localStorage.setItem(SHARED_DB_KEY, JSON.stringify(publishedScripts));
-      // حفظ المستخدمين في مخزن مشترك
-      localStorage.setItem(USERS_DB_KEY, JSON.stringify(users));
-      // حفظ المستخدم الحالي في جلسة المتصفح
+    /***************** إعداد Firebase *****************/
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      databaseURL: "YOUR_DATABASE_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    // تهيئة Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    /***************** المتغيرات العامة *****************/
+    let currentUser = null; // بيانات المستخدم الحالي (يُخزن محلياً)
+    let publishedScripts = [];   
+    let currentDetailScript = null;
+
+    // حفظ بيانات المستخدم الحالي في localStorage
+    function saveCurrentUser() {
       if(currentUser) {
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
-        // تحديث زر الحساب ليظهر اسم المستخدم
-        document.getElementById('accountBtnText').innerHTML = `
-          <span class="logged-in-indicator">متصل</span> ${currentUser.name}
-        `;
       } else {
         localStorage.removeItem("currentUser");
-        document.getElementById('accountBtnText').textContent = "الحساب";
       }
     }
-    
-    // تحميل البيانات من localStorage
-    function loadData() {
-      // تحميل السكربتات من المخزن المشترك
-      const scriptsData = localStorage.getItem(SHARED_DB_KEY);
-      if(scriptsData) {
-        publishedScripts = JSON.parse(scriptsData);
-      } else {
-        // إضافة بعض السكربتات الافتراضية إذا كان المخزن فارغًا
-        publishedScripts = [
-          {
-            id: "script1",
-            name: "سكربت تنسيق النصوص",
-            code: `function formatText(text, options = {}) {
-  // خيارات افتراضية
-  const defaults = {
-    bold: false,
-    italic: false,
-    color: 'black',
-    size: '16px'
-  };
-  
-  // دمج الخيارات مع القيم الافتراضية
-  const settings = {...defaults, ...options};
-  
-  // إنشاء النص المنسق
-  let formattedText = text;
-  
-  if (settings.bold) {
-    formattedText = \`<strong>\${formattedText}</strong>\`;
-  }
-  
-  if (settings.italic) {
-    formattedText = \`<em>\${formattedText}</em>\`;
-  }
-  
-  // إرجاع النص بعد التنسيق
-  return \`<span style="color: \${settings.color}; font-size: \${settings.size};">
-    \${formattedText}
-  </span>\`;
-}`,
-            desc: "سكربت JavaScript لتنسيق النصوص وتغيير حجمها ولونها وإضافة تأثيرات مثل العريض والمائل.",
-            image: "https://via.placeholder.com/300x200?text=JavaScript+Formatter",
-            category: "javascript",
-            author: "admin@gmail.com",
-            authorName: "المدير",
-            authorId: "admin123",
-            views: 125,
-            viewedBy: [],
-            date: "01/02/2024",
-            comments: [
-              {
-                author: "user@gmail.com",
-                authorName: "مستخدم جديد",
-                text: "شكراً على هذا السكربت المفيد!",
-                date: "02/02/2024"
-              }
-            ]
-          },
-          {
-            id: "script2",
-            name: "محول التاريخ الهجري",
-            code: `function convertToHijri(gregorianDate) {
-  // التحويل من الميلادي إلى الهجري (نسخة مبسطة)
-  const date = new Date(gregorianDate);
-  
-  // الحصول على العناصر من التاريخ الميلادي
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  
-  // معادلة تقريبية للتحويل
-  // (هذه معادلة مبسطة، يمكن استخدام مكتبة خارجية للحصول على دقة أفضل)
-  const hijriYear = Math.floor((year - 622) * (33/32));
-  
-  // أسماء الأشهر الهجرية
-  const hijriMonths = [
-    "محرم", "صفر", "ربيع الأول", "ربيع الثاني", 
-    "جمادى الأولى", "جمادى الآخرة", "رجب", "شعبان",
-    "رمضان", "شوال", "ذو القعدة", "ذو الحجة"
-  ];
-  
-  // حساب تقريبي للشهر واليوم
-  let hijriMonth = ((month + 1) % 12) || 12;
-  let hijriDay = ((day + 15) % 30) || 30;
-  
-  return {
-    year: hijriYear,
-    month: hijriMonth,
-    monthName: hijriMonths[hijriMonth - 1],
-    day: hijriDay,
-    formattedDate: \`\${hijriDay} \${hijriMonths[hijriMonth - 1]} \${hijriYear}هـ\`
-  };
-}`,
-            desc: "دالة JavaScript لتحويل التاريخ من الميلادي إلى الهجري مع إمكانية عرض أسماء الأشهر الهجرية.",
-            image: "https://via.placeholder.com/300x200?text=Hijri+Converter",
-            category: "javascript",
-            author: "admin@gmail.com",
-            authorName: "المدير",
-            authorId: "admin123",
-            views: 87,
-            viewedBy: [],
-            date: "05/02/2024",
-            comments: []
-          },
-          {
-            id: "script3",
-            name: "سكربت إنشاء كلمة مرور آمنة",
-            code: `function generateSecurePassword(length = 12, options = {}) {
-  // خيارات افتراضية
-  const defaults = {
-    uppercase: true,
-    lowercase: true,
-    numbers: true,
-    symbols: true
-  };
-  
-  // دمج الخيارات
-  const settings = {...defaults, ...options};
-  
-  // حروف وأرقام ورموز يمكن استخدامها
-  let chars = '';
-  
-  if (settings.uppercase) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  if (settings.lowercase) chars += 'abcdefghijklmnopqrstuvwxyz';
-  if (settings.numbers) chars += '0123456789';
-  if (settings.symbols) chars += '!@#$%^&*()_+[]{}|;:,.<>?';
-  
-  // التأكد من وجود حروف للاستخدام
-  if (chars.length === 0) {
-    throw new Error('يجب تفعيل خيار واحد على الأقل');
-  }
-  
-  // إنشاء كلمة المرور
-  let password = '';
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * chars.length);
-    password += chars[randomIndex];
-  }
-  
-  return password;
-}`,
-            desc: "سكربت يقوم بإنشاء كلمات مرور آمنة وقوية مع خيارات متعددة لتخصيص شكل كلمة المرور.",
-            image: "https://via.placeholder.com/300x200?text=Password+Generator",
-            category: "javascript",
-            author: "admin@gmail.com",
-            authorName: "المدير",
-            authorId: "admin123",
-            views: 102,
-            viewedBy: [],
-            date: "10/02/2024",
-            comments: [
-              {
-                author: "user@gmail.com",
-                authorName: "مستخدم جديد",
-                text: "ممتاز جداً، أستخدمه بشكل يومي!",
-                date: "11/02/2024"
-              },
-              {
-                author: "admin@gmail.com",
-                authorName: "المدير",
-                text: "شكراً لك على التعليق. يمكنك أيضاً تخصيص طول كلمة المرور حسب الحاجة.",
-                date: "12/02/2024"
-              }
-            ]
-          }
-        ];
-        saveData();
-      }
-      
-      // تحميل المستخدمين من المخزن المشترك
-      const usersData = localStorage.getItem(USERS_DB_KEY);
-      if(usersData) {
-        users = JSON.parse(usersData);
-      } else {
-        // إضافة مستخدم افتراضي (المدير) إذا كان المخزن فارغًا
-        users = [
-          {
-            id: "admin123",
-            name: "المدير",
-            email: "admin@gmail.com",
-            password: "admin123",
-            role: "admin",
-            joinDate: "01/01/2024"
-          }
-        ];
-        saveData();
-      }
-      
-      // تحميل المستخدم الحالي من جلسة المتصفح
+    // تحميل بيانات المستخدم الحالي
+    function loadCurrentUser() {
       const userData = localStorage.getItem("currentUser");
       if(userData) {
         currentUser = JSON.parse(userData);
-        // تحديث زر الحساب ليظهر اسم المستخدم
-        document.getElementById('accountBtnText').innerHTML = `
-          <span class="logged-in-indicator">متصل</span> ${currentUser.name}
-        `;
       }
     }
 
+    /***************** تحميل السكربتات المنشورة من Firebase *****************/
+    function listenForScripts() {
+      firebase.database().ref('publishedScripts').on('value', function(snapshot) {
+        publishedScripts = [];
+        snapshot.forEach(childSnapshot => {
+          let script = childSnapshot.val();
+          script.id = childSnapshot.key;
+          publishedScripts.push(script);
+        });
+        // تحديث قائمة السكربتات مع استخدام قيمة البحث الحالية إن وُجدت
+        const searchVal = document.getElementById('searchInput') ? document.getElementById('searchInput').value : "";
+        updateScriptsList(searchVal);
+      });
+    }
+
     /***************** الدوال العامة *****************/
-    // إظهار قسم معين
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
       document.getElementById(sectionId).classList.add('active');
     }
-    
+
     // تحديث قائمة السكربتات في الصفحة الرئيسية
     function updateScriptsList(filter = "") {
       const listDiv = document.getElementById('scriptsList');
       listDiv.innerHTML = "";
-      
       let filteredScripts = publishedScripts;
       if(filter) {
-        filteredScripts = publishedScripts.filter(script => 
-          script.name.toLowerCase().includes(filter.toLowerCase()) || 
-          script.desc.toLowerCase().includes(filter.toLowerCase()) ||
-          script.category.toLowerCase().includes(filter.toLowerCase())
-        );
+        filteredScripts = publishedScripts.filter(script => script.name.toLowerCase().includes(filter.toLowerCase()));
       }
-      
       if(filteredScripts.length === 0) {
-        listDiv.innerHTML = "<div class='col-12'><p class='text-muted text-center'>لا توجد سكربتات منشورة.</p></div>";
+        listDiv.innerHTML = "<p class='text-muted'>لا توجد سكربتات منشورة.</p>";
         return;
       }
-      
-      filteredScripts.forEach((
+      filteredScripts.forEach((script) => {
+        const colDiv = document.createElement('div');
+        colDiv.className = "col-sm-6 col-md-4";
+        const cardDiv = document.createElement('div');
+        cardDiv.className = "script-card";
+        cardDiv.innerHTML = `
+          <img src="${script.image}" alt="صورة السكربت">
+          <div class="overlay views"><i class="bi bi-eye"></i> ${script.views}</div>
+          <div class="overlay date">${script.date}</div>
+        `;
+        // عند الضغط على البطاقة: تحديث عدد المشاهدات ثم عرض صفحة التفاصيل
+        cardDiv.addEventListener('click', () => {
+          if(currentUser) {
+            if(!script.viewedBy || !script.viewedBy.includes(currentUser.id)) {
+              script.views = (script.views || 0) + 1;
+              if(!script.viewedBy) {
+                script.viewedBy = [];
+              }
+              script.viewedBy.push(currentUser.id);
+            }
+          } else {
+            script.views = (script.views || 0) + 1;
+          }
+          // تحديث عدد المشاهدات في Firebase
+          firebase.database().ref('publishedScripts/' + script.id).update({
+            views: script.views,
+            viewedBy: script.viewedBy || []
+          });
+          showScriptDetail(script);
+        });
+        colDiv.appendChild(cardDiv);
+        listDiv.appendChild(colDiv);
+      });
+    }
+
+    // عرض صفحة تفاصيل السكربت
+    function showScriptDetail(script) {
+      currentDetailScript = script;
+      document.getElementById('detailName').textContent = script.name;
+      document.getElementById('detailDesc').textContent = script.desc;
+      document.getElementById('detailCode').textContent = script.code;
+      document.getElementById('detailImage').src = script.image;
+      updateCommentsList();
+      showSection('detailSection');
+    }
+
+    // تحديث قائمة التعليقات في صفحة التفاصيل
+    function updateCommentsList() {
+      const commentsDiv = document.getElementById('commentsList');
+      commentsDiv.innerHTML = "";
+      if(!currentDetailScript || !currentDetailScript.comments || currentDetailScript.comments.length === 0) {
+        commentsDiv.innerHTML = "<p class='text-muted'>لا توجد تعليقات بعد.</p>";
+        return;
+      }
+      currentDetailScript.comments.forEach(comment => {
+        const commentDiv = document.createElement('div');
+        commentDiv.className = "comment";
+        commentDiv.innerHTML = `
+          <div class="comment-author">${comment.author}</div>
+          <div class="comment-text">${comment.text}</div>
+          <div class="comment-date">${comment.date}</div>
+        `;
+        commentsDiv.appendChild(commentDiv);
+      });
+    }
+
+    /***************** تسجيل الدخول وإنشاء الحساب *****************/
+    // التحقق من بريد التسجيل (يجب أن ينتهي بـ @gmail.com) وإنشاء الحساب
+    function validateRegisterEmail() {
+      const email = document.getElementById('registerEmail').value;
+      const regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+      if (!regex.test(email)) {
+        alert("يجب استخدام بريد إلكتروني ينتهي بـ @gmail.com");
+        return false;
+      }
+      const password = document.getElementById('registerPassword').value;
+      const userId = Date.now();
+      currentUser = { email, password, id: userId };
+      alert("تم إنشاء الحساب بنجاح!");
+      saveCurrentUser();
+      showAccountInfo();
+      return false;
+    }
+
+    // معالجة تسجيل الدخول
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      if(currentUser && currentUser.email === email && currentUser.password === password) {
+        alert("تم تسجيل الدخول بنجاح!");
+        showAccountInfo();
+      } else {
+        alert("بيانات الدخول غير صحيحة أو الحساب غير موجود.");
+      }
+    });
+
+    // عرض معلومات الحساب
+    function showAccountInfo() {
+      document.getElementById('accEmail').textContent = currentUser.email;
+      document.getElementById('accPassword').textContent = currentUser.password;
+      document.getElementById('accId').textContent = currentUser.id;
+      showSection('accountSection');
+    }
+
+    // تسجيل الخروج
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      currentUser = null;
+      saveCurrentUser();
+      alert("تم تسجيل الخروج");
+      showSection('loginSection');
+    });
+
+    // زر الحساب في شريط التنقل
+    document.getElementById('accountBtn').addEventListener('click', function() {
+      if(currentUser) {
+        showAccountInfo();
+      } else {
+        showSection('loginSection');
+      }
+    });
+
+    /***************** التنقل والبحث *****************/
+    document.getElementById('navHome').addEventListener('click', function(e) {
+      e.preventDefault();
+      updateScriptsList(document.getElementById('searchInput').value);
+      showSection('homeSection');
+    });
+    document.getElementById('navPostScript').addEventListener('click', function(e) {
+      e.preventDefault();
+      if(!currentUser) {
+        alert("يرجى تسجيل الدخول أولاً");
+        showSection('loginSection');
+        return;
+      }
+      showSection('postScriptSection');
+    });
+    document.getElementById('searchInput').addEventListener('input', function() {
+      updateScriptsList(this.value);
+    });
+    document.getElementById('searchBtn').addEventListener('click', function() {
+      updateScriptsList(document.getElementById('searchInput').value);
+    });
+
+    /***************** نشر سكربت جديد *****************/
+    document.getElementById('postScriptForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('scriptName').value;
+      const code = document.getElementById('scriptCode').value;
+      const desc = document.getElementById('scriptDesc').value;
+      const imageInput = document.getElementById('scriptImage');
+      let imageURL = "";
+      if(imageInput.files && imageInput.files[0]) {
+        imageURL = URL.createObjectURL(imageInput.files[0]);
+      } else {
+        imageURL = "https://via.placeholder.com/300x200?text=Programming";
+      }
+      const dateStr = new Date().toLocaleString();
+      const newScript = {
+        name,
+        code,
+        desc,
+        image: imageURL,
+        views: 0,
+        date: dateStr,
+        viewedBy: [],
+        comments: []
+      };
+      // نشر السكربت في Firebase
+      firebase.database().ref('publishedScripts').push(newScript, function(error) {
+        if (error) {
+          alert("حدث خطأ أثناء نشر السكربت.");
+        } else {
+          alert("تم نشر السكربت!");
+          document.getElementById('postScriptForm').reset();
+          showSection('homeSection');
+        }
+      });
+    });
+
+    /***************** إضافة تعليق *****************/
+    document.getElementById('commentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      if(!currentUser) {
+        alert("يرجى تسجيل الدخول لإضافة تعليق.");
+        return;
+      }
+      const commentText = document.getElementById('commentText').value;
+      const comment = {
+        author: currentUser.email,
+        text: commentText,
+        date: new Date().toLocaleString()
+      };
+      if(currentDetailScript) {
+        if(!currentDetailScript.comments) {
+          currentDetailScript.comments = [];
+        }
+        currentDetailScript.comments.push(comment);
+        firebase.database().ref('publishedScripts/' + currentDetailScript.id).update({
+          comments: currentDetailScript.comments
+        }, function(error) {
+          if(error) {
+            alert("حدث خطأ أثناء إضافة التعليق.");
+          } else {
+            updateCommentsList();
+            document.getElementById('commentForm').reset();
+          }
+        });
+      }
+    });
+
+    // العودة للرئيسية من صفحة التفاصيل
+    document.getElementById('backToHome').addEventListener('click', function() {
+      showSection('homeSection');
+    });
+
+    /***************** عند تحميل الصفحة *****************/
+    document.addEventListener('DOMContentLoaded', function() {
+      loadCurrentUser();
+      listenForScripts();
+      showSection('homeSection');
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
