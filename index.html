@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>متجر النقاط الفخم</title>
+  <title>متجر يوزرات انستا</title>
   <!-- استيراد الخطوط -->
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -384,7 +384,7 @@
   </div>
   
   <div class="container">
-    <h1>متجر النقاط الفخم</h1>
+    <h1>متجر يوزرات انستا</h1>
     <div class="points-display">
       <div class="points-value"><span id="points-counter">0</span></div>
       <div class="points-label">النقاط</div>
@@ -453,8 +453,8 @@
     let lastGiftCollected = parseInt(localStorage.getItem("lastGiftCollected") || "0", 10);
     
     const shopItems = [
-      { id: 1, name: 'سلعة عشوائية', description: 'شراء عنصر عشوائي (المحتوى يُضاف عبر زر "إضافة سلعة")', price: 5, type: 'random' },
-      { id: 2, name: 'حزمة VIP', description: 'حزمة تمنحك مزايا حصرية', price: 50, type: 'fixed' }
+      { id: 1, name: 'يوزرات انستا عشوائي', description: 'يطلع لك انت و حضك', price: 5, type: 'random' },
+      { id: 2, name: 'قريبا', description: 'قريبا', price: 50, type: 'fixed' }
     ];
     let randomItems = localStorage.getItem("randomItems") ? JSON.parse(localStorage.getItem("randomItems")) : [];
     let couponCodes = localStorage.getItem("couponCodes") ? JSON.parse(localStorage.getItem("couponCodes")) : [];
@@ -824,4 +824,4 @@
     updateUserIcon();
   </script>
 </body>
-        </html>
+</html>
