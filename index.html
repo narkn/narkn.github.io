@@ -110,7 +110,7 @@
       margin-bottom: 20px;
       border-radius: 5px;
     }
-    /* قسم التعليقات المنفصل */
+    /* قسم التعليقات */
     #commentsSection {
       background-color: #f1f1f1;
       padding: 15px;
@@ -130,7 +130,7 @@
       font-size: 0.8rem;
       color: #555;
     }
-    /* أقسام تسجيل الدخول/إنشاء الحساب والمعلومات */
+    /* أقسام تسجيل الدخول وإنشاء الحساب */
     .auth-container {
       max-width: 500px;
       margin: 20px auto;
@@ -199,12 +199,11 @@
     </form>
   </div>
   
-  <!-- قسم تفاصيل السكربت مع قسم منفصل للتعليقات -->
+  <!-- قسم تفاصيل السكربت والتعليقات -->
   <div id="detailSection" class="section">
     <button class="btn btn-secondary mb-3" id="backToHome">
       <i class="bi bi-arrow-return-left"></i> العودة للرئيسية
     </button>
-    <!-- قسم تفاصيل السكربت -->
     <div id="scriptDetails">
       <img id="detailImage" src="" alt="صورة السكربت">
       <h2 id="detailName"></h2>
@@ -213,7 +212,6 @@
       <pre id="detailCode"></pre>
     </div>
     <hr style="border-color: #555;">
-    <!-- قسم التعليقات المنفصل -->
     <div id="commentsSection">
       <h4>التعليقات</h4>
       <div id="commentsList"></div>
@@ -254,7 +252,7 @@
       </div>
       <!-- نموذج إنشاء الحساب -->
       <div class="tab-pane fade" id="registerTab" role="tabpanel">
-        <form id="registerForm" onsubmit="return validateRegisterEmail();">
+        <form id="registerForm">
           <div class="mb-3">
             <label for="registerEmail" class="form-label">
               البريد الإلكتروني <span class="text-danger">(يجب أن يكون @gmail.com)</span>
@@ -280,9 +278,9 @@
     <button class="btn btn-danger" id="logoutBtn">تسجيل الخروج</button>
   </div>
   
-  <!-- سكربتات JavaScript -->
+  <!-- سكربتات Firebase والعمليات -->
   <script>
-    /***************** إعداد Firebase *****************/
+    // إعداد Firebase – تأكد من استبدال القيم بقيم مشروعك
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_AUTH_DOMAIN",
@@ -292,13 +290,12 @@
       messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
       appId: "YOUR_APP_ID"
     };
-    // تهيئة Firebase
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    /***************** المتغيرات العامة *****************/
-    let currentUser = null; // بيانات المستخدم الحالي (يُخزن محلياً)
-    let publishedScripts = [];   
+    // المتغيرات العامة
+    let currentUser = null;
+    let publishedScripts = [];
     let currentDetailScript = null;
 
     // حفظ بيانات المستخدم الحالي في localStorage
@@ -309,7 +306,7 @@
         localStorage.removeItem("currentUser");
       }
     }
-    // تحميل بيانات المستخدم الحالي
+    // تحميل بيانات المستخدم الحالي من localStorage
     function loadCurrentUser() {
       const userData = localStorage.getItem("currentUser");
       if(userData) {
@@ -317,7 +314,7 @@
       }
     }
 
-    /***************** تحميل السكربتات المنشورة من Firebase *****************/
+    // الاستماع للتغييرات على السكربتات المنشورة في Firebase
     function listenForScripts() {
       firebase.database().ref('publishedScripts').on('value', function(snapshot) {
         publishedScripts = [];
@@ -326,13 +323,12 @@
           script.id = childSnapshot.key;
           publishedScripts.push(script);
         });
-        // تحديث قائمة السكربتات مع استخدام قيمة البحث الحالية إن وُجدت
-        const searchVal = document.getElementById('searchInput') ? document.getElementById('searchInput').value : "";
+        const searchVal = document.getElementById('searchInput').value || "";
         updateScriptsList(searchVal);
       });
     }
 
-    /***************** الدوال العامة *****************/
+    // إظهار قسم معين وإخفاء الباقي
     function showSection(sectionId) {
       document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
       document.getElementById(sectionId).classList.add('active');
@@ -357,23 +353,19 @@
         cardDiv.className = "script-card";
         cardDiv.innerHTML = `
           <img src="${script.image}" alt="صورة السكربت">
-          <div class="overlay views"><i class="bi bi-eye"></i> ${script.views}</div>
+          <div class="overlay views"><i class="bi bi-eye"></i> ${script.views || 0}</div>
           <div class="overlay date">${script.date}</div>
         `;
-        // عند الضغط على البطاقة: تحديث عدد المشاهدات ثم عرض صفحة التفاصيل
         cardDiv.addEventListener('click', () => {
           if(currentUser) {
             if(!script.viewedBy || !script.viewedBy.includes(currentUser.id)) {
               script.views = (script.views || 0) + 1;
-              if(!script.viewedBy) {
-                script.viewedBy = [];
-              }
+              script.viewedBy = script.viewedBy || [];
               script.viewedBy.push(currentUser.id);
             }
           } else {
             script.views = (script.views || 0) + 1;
           }
-          // تحديث عدد المشاهدات في Firebase
           firebase.database().ref('publishedScripts/' + script.id).update({
             views: script.views,
             viewedBy: script.viewedBy || []
@@ -385,7 +377,7 @@
       });
     }
 
-    // عرض صفحة تفاصيل السكربت
+    // عرض تفاصيل سكربت معين
     function showScriptDetail(script) {
       currentDetailScript = script;
       document.getElementById('detailName').textContent = script.name;
@@ -416,26 +408,26 @@
       });
     }
 
-    /***************** تسجيل الدخول وإنشاء الحساب *****************/
-    // التحقق من بريد التسجيل (يجب أن ينتهي بـ @gmail.com) وإنشاء الحساب
-    function validateRegisterEmail() {
+    // إنشاء حساب جديد (تسجيل بيانات المستخدم محلياً)
+    function registerUser(e) {
+      e.preventDefault();
       const email = document.getElementById('registerEmail').value;
       const regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
       if (!regex.test(email)) {
         alert("يجب استخدام بريد إلكتروني ينتهي بـ @gmail.com");
-        return false;
+        return;
       }
       const password = document.getElementById('registerPassword').value;
       const userId = Date.now();
       currentUser = { email, password, id: userId };
-      alert("تم إنشاء الحساب بنجاح!");
       saveCurrentUser();
+      alert("تم إنشاء الحساب بنجاح!");
       showAccountInfo();
-      return false;
+      document.getElementById('registerForm').reset();
     }
 
-    // معالجة تسجيل الدخول
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
+    // تسجيل الدخول (التحقق من بيانات المستخدم المخزنة محلياً)
+    function loginUser(e) {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
@@ -445,7 +437,7 @@
       } else {
         alert("بيانات الدخول غير صحيحة أو الحساب غير موجود.");
       }
-    });
+    }
 
     // عرض معلومات الحساب
     function showAccountInfo() {
@@ -456,46 +448,15 @@
     }
 
     // تسجيل الخروج
-    document.getElementById('logoutBtn').addEventListener('click', function() {
+    function logoutUser() {
       currentUser = null;
       saveCurrentUser();
       alert("تم تسجيل الخروج");
       showSection('loginSection');
-    });
+    }
 
-    // زر الحساب في شريط التنقل
-    document.getElementById('accountBtn').addEventListener('click', function() {
-      if(currentUser) {
-        showAccountInfo();
-      } else {
-        showSection('loginSection');
-      }
-    });
-
-    /***************** التنقل والبحث *****************/
-    document.getElementById('navHome').addEventListener('click', function(e) {
-      e.preventDefault();
-      updateScriptsList(document.getElementById('searchInput').value);
-      showSection('homeSection');
-    });
-    document.getElementById('navPostScript').addEventListener('click', function(e) {
-      e.preventDefault();
-      if(!currentUser) {
-        alert("يرجى تسجيل الدخول أولاً");
-        showSection('loginSection');
-        return;
-      }
-      showSection('postScriptSection');
-    });
-    document.getElementById('searchInput').addEventListener('input', function() {
-      updateScriptsList(this.value);
-    });
-    document.getElementById('searchBtn').addEventListener('click', function() {
-      updateScriptsList(document.getElementById('searchInput').value);
-    });
-
-    /***************** نشر سكربت جديد *****************/
-    document.getElementById('postScriptForm').addEventListener('submit', function(e) {
+    // نشر سكربت جديد إلى Firebase
+    function publishScript(e) {
       e.preventDefault();
       const name = document.getElementById('scriptName').value;
       const code = document.getElementById('scriptCode').value;
@@ -518,9 +479,8 @@
         viewedBy: [],
         comments: []
       };
-      // نشر السكربت في Firebase
       firebase.database().ref('publishedScripts').push(newScript, function(error) {
-        if (error) {
+        if(error) {
           alert("حدث خطأ أثناء نشر السكربت.");
         } else {
           alert("تم نشر السكربت!");
@@ -528,10 +488,10 @@
           showSection('homeSection');
         }
       });
-    });
+    }
 
-    /***************** إضافة تعليق *****************/
-    document.getElementById('commentForm').addEventListener('submit', function(e) {
+    // إضافة تعليق على السكربت الحالي
+    function addComment(e) {
       e.preventDefault();
       if(!currentUser) {
         alert("يرجى تسجيل الدخول لإضافة تعليق.");
@@ -544,9 +504,7 @@
         date: new Date().toLocaleString()
       };
       if(currentDetailScript) {
-        if(!currentDetailScript.comments) {
-          currentDetailScript.comments = [];
-        }
+        currentDetailScript.comments = currentDetailScript.comments || [];
         currentDetailScript.comments.push(comment);
         firebase.database().ref('publishedScripts/' + currentDetailScript.id).update({
           comments: currentDetailScript.comments
@@ -559,20 +517,52 @@
           }
         });
       }
-    });
+    }
 
-    // العودة للرئيسية من صفحة التفاصيل
-    document.getElementById('backToHome').addEventListener('click', function() {
-      showSection('homeSection');
-    });
-
-    /***************** عند تحميل الصفحة *****************/
+    // إعداد المستمعين للأحداث بعد تحميل الصفحة
     document.addEventListener('DOMContentLoaded', function() {
       loadCurrentUser();
       listenForScripts();
       showSection('homeSection');
+      // أحداث التنقل والبحث
+      document.getElementById('navHome').addEventListener('click', function(e) {
+        e.preventDefault();
+        updateScriptsList(document.getElementById('searchInput').value);
+        showSection('homeSection');
+      });
+      document.getElementById('navPostScript').addEventListener('click', function(e) {
+        e.preventDefault();
+        if(!currentUser) {
+          alert("يرجى تسجيل الدخول أولاً");
+          showSection('loginSection');
+          return;
+        }
+        showSection('postScriptSection');
+      });
+      document.getElementById('searchInput').addEventListener('input', function() {
+        updateScriptsList(this.value);
+      });
+      document.getElementById('searchBtn').addEventListener('click', function() {
+        updateScriptsList(document.getElementById('searchInput').value);
+      });
+      // أحداث النماذج
+      document.getElementById('registerForm').addEventListener('submit', registerUser);
+      document.getElementById('loginForm').addEventListener('submit', loginUser);
+      document.getElementById('postScriptForm').addEventListener('submit', publishScript);
+      document.getElementById('commentForm').addEventListener('submit', addComment);
+      document.getElementById('logoutBtn').addEventListener('click', logoutUser);
+      document.getElementById('backToHome').addEventListener('click', function() {
+        showSection('homeSection');
+      });
+      document.getElementById('accountBtn').addEventListener('click', function() {
+        if(currentUser) {
+          showAccountInfo();
+        } else {
+          showSection('loginSection');
+        }
+      });
     });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+              </html>
