@@ -1,63 +1,194 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>تشغيل سكربتات بايثون</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>واجهة تشغيل سكربتات بايثون</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.11.2/brython.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.11.2/brython_stdlib.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #4facfe, #00f2fe);
-            color: #fff;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
             text-align: center;
-            margin-top: 100px;
         }
-        .button {
-            padding: 15px 30px;
-            margin: 10px;
-            font-size: 18px;
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            direction: ltr;
+            text-align: left;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
             border: none;
-            border-radius: 5px;
+            padding: 10px 15px;
+            border-radius: 4px;
             cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
         }
-        .run-btn {
-            background-color: #28a745;
+        button:hover {
+            background-color: #2980b9;
         }
-        .stop-btn {
-            background-color: #dc3545;
+        #output {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            min-height: 100px;
+            margin-top: 20px;
+            direction: ltr;
+            text-align: left;
+            white-space: pre-wrap;
+            font-family: monospace;
         }
-        .download-btn {
-            background-color: #007bff;
+        .lib-section {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        #libraries {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 10px;
         }
     </style>
 </head>
-<body>
-    <h1>تشغيل سكربتات بايثون</h1>
-    <button class="button run-btn" onclick="runScript()">تشغيل</button>
-    <button class="button stop-btn" onclick="stopScript()">إيقاف</button>
-    <br>
-    <button class="button download-btn" onclick="downloadLibs()">تحميل المكتبات</button>
+<body onload="brython()">
+    <h1>واجهة تشغيل سكربتات بايثون</h1>
     
-    <div id="status"></div>
+    <div class="lib-section">
+        <h3>تحميل المكتبات</h3>
+        <input type="text" id="libName" placeholder="اسم المكتبة (مثال: numpy)" style="padding: 8px; width: 200px;">
+        <button onclick="addLibrary()">إضافة مكتبة</button>
+        <div id="libraries">
+            <p>المكتبات المضافة: </p>
+        </div>
+    </div>
+    
+    <h3>أدخل كود بايثون هنا:</h3>
+    <textarea id="code" dir="ltr">
+# مثال على كود بايثون
+print("مرحباً بالعالم!")
 
+# لاستخدام المكتبات المضافة، استخدم الأوامر المعتادة
+# مثال: import numpy as np
+</textarea>
+    
+    <div>
+        <button onclick="runPython()">تشغيل الكود</button>
+        <button onclick="clearOutput()">مسح النتائج</button>
+    </div>
+    
+    <h3>النتائج:</h3>
+    <div id="output"></div>
+    
+    <script type="text/python" id="python-script">
+from browser import document, console
+import sys
+
+class PythonOutput:
+    def __init__(self):
+        self.content = ''
+        
+    def write(self, text):
+        self.content += text
+        
+    def flush(self):
+        pass
+
+def run_code(event):
+    output = document.getElementById('output')
+    code = document.getElementById('code').value
+    
+    sys.stdout = PythonOutput()
+    sys.stderr = PythonOutput()
+    
+    try:
+        exec(code)
+        output.textContent = sys.stdout.content
+    except Exception as e:
+        output.textContent = f"خطأ: {str(e)}"
+    
+document.getElementById('runButton').bind('click', run_code)
+    </script>
+    
     <script>
-        function runScript() {
-            fetch('/run', {method: 'POST'})
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('status').innerText = data.status;
+        // قائمة المكتبات المضافة
+        let libraries = [];
+        
+        // تشغيل كود بايثون
+        function runPython() {
+            const code = document.getElementById('code').value;
+            const output = document.getElementById('output');
+            
+            // إضافة أوامر استيراد المكتبات
+            let imports = '';
+            libraries.forEach(lib => {
+                imports += `try:\n    import ${lib}\nexcept ImportError:\n    print("⚠️ لم يتم العثور على المكتبة: ${lib}. تأكد من تثبيتها.")\n`;
             });
+            
+            // تشغيل الكود مع المكتبات
+            const fullCode = imports + '\n' + code;
+            
+            // تنفيذ كود بايثون باستخدام Brython
+            try {
+                __BRYTHON__.run_script(fullCode, "__main__", true);
+            } catch(e) {
+                output.textContent = "خطأ: " + e;
+            }
         }
         
-        function stopScript() {
-            fetch('/stop', {method: 'POST'})
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('status').innerText = data.status;
-            });
+        // إضافة مكتبة جديدة
+        function addLibrary() {
+            const libInput = document.getElementById('libName');
+            const libName = libInput.value.trim();
+            
+            if (libName && !libraries.includes(libName)) {
+                libraries.push(libName);
+                updateLibraryList();
+                libInput.value = '';
+            }
         }
         
-        function downloadLibs() {
-            window.location.href = '/download-libs';
+        // تحديث قائمة المكتبات المعروضة
+        function updateLibraryList() {
+            const libContainer = document.getElementById('libraries');
+            if (libraries.length === 0) {
+                libContainer.innerHTML = '<p>المكتبات المضافة: </p>';
+            } else {
+                let html = '<p>المكتبات المضافة: </p><ul>';
+                libraries.forEach(lib => {
+                    html += `<li>${lib} <button onclick="removeLibrary('${lib}')" style="padding: 2px 5px; font-size: 12px;">حذف</button></li>`;
+                });
+                html += '</ul>';
+                libContainer.innerHTML = html;
+            }
+        }
+        
+        // حذف مكتبة
+        function removeLibrary(libName) {
+            libraries = libraries.filter(lib => lib !== libName);
+            updateLibraryList();
+        }
+        
+        // مسح النتائج
+        function clearOutput() {
+            document.getElementById('output').textContent = '';
         }
     </script>
 </body>
