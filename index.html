@@ -1,195 +1,395 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>واجهة تشغيل سكربتات بايثون</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.11.2/brython.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.11.2/brython_stdlib.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-        }
-        textarea {
-            width: 100%;
-            height: 200px;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: monospace;
-            direction: ltr;
-            text-align: left;
-        }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 5px;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        #output {
-            background-color: white;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 4px;
-            min-height: 100px;
-            margin-top: 20px;
-            direction: ltr;
-            text-align: left;
-            white-space: pre-wrap;
-            font-family: monospace;
-        }
-        .lib-section {
-            background-color: white;
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-        #libraries {
-            max-height: 150px;
-            overflow-y: auto;
-            margin-top: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>موقع أنيق</title>
+  <style>
+    /* استيراد الخط */
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* شريط التنقل – يبقى ثابتاً أعلى الصفحة */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      background: linear-gradient(to right, #00b4d8, #90e0ef);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .navbar-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-button {
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .nav-button:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* قسم البطل (Hero Section) */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+      margin-top: 80px; /* لتعويض شريط التنقل الثابت */
+    }
+
+    .hero-title {
+      font-size: 50px;
+      margin-bottom: 20px;
+      background: linear-gradient(to right, #8e2de2, #4a00e0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      opacity: 0.9;
+    }
+
+    .hero-description {
+      font-size: 20px;
+      max-width: 700px;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    /* خلفية متحركة */
+    .bg-animation {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .bg-animation span {
+      position: absolute;
+      display: block;
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      animation: animate 25s linear infinite;
+      bottom: -150px;
+      border-radius: 50%;
+    }
+
+    .bg-animation span:nth-child(1) {
+      left: 10%;
+      width: 80px;
+      height: 80px;
+      animation-delay: 0s;
+    }
+
+    .bg-animation span:nth-child(2) {
+      left: 20%;
+      width: 30px;
+      height: 30px;
+      animation-delay: 2s;
+      animation-duration: 12s;
+    }
+
+    .bg-animation span:nth-child(3) {
+      left: 40%;
+      width: 60px;
+      height: 60px;
+      animation-delay: 4s;
+    }
+
+    .bg-animation span:nth-child(4) {
+      left: 60%;
+      width: 20px;
+      height: 20px;
+      animation-delay: 0s;
+      animation-duration: 18s;
+    }
+
+    .bg-animation span:nth-child(5) {
+      left: 80%;
+      width: 50px;
+      height: 50px;
+      animation-delay: 0s;
+    }
+
+    @keyframes animate {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-1000px) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* القسم الثاني: عداد الزوار والأزرار – يظهر في تدفق الصفحة */
+    .second-section {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .visitor-counter {
+      display: inline-block;
+      padding: 10px 20px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      margin-bottom: 15px;
+      font-size: 18px;
+      max-width: 300px;
+      width: 100%;
+      margin: 0 auto 15px auto;
+    }
+
+    .visitor-counter span {
+      margin: 0 5px;
+    }
+
+    .footer-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .footer-button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      font-weight: bold;
+      backdrop-filter: blur(5px);
+    }
+
+    .footer-button:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .footer-button i {
+      font-size: 20px;
+    }
+
+    /* أيقونات */
+    .icon {
+      width: 24px;
+      height: 24px;
+      display: inline-block;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .icon-apple {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='white' d='M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z'%3E%3C/path%3E%3C/svg%3E");
+    }
+
+    .icon-android {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='white' d='M420.55,301.93a24,24,0,1,1,24-24,24,24,0,0,1-24,24m-265.1,0a24,24,0,1,1,24-24,24,24,0,0,1-24,24m273.7-144.48,47.94-83a10,10,0,1,0-17.27-10h0l-48.54,84.07a301.25,301.25,0,0,0-246.56,0L116.18,64.45a10,10,0,1,0-17.27,10h0l47.94,83C64.53,202.22,8.24,285.55,0,384H576c-8.24-98.45-64.54-181.78-146.85-226.55'%3E%3C/path%3E%3C/svg%3E");
+    }
+
+    /* زر الصعود إلى الأعلى الثابت والشفاف */
+    .scroll-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      transition: background 0.3s ease;
+    }
+
+    .scroll-top:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    /* استجابة عداد الزوار والمفاتيح على الهاتف */
+    @media (max-width: 600px) {
+      .visitor-counter {
+        max-width: 90%;
+        width: auto;
+        font-size: 16px;
+      }
+      .nav-button {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
-<body onload="brython()">
-    <h1>واجهة تشغيل سكربتات بايثون</h1>
-    
-    <div class="lib-section">
-        <h3>تحميل المكتبات</h3>
-        <input type="text" id="libName" placeholder="اسم المكتبة (مثال: numpy)" style="padding: 8px; width: 200px;">
-        <button onclick="addLibrary()">إضافة مكتبة</button>
-        <div id="libraries">
-            <p>المكتبات المضافة: </p>
-        </div>
+<body>
+  <!-- شريط التنقل -->
+  <nav class="navbar">
+    <div class="logo">موقعنا الأنيق</div>
+    <div class="navbar-links">
+      <a href="https://www.google.com" class="nav-button" target="_blank">جوجل</a>
+      <a href="https://www.youtube.com" class="nav-button" target="_blank">يوتيوب</a>
+      <a href="https://www.facebook.com" class="nav-button" target="_blank">فيسبوك</a>
+      <a href="https://www.twitter.com" class="nav-button" target="_blank">تويتر</a>
     </div>
-    
-    <h3>أدخل كود بايثون هنا:</h3>
-    <textarea id="code" dir="ltr">
-# مثال على كود بايثون
-print("مرحباً بالعالم!")
+  </nav>
 
-# لاستخدام المكتبات المضافة، استخدم الأوامر المعتادة
-# مثال: import numpy as np
-</textarea>
-    
-    <div>
-        <button onclick="runPython()">تشغيل الكود</button>
-        <button onclick="clearOutput()">مسح النتائج</button>
+  <!-- قسم البطل -->
+  <main class="hero">
+    <h1 class="hero-title">مرحبًا بك في موقعنا الأنيق</h1>
+    <p class="hero-description">هذا الموقع مصمم ليكون بسيطًا وجذابًا. اضغط على الأزرار في الأعلى للانتقال إلى مواقع أخرى.</p>
+    <div class="bg-animation">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <!-- يمكن إضافة المزيد من العناصر عبر جافا سكريبت -->
     </div>
-    
-    <h3>النتائج:</h3>
-    <div id="output"></div>
-    
-    <script type="text/python" id="python-script">
-from browser import document, console
-import sys
+  </main>
 
-class PythonOutput:
-    def __init__(self):
-        self.content = ''
-        
-    def write(self, text):
-        self.content += text
-        
-    def flush(self):
-        pass
+  <!-- القسم الثاني: عداد الزوار والأزرار (بدون رسالة خطأ) -->
+  <section class="second-section">
+    <div class="visitor-counter">
+      <span>عدد الزوار:</span>
+      <span id="counter">0</span>
+    </div>
+    <div class="footer-buttons">
+      <a href="https://www.apple.com" class="footer-button" target="_blank">
+        <span class="icon icon-apple"></span>
+        تطبيق iOS 1
+      </a>
+      <a href="https://www.apple.com/app-store/" class="footer-button" target="_blank">
+        <span class="icon icon-apple"></span>
+        تطبيق iOS 2
+      </a>
+      <a href="https://play.google.com" class="footer-button" target="_blank">
+        <span class="icon icon-android"></span>
+        تطبيق Android 1
+      </a>
+      <a href="https://developer.android.com" class="footer-button" target="_blank">
+        <span class="icon icon-android"></span>
+        تطبيق Android 2
+      </a>
+      <a href="https://www.github.com" class="footer-button" target="_blank">
+        <span class="icon" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 496 512\'%3E%3Cpath fill=\'white\' d=\'M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z');
+        "></span>
+        GitHub
+      </a>
+    </div>
+  </section>
 
-def run_code(event):
-    output = document.getElementById('output')
-    code = document.getElementById('code').value
-    
-    sys.stdout = PythonOutput()
-    sys.stderr = PythonOutput()
-    
-    try:
-        exec(code)
-        output.textContent = sys.stdout.content
-    except Exception as e:
-        output.textContent = f"خطأ: {str(e)}"
-    
-document.getElementById('runButton').bind('click', run_code)
-    </script>
-    
-    <script>
-        // قائمة المكتبات المضافة
-        let libraries = [];
-        
-        // تشغيل كود بايثون
-        function runPython() {
-            const code = document.getElementById('code').value;
-            const output = document.getElementById('output');
-            
-            // إضافة أوامر استيراد المكتبات
-            let imports = '';
-            libraries.forEach(lib => {
-                imports += `try:\n    import ${lib}\nexcept ImportError:\n    print("⚠️ لم يتم العثور على المكتبة: ${lib}. تأكد من تثبيتها.")\n`;
-            });
-            
-            // تشغيل الكود مع المكتبات
-            const fullCode = imports + '\n' + code;
-            
-            // تنفيذ كود بايثون باستخدام Brython
-            try {
-                __BRYTHON__.run_script(fullCode, "__main__", true);
-            } catch(e) {
-                output.textContent = "خطأ: " + e;
-            }
-        }
-        
-        // إضافة مكتبة جديدة
-        function addLibrary() {
-            const libInput = document.getElementById('libName');
-            const libName = libInput.value.trim();
-            
-            if (libName && !libraries.includes(libName)) {
-                libraries.push(libName);
-                updateLibraryList();
-                libInput.value = '';
-            }
-        }
-        
-        // تحديث قائمة المكتبات المعروضة
-        function updateLibraryList() {
-            const libContainer = document.getElementById('libraries');
-            if (libraries.length === 0) {
-                libContainer.innerHTML = '<p>المكتبات المضافة: </p>';
-            } else {
-                let html = '<p>المكتبات المضافة: </p><ul>';
-                libraries.forEach(lib => {
-                    html += `<li>${lib} <button onclick="removeLibrary('${lib}')" style="padding: 2px 5px; font-size: 12px;">حذف</button></li>`;
-                });
-                html += '</ul>';
-                libContainer.innerHTML = html;
-            }
-        }
-        
-        // حذف مكتبة
-        function removeLibrary(libName) {
-            libraries = libraries.filter(lib => lib !== libName);
-            updateLibraryList();
-        }
-        
-        // مسح النتائج
-        function clearOutput() {
-            document.getElementById('output').textContent = '';
-        }
-    </script>
+  <!-- زر الصعود إلى الأعلى -->
+  <button class="scroll-top" onclick="scrollToTop()">↑</button>
+
+  <script>
+    // كود تتبع عدد الزوار باستخدام localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+      const hasVisited = localStorage.getItem('visited');
+      let visitorCount = parseInt(localStorage.getItem('visitorCount')) || 0;
+      if (!hasVisited) {
+        visitorCount++;
+        localStorage.setItem('visitorCount', visitorCount);
+        localStorage.setItem('visited', 'true');
+      }
+      document.getElementById('counter').textContent = visitorCount;
+
+      // إضافة المزيد من العناصر للخلفية المتحركة
+      const bgAnimation = document.querySelector('.bg-animation');
+      for (let i = 0; i < 15; i++) {
+        const span = document.createElement('span');
+        span.style.left = Math.random() * 100 + '%';
+        span.style.width = Math.random() * 80 + 10 + 'px';
+        span.style.height = span.style.width;
+        span.style.animationDelay = Math.random() * 5 + 's';
+        span.style.animationDuration = Math.random() * 20 + 10 + 's';
+        bgAnimation.appendChild(span);
+      }
+
+      // تأثيرات تحريك للأزرار
+      const buttons = document.querySelectorAll('.nav-button, .footer-button');
+      buttons.forEach(button => {
+        button.addEventListener('mouseover', function() {
+          this.style.transform = 'translateY(-5px)';
+          this.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.4)';
+        });
+        button.addEventListener('mouseout', function() {
+          this.style.transform = 'translateY(0)';
+          this.style.boxShadow = 'none';
+        });
+        button.addEventListener('click', function() {
+          this.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            this.style.transform = 'scale(1)';
+          }, 100);
+        });
+      });
+    });
+
+    // دالة الصعود إلى الأعلى
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
 </body>
 </html>
